@@ -1,1 +1,76 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><script type="module" crossorigin src="/static/js/120aa8f8.js"></script><link rel="stylesheet" href="/static/css/a14e1a22.css"><!-- hexo injector head_end start --><script rel="prefetch" async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script rel="preload" src="https://unpkg.com/blueimp-md5@^2.19.0/js/md5.min.js"></script><script rel="preload" src="https://unpkg.com/lodash@^4.17.21/lodash.min.js"></script><link rel="stylesheet" href="https://fonts.loli.net/css?family=Rubik" /><script rel="preload" src="https://unpkg.com/gitalk@^1.8.0/dist/gitalk.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk@^1.8.0/dist/gitalk.css"/><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head><body id="body-container"><noscript><strong>We're sorry but this app doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+<!DOCTYPE html>
+<!-- 默认设置 theme 为 light，后续靠 JS 改变它 -->
+<html lang="zh-CN,en,default" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singularity</title>
+  
+  <!-- 引入你刚才写的 CSS -->
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  <!-- 提前注入 JS，防止暗黑模式闪屏 (FOUC) -->
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body>
+  
+  <header class="header">
+    <div class="logo">
+      <a href="/" style="color: white; font-weight: bold;">Singularity</a>
+    </div>
+    <nav class="nav-links">
+      <!-- 这里使用了 i18n 翻译功能 -->
+      <a href="/" style="color: white; margin-right: 15px;">首页</a>
+      <a href="/archives" style="color: white; margin-right: 15px;">归档</a>
+      
+      <!-- 暗/亮色切换按钮 -->
+      <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;">
+        🌓 Toggle Theme
+      </button>
+    </nav>
+  </header>
+
+  <main style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+    <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
+    <div class="repo-list">
+  <!-- 遍历所有文章 -->
+  
+    <article class="repo-item" style="border: 1px solid var(--color-border-default); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+      <h2 style="margin-top: 0; font-size: 20px;">
+        <a href="/post/Games.html">游戏</a>
+      </h2>
+      <p style="color: #57606a; font-size: 14px;">
+        <!-- 输出日期 -->
+        2026-03-12
+      </p>
+      <div class="post-excerpt">
+        <!-- 如果文章里写了 <!-- more -->，这里只显示摘要 -->
+        <p><a href="/downloads/Unity贪吃蛇游戏.zip" download="贪吃蛇游戏.zip">点击下载 Unity 贪吃蛇游戏Windows版</a></p>
+...
+      </div>
+    </article>
+  
+</div>
+
+<!-- 分页 -->
+<span class="page-number current">1</span>
+  </main>
+
+  <footer style="text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid var(--color-border-default);">
+    &copy; 2026 卢昱宏
+  </footer>
+
+  <!-- 引入暗黑模式切换逻辑 JS -->
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>
