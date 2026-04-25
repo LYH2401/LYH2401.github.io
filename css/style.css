@@ -1,14 +1,14 @@
 /* 亮色模式 (默认) - 提取自 GitHub 亮色主题 */
 :root {
   --color-canvas-default: #ffffff; /* 背景色 */
-  --color-fg-default: #24292f;     /* 字体色 */
+  --color-fg-default: #000000;     /* 字体色 */
   --color-border-default: #d0d7de; /* 边框色 */
   --color-accent-fg: #0969da;      /* 链接/强调色 (GitHub 蓝) */
 }
 
 /* 暗色模式 - 提取自 GitHub 暗色主题 */
 html[data-theme="dark"] {
-  --color-canvas-default: #0d1117;
+  --color-canvas-default: #000000;
   --color-fg-default: #c9d1d9;
   --color-border-default: #30363d;
   --color-accent-fg: #58a6ff;
