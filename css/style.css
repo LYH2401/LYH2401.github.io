@@ -8,9 +8,9 @@
 
 /* 暗色模式 - 提取自 GitHub 暗色主题 */
 html[data-theme="dark"] {
-  --color-canvas-default: #0c0c0c;
+  --color-canvas-default: #000000;
   --color-fg-default: #c9d1d9;
-  --color-border-default: #000000;
+  --color-border-default: #121315;
   --color-accent-fg: #58a6ff;
 }
 
