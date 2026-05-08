@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 默认设置 theme 为 light，后续靠 JS 改变它 -->
-<html lang="zh-CN,en,ru,default" data-theme="light">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,37 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+
+  <!-- 嵌入多语言翻译字典 -->
+  <script>
+    window.__I18N__ = {
+      "zh-CN": {
+        "menu.home": "首页",
+        "menu.archives": "归档",
+        "menu.about": "关于",
+        "theme.toggle": "🌓 切换主题",
+        "lang.name": "中文",
+        "post.read_more": "阅读全文"
+      },
+      "en": {
+        "menu.home": "Home",
+        "menu.archives": "Archives",
+        "menu.about": "About",
+        "theme.toggle": "🌓 Toggle Theme",
+        "lang.name": "English",
+        "post.read_more": "Read More"
+      },
+      "ru": {
+        "menu.home": "Главная",
+        "menu.archives": "Архив",
+        "menu.about": "О себе",
+        "theme.toggle": "🌓 Сменить тему",
+        "lang.name": "Русский",
+        "post.read_more": "Читать далее"
+      }
+    };
+    window.__DEFAULT_LANG__ = 'zh-CN';
+  </script>
 <meta name="generator" content="Hexo 8.1.1"></head>
 <body>
   
@@ -27,13 +58,12 @@
       <a href="/" style="color: white; font-weight: bold;">Singularity</a>
     </div>
     <nav class="nav-links">
-      <!-- 这里使用了 i18n 翻译功能 -->
-      <a href="/" style="color: white; margin-right: 15px;">首页</a>
-      <a href="/archives" style="color: white; margin-right: 15px;">归档</a>
+      <a href="/" style="color: white; margin-right: 15px;" data-i18n="menu.home">首页</a>
+      <a href="/archives" style="color: white; margin-right: 15px;" data-i18n="menu.archives">归档</a>
       
       <!-- 语言切换菜单（可收起，Cloudflare 风格） -->
       <div class="lang-switcher" id="lang-switcher">
-        <button class="lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" title="中文">
+        <button class="lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" data-i18n-title="lang.name" title="中文">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </button>
         <ul class="lang-dropdown" id="lang-dropdown">
@@ -44,8 +74,8 @@
       </div>
       
       <!-- 暗/亮色切换按钮 -->
-      <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;">
-        🌓 Toggle Theme
+      <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;" data-i18n="theme.toggle">
+        🌓 切换主题
       </button>
     </nav>
   </header>
@@ -80,7 +110,7 @@
     &copy; 2026 卢昱宏
   </footer>
 
-  <!-- 引入暗黑模式切换逻辑 JS -->
+  <!-- 引入客户端 i18n + 暗黑模式切换逻辑 JS -->
   
 <script src="/js/main.js"></script>
 
