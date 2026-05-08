@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 默认设置 theme 为 light，后续靠 JS 改变它 -->
-<html lang="zh-CN,en,default" data-theme="light">
+<html lang="zh-CN,en,ru,default" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +30,18 @@
       <!-- 这里使用了 i18n 翻译功能 -->
       <a href="/" style="color: white; margin-right: 15px;">首页</a>
       <a href="/archives" style="color: white; margin-right: 15px;">归档</a>
+      
+      <!-- 语言切换菜单（可收起） -->
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-switcher-toggle" id="lang-toggle" aria-label="Switch language">
+          🌐 <span class="lang-label">中文</span>
+        </button>
+        <ul class="lang-dropdown" id="lang-dropdown">
+          <li><a href="javascript:void(0)" data-lang="zh-CN">🇨🇳 中文</a></li>
+          <li><a href="javascript:void(0)" data-lang="en">🇺🇸 English</a></li>
+          <li><a href="javascript:void(0)" data-lang="ru">🇷🇺 Русский</a></li>
+        </ul>
+      </div>
       
       <!-- 暗/亮色切换按钮 -->
       <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;">
