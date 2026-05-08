@@ -40,44 +40,47 @@ a {
   align-items: center;
 }
 
-/* ========== 语言切换菜单 ========== */
+/* ========== 语言切换菜单（Cloudflare 风格紧凑设计） ========== */
 .lang-switcher {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 }
 
 .lang-switcher-toggle {
   cursor: pointer;
   background: none;
-  border: 1px solid rgba(255,255,255,0.5);
-  color: white;
-  padding: 4px 10px;
+  border: 1px solid transparent;
+  color: rgba(255,255,255,0.7);
+  padding: 4px 6px;
   border-radius: 6px;
-  font-size: 14px;
-  display: flex;
+  font-size: 0;
+  line-height: 1;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  transition: background-color 0.2s;
+  justify-content: center;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .lang-switcher-toggle:hover {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255,255,255,0.12);
+  color: #ffffff;
 }
 
 .lang-dropdown {
   display: none;
   position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 6px;
+  top: calc(100% + 8px);
+  right: -8px;
   background-color: #ffffff;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   list-style: none;
-  padding: 4px 0;
-  min-width: 140px;
+  padding: 6px 0;
+  min-width: 130px;
   z-index: 1000;
+  margin: 0;
 }
 
 .lang-dropdown.open {
@@ -86,12 +89,12 @@ a {
 
 .lang-dropdown li a {
   display: block;
-  padding: 6px 16px;
-  color: #24292f;
+  padding: 8px 16px;
+  color: #374151;
   font-size: 14px;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.15s;
+  transition: background-color 0.1s;
 }
 
 .lang-dropdown li a:hover {
@@ -99,26 +102,26 @@ a {
 }
 
 .lang-dropdown li a.active {
-  font-weight: 700;
-  color: #0969da;
-  background-color: #ddf4ff;
+  font-weight: 600;
+  color: #1d4ed8;
+  background-color: #eff6ff;
 }
 
-/* 暗色模式下下拉菜单适配 */
+/* 暗色模式 */
 html[data-theme="dark"] .lang-dropdown {
-  background-color: #161b22;
-  border-color: #30363d;
+  background-color: #1e293b;
+  border-color: #334155;
 }
 
 html[data-theme="dark"] .lang-dropdown li a {
-  color: #c9d1d9;
+  color: #e2e8f0;
 }
 
 html[data-theme="dark"] .lang-dropdown li a:hover {
-  background-color: #21262d;
+  background-color: #334155;
 }
 
 html[data-theme="dark"] .lang-dropdown li a.active {
-  color: #58a6ff;
-  background-color: #0d419d;
+  color: #93c5fd;
+  background-color: #1e3a5f;
 }
