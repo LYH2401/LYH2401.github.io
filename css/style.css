@@ -204,6 +204,17 @@ html[data-theme="dark"] .lang-dropdown li a.active {
   margin: 6px 0;
 }
 
+/* ========== 多语言内容容器：根据 html[data-lang] 显示对应语言 ========== */
+.post-content > [data-lang] {
+  display: none;
+}
+
+html[data-lang="zh-CN"] .post-content > [data-lang="zh-CN"],
+html[data-lang="en"] .post-content > [data-lang="en"],
+html[data-lang="ru"] .post-content > [data-lang="ru"] {
+  display: block;
+}
+
 /* 暗色模式文章页 */
 html[data-theme="dark"] .post-header time {
   color: #8b949e;

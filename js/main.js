@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
+    // 更新 html[data-lang] 以切换文章内容语言容器
+    document.documentElement.setAttribute('data-lang', lang);
+
     currentLang = lang;
 
     // 更新下拉菜单中的 active 样式
@@ -51,6 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (currentLang !== DEFAULT_LANG) {
     applyTranslations(currentLang);
   } else {
+    // 确保 data-lang 属性已设置（内联脚本已预设，此处兜底）
+    if (!document.documentElement.getAttribute('data-lang')) {
+      document.documentElement.setAttribute('data-lang', DEFAULT_LANG);
+    }
     // 至少标记 active
     var langLinks = document.querySelectorAll('.lang-dropdown li a');
     for (var k = 0; k < langLinks.length; k++) {

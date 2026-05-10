@@ -29,7 +29,8 @@
         "menu.about": "关于",
         "theme.toggle": "🌓 切换主题",
         "lang.name": "中文",
-        "post.read_more": "阅读全文"
+        "post.read_more": "阅读全文",
+        "post.title": "游戏"
       },
       "en": {
         "menu.home": "Home",
@@ -37,7 +38,8 @@
         "menu.about": "About",
         "theme.toggle": "🌓 Toggle Theme",
         "lang.name": "English",
-        "post.read_more": "Read More"
+        "post.read_more": "Read More",
+        "post.title": "Games"
       },
       "ru": {
         "menu.home": "Главная",
@@ -45,10 +47,20 @@
         "menu.about": "О себе",
         "theme.toggle": "🌓 Сменить тему",
         "lang.name": "Русский",
-        "post.read_more": "Читать далее"
+        "post.read_more": "Читать далее",
+        "post.title": "Игры"
       }
     };
     window.__DEFAULT_LANG__ = 'zh-CN';
+  </script>
+
+  <!-- 根据 localStorage 预设 data-lang 属性，防止文章内容闪烁 -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('lang');
+      var lang = (saved && window.__I18N__ && window.__I18N__[saved]) ? saved : 'zh-CN';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
   </script>
 <meta name="generator" content="Hexo 8.1.1"></head>
 <body>

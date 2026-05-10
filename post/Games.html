@@ -29,7 +29,8 @@
         "menu.about": "关于",
         "theme.toggle": "🌓 切换主题",
         "lang.name": "中文",
-        "post.read_more": "阅读全文"
+        "post.read_more": "阅读全文",
+        "post.title": "游戏"
       },
       "en": {
         "menu.home": "Home",
@@ -37,7 +38,8 @@
         "menu.about": "About",
         "theme.toggle": "🌓 Toggle Theme",
         "lang.name": "English",
-        "post.read_more": "Read More"
+        "post.read_more": "Read More",
+        "post.title": "Games"
       },
       "ru": {
         "menu.home": "Главная",
@@ -45,10 +47,20 @@
         "menu.about": "О себе",
         "theme.toggle": "🌓 Сменить тему",
         "lang.name": "Русский",
-        "post.read_more": "Читать далее"
+        "post.read_more": "Читать далее",
+        "post.title": "Игры"
       }
     };
     window.__DEFAULT_LANG__ = 'zh-CN';
+  </script>
+
+  <!-- 根据 localStorage 预设 data-lang 属性，防止文章内容闪烁 -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('lang');
+      var lang = (saved && window.__I18N__ && window.__I18N__[saved]) ? saved : 'zh-CN';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
   </script>
 <meta name="generator" content="Hexo 8.1.1"></head>
 <body>
@@ -84,15 +96,15 @@
     <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title">游戏</h1>
+    <h1 class="post-title" data-i18n="post.title">游戏</h1>
     
       <time datetime="2026-05-09">2026-05-09</time>
     
   </header>
   <div class="post-content">
-    <p>游戏下载</p>
-<span id="more"></span>
+    <div data-lang="zh-CN">
 
+<p>游戏下载</p>
 <h2 id="🐍-贪吃蛇游戏"><a href="#🐍-贪吃蛇游戏" class="headerlink" title="🐍 贪吃蛇游戏"></a>🐍 贪吃蛇游戏</h2><p>经典的贪吃蛇游戏，在网格中控制蛇的方向吃掉食物不断成长。</p>
 <p><a href="/downloads/Snakegame01_win.zip" download="Snakegame01_win.zip">📥 下载贪吃蛇游戏 Windows 版</a></p>
 <hr>
@@ -104,6 +116,39 @@
 <h3 id="Linux-64位"><a href="#Linux-64位" class="headerlink" title="Linux 64位"></a>Linux 64位</h3><ul>
 <li><a href="/downloads/MazeRunner_v0.1.0_linux_x64_portable.tar.gz" download="MazeRunner_v0.1.0_linux_x64_portable.tar.gz">📦 下载便捷版（Portable）</a></li>
 </ul>
+</div>
+
+<div data-lang="en">
+
+<p>Game Downloads</p>
+<h2 id="🐍-Snake-Game"><a href="#🐍-Snake-Game" class="headerlink" title="🐍 Snake Game"></a>🐍 Snake Game</h2><p>Classic snake game — control the snake to eat food and grow longer in the grid.</p>
+<p><a href="/downloads/Snakegame01_win.zip" download="Snakegame01_win.zip">📥 Download Snake Game (Windows)</a></p>
+<hr>
+<h2 id="🏃-Maze-Runner-MazeRunner"><a href="#🏃-Maze-Runner-MazeRunner" class="headerlink" title="🏃 Maze Runner (MazeRunner)"></a>🏃 Maze Runner (MazeRunner)</h2><p>MazeRunner v0.1.0 — Find the exit in randomly generated mazes, testing your sense of direction and patience.</p>
+<h3 id="Windows-64-bit"><a href="#Windows-64-bit" class="headerlink" title="Windows 64-bit"></a>Windows 64-bit</h3><ul>
+<li><a href="/downloads/MazeRunner_v0.1.0_win_x64_Setup.zip" download="MazeRunner_v0.1.0_win_x64_Setup.zip">📦 Download Installer (Setup)</a></li>
+<li><a href="/downloads/MazeRunner_v0.1.0_win_x64_portable.zip" download="MazeRunner_v0.1.0_win_x64_portable.zip">📦 Download Portable</a></li>
+</ul>
+<h3 id="Linux-64-bit"><a href="#Linux-64-bit" class="headerlink" title="Linux 64-bit"></a>Linux 64-bit</h3><ul>
+<li><a href="/downloads/MazeRunner_v0.1.0_linux_x64_portable.tar.gz" download="MazeRunner_v0.1.0_linux_x64_portable.tar.gz">📦 Download Portable</a></li>
+</ul>
+</div>
+
+<div data-lang="ru">
+
+<p>Скачать игры</p>
+<h2 id="🐍-Змейка"><a href="#🐍-Змейка" class="headerlink" title="🐍 Змейка"></a>🐍 Змейка</h2><p>Классическая игра «Змейка» — управляйте змейкой, чтобы съесть еду и расти в сетке.</p>
+<p><a href="/downloads/Snakegame01_win.zip" download="Snakegame01_win.zip">📥 Скачать Змейку (Windows)</a></p>
+<hr>
+<h2 id="🏃-Лабиринт-MazeRunner"><a href="#🏃-Лабиринт-MazeRunner" class="headerlink" title="🏃 Лабиринт (MazeRunner)"></a>🏃 Лабиринт (MazeRunner)</h2><p>MazeRunner v0.1.0 — Найдите выход в случайно сгенерированных лабиринтах, испытывая чувство направления и терпение.</p>
+<h3 id="Windows-64-бит"><a href="#Windows-64-бит" class="headerlink" title="Windows 64-бит"></a>Windows 64-бит</h3><ul>
+<li><a href="/downloads/MazeRunner_v0.1.0_win_x64_Setup.zip" download="MazeRunner_v0.1.0_win_x64_Setup.zip">📦 Скачать Установщик (Setup)</a></li>
+<li><a href="/downloads/MazeRunner_v0.1.0_win_x64_portable.zip" download="MazeRunner_v0.1.0_win_x64_portable.zip">📦 Скачать Портативную версию</a></li>
+</ul>
+<h3 id="Linux-64-бит"><a href="#Linux-64-бит" class="headerlink" title="Linux 64-бит"></a>Linux 64-бит</h3><ul>
+<li><a href="/downloads/MazeRunner_v0.1.0_linux_x64_portable.tar.gz" download="MazeRunner_v0.1.0_linux_x64_portable.tar.gz">📦 Скачать Портативную версию</a></li>
+</ul>
+</div>
 
   </div>
 </article>
