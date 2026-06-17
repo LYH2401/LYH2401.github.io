@@ -38,8 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 更新 html[data-lang] 以切换文章内容语言容器
     document.documentElement.setAttribute('data-lang', lang);
 
-    // 更新浏览器标签页标题（如果字典中有 post.title 对应翻译）
-    if (dict['post.title']) {
+    // 更新浏览器标签页标题
+    var postTitleEl = document.querySelector('.post-title[data-i18n]');
+    if (postTitleEl && postTitleEl.textContent) {
+      document.title = postTitleEl.textContent;
+    } else if (dict['post.title']) {
       document.title = dict['post.title'];
     }
 

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!-- 默认设置 theme 为 light，后续靠 JS 改变它 -->
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singularity</title>
+  <link rel="icon" href="/favicon.png">
+  <!-- 引入 CSS -->
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  <!-- 提前注入 JS，防止暗黑模式闪屏 (FOUC) -->
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+
+  <!-- 嵌入多语言翻译字典 -->
+  <script>
+    window.__I18N__ = {
+      "zh-CN": {
+        "menu.home": "首页",
+        "menu.archives": "归档",
+        "menu.about": "关于",
+        "theme.toggle": "🌓 切换主题",
+        "lang.name": "中文",
+        "post.read_more": "阅读全文",
+        "post.title": "游戏",
+        "post.title.Games": "游戏",
+        "post.title.Courses": "课程"
+      },
+      "en": {
+        "menu.home": "Home",
+        "menu.archives": "Archives",
+        "menu.about": "About",
+        "theme.toggle": "🌓 Toggle Theme",
+        "lang.name": "English",
+        "post.read_more": "Read More",
+        "post.title": "Games",
+        "post.title.Games": "Games",
+        "post.title.Courses": "Courses"
+      },
+      "ru": {
+        "menu.home": "Главная",
+        "menu.archives": "Архив",
+        "menu.about": "О себе",
+        "theme.toggle": "🌓 Сменить тему",
+        "lang.name": "Русский",
+        "post.read_more": "Читать далее",
+        "post.title": "Игры",
+        "post.title.Games": "Игры",
+        "post.title.Courses": "Курсы"
+      }
+    };
+    window.__DEFAULT_LANG__ = 'zh-CN';
+  </script>
+
+  <!-- 根据 localStorage 预设 data-lang 属性，防止文章内容闪烁 -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('lang');
+      var lang = (saved && window.__I18N__ && window.__I18N__[saved]) ? saved : 'zh-CN';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body>
+  
+  <header class="header">
+    <div class="logo">
+      <a href="/" style="color: white; font-weight: bold;">Singularity</a>
+    </div>
+    <nav class="nav-links">
+      <a href="/" style="color: white; margin-right: 15px;" data-i18n="menu.home">首页</a>
+      <a href="/archives" style="color: white; margin-right: 15px;" data-i18n="menu.archives">归档</a>
+      
+      <!-- 语言切换菜单（可收起，Cloudflare 风格） -->
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" data-i18n-title="lang.name" title="中文">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </button>
+        <ul class="lang-dropdown" id="lang-dropdown">
+          <li><a href="javascript:void(0)" data-lang="zh-CN">中文</a></li>
+          <li><a href="javascript:void(0)" data-lang="en">English</a></li>
+          <li><a href="javascript:void(0)" data-lang="ru">Русский</a></li>
+        </ul>
+      </div>
+      
+      <!-- 暗/亮色切换按钮 -->
+      <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;" data-i18n="theme.toggle">
+        🌓 切换主题
+      </button>
+    </nav>
+  </header>
+
+  <main style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+    <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
+    <div class="repo-list">
+  <!-- 遍历所有文章 -->
+  
+    <article class="repo-item" style="border: 1px solid var(--color-border-default); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+      <h2 style="margin-top: 0; font-size: 20px;">
+        <a href="/post/Courses.html"><span data-i18n="post.title.Courses">课程</span></a>
+      </h2>
+      <p style="color: #57606a; font-size: 14px;">
+        <!-- 输出日期 -->
+        2026-06-17
+      </p>
+    </article>
+  
+</div>
+
+<!-- 分页 -->
+<span class="page-number current">1</span>
+
+  </main>
+
+  <footer style="text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid var(--color-border-default);">
+    &copy; 2026 卢昱宏
+  </footer>
+
+  <!-- 引入客户端 i18n + 暗黑模式切换逻辑 JS -->
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>
