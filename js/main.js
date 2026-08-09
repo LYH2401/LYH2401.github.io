@@ -1,10 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // ========== 安全存储封装（移动端隐私模式 localStorage 可能抛异常） ==========
+  function safeGet(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function safeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* 忽略存储异常 */ }
+  }
+
   // ========== 客户端 i18n 翻译引擎 ==========
   var I18N = window.__I18N__ || {};
   var DEFAULT_LANG = window.__DEFAULT_LANG__ || 'zh-CN';
 
   function getLang() {
-    var saved = localStorage.getItem('lang');
+    var saved = safeGet('lang');
     if (saved && I18N[saved]) return saved;
     return DEFAULT_LANG;
   }
@@ -90,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var curTheme = htmlEl.getAttribute('data-theme');
       var newTheme = curTheme === 'light' ? 'dark' : 'light';
       htmlEl.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
+      safeSet('theme', newTheme);
       updateThemeToggleTitle();
     });
   }
@@ -130,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // 保存偏好
-      localStorage.setItem('lang', targetLang);
+      safeSet('lang', targetLang);
 
       // 即时应用翻译（不刷新页面）
       applyTranslations(targetLang);

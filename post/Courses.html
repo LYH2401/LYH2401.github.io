@@ -26,8 +26,11 @@
   
   <!-- 提前注入 JS，防止暗黑模式闪屏 (FOUC) -->
   <script>
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    function safeGet(key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+    }
+    var savedTheme = safeGet('theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
@@ -65,7 +68,10 @@
   <!-- 根据 localStorage 预设 data-lang 属性，防止文章内容闪烁 -->
   <script>
     (function() {
-      var saved = localStorage.getItem('lang');
+      function safeGet(key) {
+        try { return window.localStorage.getItem(key); } catch (e) { return null; }
+      }
+      var saved = safeGet('lang');
       var lang = (saved && window.__I18N__ && window.__I18N__[saved]) ? saved : 'zh-CN';
       document.documentElement.setAttribute('data-lang', lang);
     })();
