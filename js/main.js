@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var currentLang = getLang();
 
+  function setLangActive(lang) {
+    var langLinks = document.querySelectorAll('.lang-dropdown li a');
+    for (var k = 0; k < langLinks.length; k++) {
+      langLinks[k].classList.remove('active');
+      if (langLinks[k].getAttribute('data-lang') === lang) {
+        langLinks[k].classList.add('active');
+      }
+    }
+  }
+
   function applyTranslations(lang) {
     if (!I18N[lang]) return;
     var dict = I18N[lang];
@@ -42,19 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var postTitleEl = document.querySelector('.post-title[data-i18n]');
     if (postTitleEl && postTitleEl.textContent) {
       document.title = postTitleEl.textContent;
-    } else if (dict['post.title']) {
-      document.title = dict['post.title'];
     }
 
     currentLang = lang;
+    setLangActive(lang);
+    updateThemeToggleTitle();
+  }
 
-    // 更新下拉菜单中的 active 样式
-    var langLinks = document.querySelectorAll('.lang-dropdown li a');
-    for (var k = 0; k < langLinks.length; k++) {
-      langLinks[k].classList.remove('active');
-      if (langLinks[k].getAttribute('data-lang') === lang) {
-        langLinks[k].classList.add('active');
-      }
+  function updateThemeToggleTitle() {
+    var toggleBtn = document.getElementById('theme-toggle');
+    if (!toggleBtn) return;
+    var dict = I18N[currentLang] || {};
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var key = isDark ? 'theme.light' : 'theme.dark';
+    if (dict[key]) {
+      toggleBtn.setAttribute('title', dict[key]);
+      toggleBtn.setAttribute('aria-label', dict[key]);
     }
   }
 
@@ -62,17 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (currentLang !== DEFAULT_LANG) {
     applyTranslations(currentLang);
   } else {
-    // 确保 data-lang 属性已设置（内联脚本已预设，此处兜底）
     if (!document.documentElement.getAttribute('data-lang')) {
       document.documentElement.setAttribute('data-lang', DEFAULT_LANG);
     }
-    // 至少标记 active
-    var langLinks = document.querySelectorAll('.lang-dropdown li a');
-    for (var k = 0; k < langLinks.length; k++) {
-      if (langLinks[k].getAttribute('data-lang') === DEFAULT_LANG) {
-        langLinks[k].classList.add('active');
-      }
-    }
+    setLangActive(DEFAULT_LANG);
+    updateThemeToggleTitle();
   }
 
   // ========== 暗/亮色主题切换 ==========
@@ -84,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var newTheme = curTheme === 'light' ? 'dark' : 'light';
       htmlEl.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+      updateThemeToggleTitle();
     });
   }
 

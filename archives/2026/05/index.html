@@ -33,41 +33,30 @@
     }
   </script>
 
-  <!-- 嵌入多语言翻译字典 -->
+  <!-- 嵌入多语言翻译字典（中英双语） -->
   <script>
     window.__I18N__ = {
       "zh-CN": {
         "menu.home": "首页",
         "menu.archives": "归档",
-        "menu.about": "关于",
-        "theme.toggle": "🌓 切换主题",
-        "lang.name": "中文",
+        "theme.toggle": "切换主题",
+        "theme.light": "切换到明亮模式",
+        "theme.dark": "切换到暗黑模式",
+        "lang.name": "切换语言",
         "post.read_more": "阅读全文",
-        "post.title": "游戏",
         "post.title.Games": "游戏",
         "post.title.Courses": "课程"
       },
       "en": {
         "menu.home": "Home",
         "menu.archives": "Archives",
-        "menu.about": "About",
-        "theme.toggle": "🌓 Toggle Theme",
-        "lang.name": "English",
+        "theme.toggle": "Toggle theme",
+        "theme.light": "Switch to light mode",
+        "theme.dark": "Switch to dark mode",
+        "lang.name": "Switch language",
         "post.read_more": "Read More",
-        "post.title": "Games",
         "post.title.Games": "Games",
         "post.title.Courses": "Courses"
-      },
-      "ru": {
-        "menu.home": "Главная",
-        "menu.archives": "Архив",
-        "menu.about": "О себе",
-        "theme.toggle": "🌓 Сменить тему",
-        "lang.name": "Русский",
-        "post.read_more": "Читать далее",
-        "post.title": "Игры",
-        "post.title.Games": "Игры",
-        "post.title.Courses": "Курсы"
       }
     };
     window.__DEFAULT_LANG__ = 'zh-CN';
@@ -83,52 +72,44 @@
   </script>
 <meta name="generator" content="Hexo 8.1.1"></head>
 <body>
-  
-  <header class="header">
-    <div class="logo">
-      <a href="/" style="color: white; font-weight: bold;">Singularity</a>
-    </div>
-    <nav class="nav-links">
-      <a href="/" style="color: white; margin-right: 15px;" data-i18n="menu.home">首页</a>
-      <a href="/archives" style="color: white; margin-right: 15px;" data-i18n="menu.archives">归档</a>
-      
-      <!-- 语言切换菜单（可收起，Cloudflare 风格） -->
-      <div class="lang-switcher" id="lang-switcher">
-        <button class="lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" data-i18n-title="lang.name" title="中文">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </button>
-        <ul class="lang-dropdown" id="lang-dropdown">
-          <li><a href="javascript:void(0)" data-lang="zh-CN">中文</a></li>
-          <li><a href="javascript:void(0)" data-lang="en">English</a></li>
-          <li><a href="javascript:void(0)" data-lang="ru">Русский</a></li>
-        </ul>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="/">Singularity</a>
       </div>
-      
-      <!-- 暗/亮色切换按钮 -->
-      <button id="theme-toggle" style="cursor: pointer; background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 6px;" data-i18n="theme.toggle">
-        🌓 切换主题
-      </button>
-    </nav>
+      <nav class="nav-links">
+        <a href="/" data-i18n="menu.home">首页</a>
+        <a href="/archives" data-i18n="menu.archives">归档</a>
+
+        <!-- 语言切换菜单 -->
+        <div class="lang-switcher" id="lang-switcher">
+          <button class="icon-btn lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" data-i18n-title="lang.name" title="切换语言">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </button>
+          <ul class="lang-dropdown" id="lang-dropdown">
+            <li><a href="javascript:void(0)" data-lang="zh-CN">中文</a></li>
+            <li><a href="javascript:void(0)" data-lang="en">English</a></li>
+          </ul>
+        </div>
+
+        <!-- 暗/亮色切换按钮 -->
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" data-i18n-title="theme.toggle" title="切换主题">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
   </header>
 
-  <main style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+  <main class="container site-main">
     <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
-    <div class="repo-list">
-  <!-- 遍历所有文章 -->
+    <div class="post-list">
   
-    <article class="repo-item" style="border: 1px solid var(--color-border-default); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-      <h2 style="margin-top: 0; font-size: 20px;">
+    <article class="post-item">
+      <h2 class="post-item-title">
         <a href="/post/Games.html"><span data-i18n="post.title.Games">游戏</span></a>
       </h2>
-      <p style="color: #57606a; font-size: 14px;">
-        <!-- 输出日期 -->
-        2026-05-09
-      </p>
-      
-        <p class="post-excerpt" style="margin: 8px 0 0; font-size: 15px; color: var(--color-fg-default);">
-          游戏下载：经典贪吃蛇、MazeRunner 迷宫闯关，支持 Windows 与 Linux。
-        </p>
-      
+      <time class="post-item-date" datetime="2026-05-09">2026-05-09</time>
     </article>
   
 </div>
@@ -138,8 +119,10 @@
 
   </main>
 
-  <footer style="text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid var(--color-border-default);">
-    &copy; 2026 卢昱宏
+  <footer class="site-footer">
+    <div class="container">
+      &copy; 2026 卢昱宏
+    </div>
   </footer>
 
   <!-- 引入客户端 i18n + 暗黑模式切换逻辑 JS -->
