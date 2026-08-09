@@ -6,6 +6,7 @@
   --color-fg-secondary: #71717a;
   --color-fg-tertiary: #a1a1aa;
   --color-border: #e4e4e7;
+  --color-card-border: #18181b;
   --color-accent: #4d6bfe;
   --color-accent-soft: rgba(77, 107, 254, 0.08);
   --color-header-bg: rgba(255, 255, 255, 0.85);
@@ -20,6 +21,7 @@ html[data-theme="dark"] {
   --color-fg-secondary: #a1a1aa;
   --color-fg-tertiary: #6b6b74;
   --color-border: #27272a;
+  --color-card-border: #f4f4f5;
   --color-accent: #7c8cff;
   --color-accent-soft: rgba(124, 140, 255, 0.12);
   --color-header-bg: rgba(9, 9, 11, 0.85);
@@ -208,15 +210,16 @@ html[data-theme="dark"] .icon-moon {
   gap: 16px;
   padding: 24px;
   background-color: var(--color-bg);
-  border: 1px solid var(--color-fg-tertiary);
+  border: 1.5px solid var(--color-card-border);
   border-radius: 16px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
 .card:hover {
   border-color: var(--color-accent);
   box-shadow: var(--shadow-dropdown);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  background-color: var(--color-bg-secondary);
 }
 
 .card-title {
