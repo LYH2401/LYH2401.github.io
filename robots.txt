@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /downloads/
+
+Sitemap: https://lyh2401.com/sitemap.xml
