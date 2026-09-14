@@ -331,6 +331,36 @@ html[data-theme="dark"] .icon-moon {
   margin: 8px 0;
 }
 
+/* ========== 文章内容内的首页同款卡片（覆盖 .post-content a 的胶囊样式） ========== */
+.post-content a.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  margin: 0;
+  background-color: var(--color-bg);
+  border: 1.5px solid var(--color-card-border);
+  border-radius: 16px;
+  color: var(--color-fg);
+  font-size: 16px;
+  font-weight: 400;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.post-content a.card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-dropdown);
+  transform: translateY(-3px);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-fg);
+}
+
+.post-content a.card .card-title {
+  margin: 0;
+  font-size: 18px;
+}
+
 /* ========== 多语言内容容器：根据 html[data-lang] 显示对应语言 ========== */
 .post-content > [data-lang] {
   display: none;
