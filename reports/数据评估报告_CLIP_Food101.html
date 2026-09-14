@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据评估报告 · CLIP Food101 图像–隐向量数据集 · Singularity 小组</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  :root{--primary:#3E6259;--accent:#C1440E;--text:#26201C;--muted:#7A6E66;--light:#F2EDE6;--border:#E3DBD1;--dark:#2B1D16}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{font-family:"Microsoft YaHei","微软雅黑",-apple-system,"Segoe UI",sans-serif;color:var(--text);background:#FAF8F5;line-height:1.7}
+  ::-webkit-scrollbar{width:0;height:0}
+
+  /* ---------- 固定导航 ---------- */
+  #bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:99;transition:width .2s}
+  #counter{position:fixed;top:18px;right:26px;z-index:99;background:rgba(43,29,22,.82);color:#fff;font-size:14px;
+    padding:7px 16px;border-radius:20px;letter-spacing:1px;font-variant-numeric:tabular-nums}
+  #counter b{color:#F0A57E;font-weight:700}
+  #dots{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:99;display:flex;flex-direction:column;gap:14px}
+  #dots i{width:9px;height:9px;border-radius:50%;background:#C9BEb2;cursor:pointer;transition:all .25s;opacity:.65}
+  #dots i.on{background:var(--accent);opacity:1;transform:scale(1.45)}
+  #dots i:hover{opacity:1}
+
+  /* ---------- 站点品牌（左上角，点击回首页） ---------- */
+  #site-brand{position:fixed;top:14px;left:16px;z-index:99;display:inline-flex;align-items:center;gap:7px;
+    padding:5px 13px 5px 6px;border-radius:20px;background:rgba(43,29,22,.82);color:#fff;font-size:13px;
+    letter-spacing:.5px;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s}
+  #site-brand img{width:20px;height:20px;border-radius:50%;object-fit:cover;display:block}
+  #site-brand:hover{background:rgba(43,29,22,.95)}
+  .copyright{position:absolute;bottom:24px;right:26px;font-size:12px;color:var(--muted);letter-spacing:1px}
+
+  /* ---------- 幻灯片骨架 ---------- */
+  .slide{min-height:100vh;scroll-snap-align:start;scroll-snap-stop:always;position:relative;
+    display:flex;flex-direction:column;justify-content:center;padding:64px 7vw 70px;overflow:hidden}
+  .slide .pageno{position:absolute;bottom:22px;left:7vw;font-size:12px;color:var(--muted);letter-spacing:2px}
+  .slide .pageno b{color:var(--accent)}
+  .slide h2{font-size:clamp(22px,2.6vw,32px);color:var(--primary);margin-bottom:22px;padding-left:14px;border-left:6px solid var(--accent);line-height:1.35}
+  .grid2{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:34px;align-items:start}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}.slide{padding:56px 6vw 64px}#dots{display:none}}
+
+  /* ---------- 进场动画 ---------- */
+  .rv{opacity:0;transform:translateY(34px);transition:opacity .7s ease,transform .7s ease}
+  .rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}.rv.d4{transition-delay:.48s}
+  .slide.in .rv{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{transition:none;opacity:1;transform:none}}
+
+  /* ---------- 组件 ---------- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin:18px 0}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 20px;box-shadow:0 2px 8px rgba(43,29,22,.06)}
+  .card .num{font-size:clamp(30px,3.4vw,44px);font-weight:700;color:var(--accent)}
+  .card .num.green{color:var(--primary)}
+  .card .lbl{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+  figure{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin:14px 0}
+  figure img{width:100%;height:auto;border-radius:6px;display:block}
+  figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:14px;margin:16px 0;box-shadow:0 2px 8px rgba(43,29,22,.06)}
+  th{background:var(--primary);color:#fff;padding:9px 14px;text-align:left}
+  td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:1px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .tag.mid{background:#FBE3D6;color:var(--accent)}
+  .tag.low{background:#E4EDE9;color:var(--primary)}
+  ul{padding-left:20px}
+  li{margin:8px 0;font-size:15px}
+  .concl{background:var(--light);border-radius:10px;padding:18px 22px;margin-top:16px}
+  .concl b{color:var(--primary)}
+
+  /* ---------- 封面 ---------- */
+  .cover{background:var(--dark);color:#fff;justify-content:center}
+  .cover .bg{position:absolute;inset:0;background:url("report_assets/samples.png") center/cover;opacity:.28}
+  .cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,29,22,.55),rgba(43,29,22,.82))}
+  .cover .inner{position:relative;max-width:1050px}
+  .cover h1{font-size:clamp(38px,5.2vw,60px);margin-bottom:14px;letter-spacing:2px}
+  .cover .sub{font-size:clamp(16px,2vw,22px);color:#E8DED4;margin-bottom:26px}
+  .cover .stat{font-size:clamp(15px,1.7vw,19px);color:#F0A57E;font-weight:700;margin-bottom:34px}
+  .cover .grp{font-size:19px;font-weight:700;margin-bottom:8px}
+  .cover .mem{font-size:15px;color:#E8DED4;margin-bottom:34px}
+  .cover .src{font-size:12.5px;color:#BBAFA6;word-break:break-all}
+  .cover .match{display:inline-block;margin-top:26px;border:1px solid rgba(240,165,126,.55);color:#F0A57E;
+    font-size:13.5px;padding:7px 16px;border-radius:20px}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);text-align:center;color:#D8CCC1;font-size:13px;z-index:2}
+  .hint .arr{display:block;font-size:22px;animation:bob 1.6s infinite}
+</style>
+</head>
+<body>
+<a id="site-brand" href="https://lyh2401.com/" title="回到 Singularity 首页">
+  <img src="favicon.png" alt="Singularity Logo">Singularity
+</a>
+<div id="bar"></div>
+<div id="counter"><b>01</b> / 07</div>
+<nav id="dots" aria-label="页导航"></nav>
+
+<!-- 第 1 页 · 封面（对应 PPT 第 1 页） -->
+<section class="slide cover" data-name="封面">
+  <div class="bg"></div><div class="shade"></div>
+  <div class="inner">
+    <h1 class="rv">数据收集与评估报告</h1>
+    <p class="sub rv d1">CLIP Food101 图像–隐向量数据集（small · latents）</p>
+    <p class="stat rv d2">5,000 张图像 · 7 个类别 · 512 维 CLIP 隐向量</p>
+    <p class="grp rv d3">小组：Singularity</p>
+    <p class="mem rv d3">组员：3241319225 方延懿 · 3241319227 黄佳鸣 · 3241319229 卢昱宏</p>
+    <p class="src rv d4">数据来源：https://hf-mirror.com/datasets/DanielSongShen/CLIP-food101-image-dataset-small_latents</p>
+    <p class="match rv d4">本页报告与配套 PPT 页码一一对应 · 全套共 7 页</p>
+  </div>
+  <div class="hint"><span class="arr">↓</span>滚动 / 方向键翻页</div>
+  <div class="pageno"><b>01</b> / 07</div>
+</section>
+
+<!-- 第 2 页 · 数据集概览（对应 PPT 第 2 页） -->
+<section class="slide" data-name="数据集概览">
+  <h2 class="rv">数据集概览</h2>
+  <div class="cards rv d1">
+    <div class="card"><div class="num">5,000</div><div class="lbl">图像总数（train 4,000 / test 1,000）</div></div>
+    <div class="card"><div class="num">7</div><div class="lbl">Food101 类别（小子集）</div></div>
+    <div class="card"><div class="num green">512</div><div class="lbl">CLIP 图像隐向量维度</div></div>
+    <div class="card"><div class="num green">0</div><div class="lbl">缺失值 / 损坏图像</div></div>
+  </div>
+  <div class="grid2">
+    <div class="rv d2">
+      <p>本次收集的数据为 Food-101 的一个<b>小子集</b>，除原始图像和标签外，还附带每张图像经 CLIP 编码器提取的 <b>512 维隐向量</b>。本地为 2 个 Parquet 文件，共 3 列：<code>image</code>（PNG 字节，最长边约 512px）、<code>label</code>（类别索引）、<code>CLIP_image_latent</code>（512 维向量）。</p>
+      <p>7 个类别（按 Food101 索引）：beignets（6）、bruschetta（10）、chicken_wings（20）、hamburger（53）、pork_chop（77）、prime_rib（79）、ramen（81）。</p>
+    </div>
+    <figure class="rv d3"><img src="report_assets/samples.png" alt="各类别样例"><figcaption>各类别样例（每类 3 张）</figcaption></figure>
+  </div>
+  <div class="pageno"><b>02</b> / 07 · 数据集概览</div>
+</section>
+
+<!-- 第 3 页 · 类别分布（对应 PPT 第 3 页） -->
+<section class="slide" data-name="类别分布">
+  <h2 class="rv">类别分布：整体均衡，pork_chop 偏少</h2>
+  <div class="grid2">
+    <figure class="rv d1"><img src="report_assets/class_dist.png" alt="训练/测试类别分布"><figcaption>图 · 训练集与测试集类别分布</figcaption></figure>
+    <ul class="rv d2">
+      <li>训练集每类约 <b>594–609 张</b>，仅 pork_chop 为 <b>396 张（约 -34%）</b>，存在轻度类别不均衡。</li>
+      <li>测试集分布与训练集一致（每类 104–156 张）。</li>
+      <li>不均衡程度轻微，对分类训练影响有限；如需可对 pork_chop 做类权重或过采样。</li>
+    </ul>
+  </div>
+  <div class="pageno"><b>03</b> / 07 · 类别分布</div>
+</section>
+
+<!-- 第 4 页 · 图像质量（对应 PPT 第 4 页） -->
+<section class="slide" data-name="图像质量">
+  <h2 class="rv">图像质量：全部可解码，分辨率统一为最长边 512</h2>
+  <div class="cards">
+    <div class="card rv d1"><div class="num green">100%</div><div class="lbl">可解码率：5,000/5,000 张 PNG 均可正常打开</div></div>
+    <div class="card rv d1"><div class="num green">512px</div><div class="lbl">最长边统一约 512；512×512 占 59%，其余为 512×384 等混合宽高比</div></div>
+    <div class="card rv d2"><div class="num green">43 KB</div><div class="lbl">平均单图体积；总量约 214 MB（train 171 + test 43）</div></div>
+    <div class="card rv d2"><div class="num">3 张</div><div class="lbl">重复图像：train 内 2 张、test 内 1 张；<b>train 与 test 间重叠 2 张</b>（轻微泄漏）</div></div>
+  </div>
+  <p class="rv d3" style="margin-top:18px;font-size:17px;font-weight:700;color:var(--accent)">结论：图像质量良好，无需清洗；建议训练前统一 resize / center-crop，并按哈希去重。</p>
+  <div class="pageno"><b>04</b> / 07 · 图像质量</div>
+</section>
+
+<!-- 第 5 页 · 隐向量分析（对应 PPT 第 5 页） -->
+<section class="slide" data-name="隐向量分析">
+  <h2 class="rv">CLIP 隐向量：维度规整，数值分布合理</h2>
+  <div class="grid2">
+    <figure class="rv d1"><img src="report_assets/latent_hist.png" alt="隐向量数值分布"><figcaption>图 · 隐向量数值分布（对数纵轴）</figcaption></figure>
+    <figure class="rv d2"><img src="report_assets/pca.png" alt="PCA 二维投影"><figcaption>图 · PCA 二维投影：7 类明显聚团</figcaption></figure>
+  </div>
+  <ul class="rv d3">
+    <li>全部 5,000 条隐向量均为 <b>512 维、无缺失</b>；均值≈0.005，标准差≈0.46，范围 [-8.5, 3.7]，模长均值 10.33，train/test 分布高度一致。</li>
+    <li>PCA 投影中 7 类明显聚团，beignets / ramen 分离度好；肉类类别（pork_chop、prime_rib）区域有交叠。</li>
+  </ul>
+  <div class="pageno"><b>05</b> / 07 · 隐向量分析</div>
+</section>
+
+<!-- 第 6 页 · 可分性验证（对应 PPT 第 6 页） -->
+<section class="slide" data-name="数据可分性验证">
+  <h2 class="rv">数据可分性验证（未训练）：最近质心即达 94.9%</h2>
+  <div class="grid2">
+    <figure class="rv d1"><img src="report_assets/per_class_acc.png" alt="各类别最近质心准确率"><figcaption>图 · 各类别最近质心准确率（虚线为总体 94.9%）</figcaption></figure>
+    <div class="rv d2">
+      <div style="font-size:clamp(44px,5vw,62px);font-weight:700;color:var(--accent);line-height:1.1">94.9%</div>
+      <p style="color:var(--muted);font-size:14px;margin:6px 0 14px">测试集最近质心分类准确率——<b style="color:var(--text)">未训练任何参数</b>，仅用训练集类别均值（探索性验证，非模型结果）</p>
+      <ul>
+        <li>各类别 86%–99%：beignets 99.3%、ramen 98.7%、hamburger 97.9% 最佳。</li>
+        <li>短板：prime_rib 86.4%，主要误判为 pork_chop（18 例）——两者质心余弦相似度 0.95，为全部类别对最高。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pageno"><b>06</b> / 07 · 数据可分性验证</div>
+</section>
+
+<!-- 第 7 页 · 结论与建议（对应 PPT 第 7 页） -->
+<section class="slide" data-name="结论与建议">
+  <h2 class="rv">评估结论与后续建议</h2>
+  <table class="rv d1">
+    <tr><th style="width:18%">问题</th><th>说明与建议</th><th style="width:9%">影响</th></tr>
+    <tr><td><b>数据泄漏（轻）</b></td><td>train 与 test 间重叠 2 张完全相同图像，另各有内部重复。建议按图像哈希去重后重新划分。</td><td><span class="tag mid">中</span></td></tr>
+    <tr><td><b>类别不均衡（轻）</b></td><td>pork_chop 训练样本少约 34%。可使用类权重或过采样缓解。</td><td><span class="tag low">低</span></td></tr>
+    <tr><td><b>细粒度易混淆</b></td><td>pork_chop ↔ prime_rib 质心相似度 0.95。视任务可合并为“烤肉类”或补充细粒度标注。</td><td><span class="tag mid">中</span></td></tr>
+    <tr><td><b>分辨率不一</b></td><td>约 41% 图像非正方形。建模前统一 resize + center-crop。</td><td><span class="tag low">低</span></td></tr>
+  </table>
+  <div class="concl rv d2">
+    <b>总体评价：质量良好（B+）。</b>数据规整、无缺失、无损坏，CLIP 隐向量区分度高（质心基线 94.9%）。当前阶段已完成数据收集与评估，<b>尚未开展模型训练</b>；下一步建议：① 哈希去重并重新划分 train/test；② 对 pork_chop 做不均衡处理；③ 关注 pork_chop 与 prime_rib 的细粒度混淆。
+  </div>
+  <p class="rv d3" style="margin-top:16px;font-size:12px;color:var(--muted)">小组：Singularity（3241319225 方延懿 · 3241319227 黄佳鸣 · 3241319229 卢昱宏）· 所有统计基于本地 Parquet 实测 · 2026-09-14</p>
+  <div class="pageno"><b>07</b> / 07 · 结论与建议 · 完</div>
+  <div class="copyright">© 2026 卢昱宏</div>
+</section>
+
+<script>
+const slides=[...document.querySelectorAll(".slide")];
+const dots=document.getElementById("dots"),counter=document.getElementById("counter"),bar=document.getElementById("bar");
+slides.forEach((s,i)=>{const d=document.createElement("i");d.title=`第 ${i+1} 页 · ${s.dataset.name}`;
+  d.onclick=()=>s.scrollIntoView({behavior:"smooth"});dots.appendChild(d)});
+const ds=[...dots.children];const pad=n=>String(n).padStart(2,"0");
+let cur=-1;
+const io=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add("in");
+    const i=slides.indexOf(e.target);
+    if(i!==cur){cur=i;counter.innerHTML=`<b>${pad(i+1)}</b> / ${pad(slides.length)}`;
+      ds.forEach((d,j)=>d.classList.toggle("on",j===i));}
+  }else{e.target.classList.remove("in");}
+});},{threshold:0.45});
+slides.forEach(s=>io.observe(s));
+addEventListener("scroll",()=>{const h=document.documentElement;
+  bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";},{passive:true});
+addEventListener("keydown",e=>{
+  const next=["ArrowDown","PageDown"," "],prev=["ArrowUp","PageUp"];
+  if(next.includes(e.key)){e.preventDefault();slides[Math.min(cur+1,slides.length-1)].scrollIntoView({behavior:"smooth"});}
+  else if(prev.includes(e.key)){e.preventDefault();slides[Math.max(cur-1,0)].scrollIntoView({behavior:"smooth"});}
+  else if(e.key==="Home"){e.preventDefault();slides[0].scrollIntoView({behavior:"smooth"});}
+  else if(e.key==="End"){e.preventDefault();slides[slides.length-1].scrollIntoView({behavior:"smooth"});}
+});
+</script>
+</body>
+</html>
