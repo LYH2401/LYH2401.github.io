@@ -48,7 +48,8 @@
         "lang.name": "切换语言",
         "post.read_more": "阅读全文",
         "post.title.Games": "游戏",
-        "post.title.Courses": "课程"
+        "post.title.Courses": "课程",
+        "post.title.Learning": "学习"
       },
       "en": {
         "menu.home": "Home",
@@ -59,7 +60,8 @@
         "lang.name": "Switch language",
         "post.read_more": "Read More",
         "post.title.Games": "Games",
-        "post.title.Courses": "Courses"
+        "post.title.Courses": "Courses",
+        "post.title.Learning": "Learning"
       }
     };
     window.__DEFAULT_LANG__ = 'zh-CN';
@@ -110,6 +112,16 @@
   <main class="container site-main">
     <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
     <div class="card-grid">
+  
+    <a class="card" href="/post/Learning.html">
+      <div class="card-body">
+        <h2 class="card-title"><span data-i18n="post.title.Learning">学习</span></h2>
+        <time class="card-date" datetime="2026-10-16">2026-10-16</time>
+      </div>
+      <span class="card-arrow" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
   
     <a class="card" href="/post/Courses.html">
       <div class="card-body">
