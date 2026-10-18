@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<!-- 默认设置 theme 为 light，后续靠 JS 改变它 -->
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singularity</title>
+  <meta name="description" content="卢昱宏的个人博客，分享课程项目与游戏作品（Java 课程设计、贪吃蛇、MazeRunner 迷宫闯关）。">
+  <meta name="keywords" content="卢昱宏, LYH2401, Singularity, 博客, 课程设计, Java, 贪吃蛇, MazeRunner">
+  <link rel="canonical" href="https://lyh2401.com/dsa/%E7%AE%97%E6%B3%95%E5%8F%82%E8%80%83%E4%B9%A6-Python%E7%89%88.html">
+  <meta name="author" content="卢昱宏">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Singularity">
+  <meta property="og:title" content="Singularity">
+  <meta property="og:url" content="https://lyh2401.com/dsa/%E7%AE%97%E6%B3%95%E5%8F%82%E8%80%83%E4%B9%A6-Python%E7%89%88.html">
+  <meta property="og:description" content="卢昱宏的个人博客，分享课程项目与游戏作品（Java 课程设计、贪吃蛇、MazeRunner 迷宫闯关）。">
+  <meta property="og:image" content="https://lyh2401.com/images/LYH0001.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Singularity">
+  <meta name="twitter:description" content="卢昱宏的个人博客，分享课程项目与游戏作品（Java 课程设计、贪吃蛇、MazeRunner 迷宫闯关）。">
+  <link rel="icon" href="/favicon.png">
+  <!-- 引入 CSS -->
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  <!-- 提前注入 JS，防止暗黑模式闪屏 (FOUC) -->
+  <script>
+    function safeGet(key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+    }
+    var savedTheme = safeGet('theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+
+  <!-- 嵌入多语言翻译字典（中英双语） -->
+  <script>
+    window.__I18N__ = {
+      "zh-CN": {
+        "menu.home": "首页",
+        "menu.archives": "归档",
+        "theme.toggle": "切换主题",
+        "theme.light": "切换到明亮模式",
+        "theme.dark": "切换到暗黑模式",
+        "lang.name": "切换语言",
+        "post.read_more": "阅读全文",
+        "post.title.Games": "游戏",
+        "post.title.Courses": "课程",
+        "post.title.Learning": "学习"
+      },
+      "en": {
+        "menu.home": "Home",
+        "menu.archives": "Archives",
+        "theme.toggle": "Toggle theme",
+        "theme.light": "Switch to light mode",
+        "theme.dark": "Switch to dark mode",
+        "lang.name": "Switch language",
+        "post.read_more": "Read More",
+        "post.title.Games": "Games",
+        "post.title.Courses": "Courses",
+        "post.title.Learning": "Learning"
+      }
+    };
+    window.__DEFAULT_LANG__ = 'zh-CN';
+  </script>
+
+  <!-- 根据 localStorage 预设 data-lang 属性，防止文章内容闪烁 -->
+  <script>
+    (function() {
+      function safeGet(key) {
+        try { return window.localStorage.getItem(key); } catch (e) { return null; }
+      }
+      var saved = safeGet('lang');
+      var lang = (saved && window.__I18N__ && window.__I18N__[saved]) ? saved : 'zh-CN';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="/">Singularity</a>
+      </div>
+      <nav class="nav-links">
+        <a href="/" data-i18n="menu.home">首页</a>
+        <a href="/archives" data-i18n="menu.archives">归档</a>
+
+        <!-- 语言切换菜单 -->
+        <div class="lang-switcher" id="lang-switcher">
+          <button class="icon-btn lang-switcher-toggle" id="lang-toggle" aria-label="Switch language" data-i18n-title="lang.name" title="切换语言">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </button>
+          <ul class="lang-dropdown" id="lang-dropdown">
+            <li><a href="javascript:void(0)" data-lang="zh-CN">中文</a></li>
+            <li><a href="javascript:void(0)" data-lang="en">English</a></li>
+          </ul>
+        </div>
+
+        <!-- 暗/亮色切换按钮 -->
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" data-i18n-title="theme.toggle" title="切换主题">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container site-main">
+    <!-- 这里的 body 就是 index.ejs, post.ejs 等子模板渲染的内容 -->
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"></h1>
+  </header>
+  <div class="post-content">
+    <!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark" data-mode="quick">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据结构与算法：精炼参考手册 · Python 版</title>
+<meta name="description" content="数据结构与算法精炼参考书：基础数据结构与常用解法模板，速查手册 + 深度解析双模块，Python 语言版。">
+<style>
+/* ============================================================
+   数据结构与算法参考书 · 样式系统
+   深色 / 浅色双主题（data-theme: dark | light）
+   双模块布局（data-mode: quick | deep | all）
+   ============================================================ */
+
+/* ---------- 深色主题（默认） ---------- */
+html[data-theme="dark"] {
+  --bg: #0b0e14;
+  --bg-soft: #0f131a;
+  --panel: #131822;
+  --panel-2: #171d29;
+  --panel-3: #1c2333;
+  --border: #232b3a;
+  --border-soft: #1d2432;
+  --text: #dfe6f2;
+  --text-2: #b7c1d4;
+  --muted: #8b98ad;
+  --faint: #7e8aa3;
+  --accent: #6ea8fe;
+  --accent-soft: rgba(110, 168, 254, 0.12);
+  --accent-2: #7ee787;
+  --accent-2-soft: rgba(126, 231, 135, 0.1);
+  --warn: #f4bf75;
+  --warn-soft: rgba(244, 191, 117, 0.1);
+  --danger: #f07178;
+  --chip: #1a2130;
+  --code-bg: #0e1219;
+  --code-bar: #151b26;
+  /* 代码 token */
+  --tok-k: #c792ea;   /* 关键字 */
+  --tok-t: #ffcb6b;   /* 类型/内置 */
+  --tok-f: #82aaff;   /* 函数 */
+  --tok-s: #c3e88d;   /* 字符串 */
+  --tok-n: #f78c6c;   /* 数字 */
+  --tok-c: #7b87a3;   /* 注释 */
+  --tok-m: #f07178;   /* 宏/属性 */
+  --tok-o: #89ddff;   /* 运算符 */
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+/* ---------- 浅色主题 ---------- */
+html[data-theme="light"] {
+  --bg: #f5f7fa;
+  --bg-soft: #eef1f6;
+  --panel: #ffffff;
+  --panel-2: #f7f9fc;
+  --panel-3: #eef2f8;
+  --border: #d9e0ea;
+  --border-soft: #e6ebf2;
+  --text: #1d2530;
+  --text-2: #3d4757;
+  --muted: #5c6779;
+  --faint: #66708a;
+  --accent: #2563eb;
+  --accent-soft: rgba(37, 99, 235, 0.08);
+  --accent-2: #0b7a43;
+  --accent-2-soft: rgba(15, 157, 88, 0.08);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.07);
+  --danger: #dc2626;
+  --chip: #eef2f8;
+  --code-bg: #f6f8fb;
+  --code-bar: #eceff5;
+  /* 代码 token */
+  --tok-k: #a626a4;
+  --tok-t: #7a5900;
+  --tok-f: #0550ae;
+  --tok-s: #166e2e;
+  --tok-n: #986801;
+  --tok-c: #5c6675;
+  --tok-m: #b3222e;
+  --tok-o: #016b95;
+  --shadow: 0 1px 2px rgba(16,24,40,.06), 0 8px 24px rgba(16,24,40,.08);
+  color-scheme: light;
+}
+
+/* ---------- 基础 ---------- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.8 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background .25s ease, color .25s ease;
+}
+::selection { background: var(--accent-soft); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre, .mono { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+h1, h2, h3, h4 { line-height: 1.4; font-weight: 650; }
+p { margin: .6em 0; }
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 20px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand .logo {
+  width: 38px; height: 38px; flex: 0 0 38px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; font-size: 19px; font-weight: 700;
+  box-shadow: var(--shadow);
+}
+.brand .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.brand .titles { min-width: 0; }
+.brand h1 { margin: 0; font-size: 16.5px; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand .subtitle { display: block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+.controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+.seg {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px; border-radius: 10px;
+  background: var(--panel-2); border: 1px solid var(--border);
+}
+.seg .seg-label { font-size: 11px; color: var(--faint); padding: 0 6px 0 8px; letter-spacing: .4px; }
+.seg-btn {
+  appearance: none; border: 0; cursor: pointer;
+  background: transparent; color: var(--muted);
+  font: inherit; font-size: 12.5px; line-height: 1;
+  padding: 7px 12px; border-radius: 8px;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.seg-btn:hover { color: var(--text); background: var(--panel-3); }
+.seg-btn.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.seg-btn.lang-active { background: var(--accent); color: #fff; font-weight: 600; }
+a.seg-btn { text-decoration: none; }
+.icon-btn {
+  appearance: none; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--panel-2); color: var(--text-2);
+  font-size: 15px; display: grid; place-items: center;
+  transition: background .15s;
+}
+.icon-btn:hover { background: var(--panel-3); }
+
+/* ---------- 布局 ---------- */
+.layout { display: flex; align-items: flex-start; max-width: 1520px; margin: 0 auto; }
+.sidebar {
+  position: sticky; top: 59px;
+  width: 264px; flex: 0 0 264px;
+  height: calc(100vh - 59px);
+  overflow-y: auto;
+  padding: 18px 10px 40px 20px;
+  border-right: 1px solid var(--border-soft);
+}
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.toc-group { margin-bottom: 18px; }
+.toc-group h3 {
+  margin: 0 0 8px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  color: var(--faint); text-transform: uppercase;
+}
+.toc-group a {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 6px 10px; margin: 1px 0;
+  border-radius: 8px; font-size: 13px; color: var(--text-2);
+  border-left: 2px solid transparent;
+}
+.toc-group a:hover { background: var(--panel-2); text-decoration: none; color: var(--text); }
+.toc-group a.active { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+.toc-group a .no { font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.toc-group a.active .no { color: var(--accent); }
+
+main.content {
+  flex: 1 1 auto; min-width: 0;
+  padding: 26px 40px 90px;
+  max-width: 980px;
+}
+
+/* ---------- 前言 / 分区标题 ---------- */
+.part-head { margin: 8px 0 22px; }
+.part-head .kicker { font-size: 12px; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
+.part-head h2 { margin: 4px 0 6px; font-size: 26px; }
+.part-head p { color: var(--muted); margin: 0; font-size: 13.5px; }
+.part { scroll-margin-top: 70px; }
+
+.intro-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 24px; margin-bottom: 26px;
+  box-shadow: var(--shadow);
+}
+.intro-card h3 { margin: 0 0 10px; font-size: 15px; color: var(--accent); }
+.intro-card h4 {
+  margin: 14px 0 6px; font-size: 12px; letter-spacing: .8px;
+  color: var(--faint); text-transform: uppercase; font-weight: 700;
+}
+.intro-card ul { margin: 8px 0 0; padding-left: 20px; color: var(--text-2); }
+.intro-card li { margin: 4px 0; }
+.intro-card kbd {
+  font-family: inherit; font-size: 12px;
+  background: var(--chip); border: 1px solid var(--border);
+  border-bottom-width: 2px; border-radius: 6px; padding: 1px 7px; color: var(--text);
+}
+
+/* ---------- 章节卡片 ---------- */
+.chapter {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 26px 24px;
+  margin-bottom: 26px; box-shadow: var(--shadow);
+  scroll-margin-top: 72px;
+}
+.ch-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.ch-num {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px; font-weight: 700; letter-spacing: .5px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: 3px 10px; border-radius: 999px;
+}
+.ch-head h2 { margin: 0; font-size: 20.5px; flex: 1 1 auto; }
+.jump {
+  font-size: 12.5px; color: var(--muted); white-space: nowrap;
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 4px 12px; background: var(--panel-2);
+}
+.jump:hover { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); text-decoration: none; }
+
+.essence {
+  margin: 0 0 16px; padding: 12px 16px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  color: var(--text); font-size: 14.5px;
+}
+.essence b, .essence strong { color: var(--accent); }
+
+.blk { margin: 18px 0 0; }
+.blk > h3 {
+  margin: 0 0 8px; font-size: 13px; letter-spacing: .6px;
+  color: var(--muted); font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.blk > h3::before { content: ""; width: 4px; height: 14px; border-radius: 2px; background: var(--accent); display: inline-block; }
+.blk ul { margin: 6px 0; padding-left: 22px; }
+.blk li { margin: 5px 0; color: var(--text-2); }
+.blk li::marker { color: var(--accent); }
+.blk p { color: var(--text-2); }
+
+.pitfalls li::marker { color: var(--warn); }
+.pitfalls li { color: var(--text-2); }
+.pitfalls li strong { color: var(--warn); }
+
+/* ---------- 表格 ---------- */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border-soft); border-radius: 10px; }
+table.tbl { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 480px; }
+table.tbl th, table.tbl td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border-soft); }
+table.tbl thead th { background: var(--panel-2); color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .4px; white-space: nowrap; }
+table.tbl tbody tr:last-child td { border-bottom: 0; }
+table.tbl tbody tr:hover { background: var(--panel-2); }
+table.tbl td:first-child { color: var(--text); font-weight: 500; }
+table.tbl td { color: var(--text-2); }
+table.tbl code { font-size: 12px; background: var(--chip); border: 1px solid var(--border-soft); border-radius: 5px; padding: 0 5px; color: var(--accent); }
+
+/* ---------- 代码块 ---------- */
+.tpl { margin: 12px 0 16px; }
+.tpl-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; flex-wrap: wrap; }
+.tpl-name { font-weight: 650; font-size: 14px; color: var(--text); }
+.tpl-desc { font-size: 12.5px; color: var(--muted); }
+.code-block { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 10px 0 14px; background: var(--code-bg); }
+.code-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 12px; background: var(--code-bar);
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 11.5px; color: var(--muted);
+}
+.code-bar .code-lang { letter-spacing: 1px; font-weight: 700; font-size: 10.5px; text-transform: uppercase; }
+.copy-btn {
+  appearance: none; border: 1px solid var(--border); cursor: pointer;
+  background: transparent; color: var(--muted);
+  font: inherit; font-size: 11px;
+  padding: 3px 10px; border-radius: 6px;
+  transition: all .15s;
+}
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.copy-btn.ok { color: var(--accent-2); border-color: var(--accent-2); }
+.code-block pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-size: 12.8px; line-height: 1.7; }
+.code-block code { color: var(--text); }
+.code-block pre::-webkit-scrollbar { height: 8px; }
+.code-block pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.tok-k { color: var(--tok-k); }
+.tok-t { color: var(--tok-t); }
+.tok-f { color: var(--tok-f); }
+.tok-s { color: var(--tok-s); }
+.tok-n { color: var(--tok-n); }
+.tok-c { color: var(--tok-c); font-style: italic; }
+.tok-m { color: var(--tok-m); }
+.tok-o { color: var(--tok-o); }
+
+/* ---------- 深度解析区 ---------- */
+.deep-para { color: var(--text-2); }
+.deep-para strong { color: var(--text); }
+.deep-para code, .blk li code, .essence code {
+  font-size: 12.5px; background: var(--chip); border: 1px solid var(--border-soft);
+  border-radius: 5px; padding: 0 5px; color: var(--accent);
+}
+.ex li::marker { color: var(--accent-2); }
+.src-list { list-style: none; padding-left: 0 !important; }
+.src-list li {
+  padding: 6px 10px; border-radius: 8px; background: var(--panel-2);
+  border: 1px solid var(--border-soft); margin: 6px 0; font-size: 13px;
+}
+.src-list li .src-note { color: var(--muted); font-size: 12.5px; }
+
+/* ---------- 页脚 ---------- */
+footer {
+  max-width: 980px; margin: 0 auto; padding: 10px 40px 60px;
+  color: var(--faint); font-size: 12px; line-height: 1.9;
+}
+footer .rule { border: 0; border-top: 1px solid var(--border); margin: 0 0 14px; }
+
+/* ---------- 回顶按钮 ---------- */
+#to-top {
+  position: fixed; right: 26px; bottom: 26px; z-index: 60;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--panel); color: var(--text-2);
+  box-shadow: var(--shadow); cursor: pointer; font-size: 17px;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#to-top.show { opacity: 1; pointer-events: auto; }
+#to-top:hover { color: var(--accent); }
+
+/* ---------- 模式显隐 ---------- */
+html[data-mode="quick"] #deep-part,
+html[data-mode="quick"] .toc-deep,
+html[data-mode="deep"] #quick-part,
+html[data-mode="deep"] .toc-quick { display: none; }
+
+/* ---------- 响应式 ---------- */
+.menu-btn { display: none; }
+@media (max-width: 1000px) {
+  .sidebar {
+    position: fixed; left: 0; top: 59px; z-index: 40;
+    background: var(--bg); width: 280px; flex: none;
+    transform: translateX(-105%); transition: transform .22s ease;
+    box-shadow: var(--shadow); border-right: 1px solid var(--border);
+  }
+  body.nav-open .sidebar { transform: translateX(0); }
+  .menu-btn { display: grid; }
+  main.content { padding: 20px 16px 80px; }
+  .topbar { padding: 8px 12px; }
+  .brand h1 { font-size: 14.5px; }
+  footer { padding: 10px 16px 50px; }
+  .chapter { padding: 18px 16px 20px; }
+}
+@media (max-width: 640px) {
+  .brand .subtitle { display: none; }
+  .seg .seg-label { display: none; }
+  .ch-head h2 { font-size: 17.5px; }
+}
+
+/* ---------- 打印 ---------- */
+@media print {
+  .topbar, .sidebar, #to-top, .copy-btn { display: none !important; }
+  html { --bg: #fff; --panel: #fff; --text: #000; }
+  body { background: #fff; }
+  .chapter { box-shadow: none; break-inside: avoid-page; border-color: #ccc; }
+  main.content { max-width: none; padding: 0; }
+}
+
+/* ---------- 模块页内目录（速查 / 深度解析各自的跳转目录） ---------- */
+.module-toc {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px 14px;
+  margin: 0 0 26px;
+  box-shadow: var(--shadow);
+}
+.module-toc-title {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  letter-spacing: .4px; margin-bottom: 10px;
+}
+.module-toc-title .hint { font-size: 11px; color: var(--faint); font-weight: 400; white-space: nowrap; }
+.module-toc-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 4px 14px;
+}
+.module-toc-grid a {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 5px 9px; border-radius: 8px;
+  color: var(--text-2); font-size: 13px;
+  border: 1px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.module-toc-grid a:hover {
+  background: var(--accent-soft); color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+  text-decoration: none;
+}
+.module-toc-grid a .no {
+  flex: 0 0 auto; font-size: 11px; color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.module-toc-grid a:hover .no { color: var(--accent); }
+@media (max-width: 640px) {
+  .module-toc-grid { grid-template-columns: 1fr; }
+  .module-toc-title .hint { display: none; }
+}
+
+</style>
+<link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+<a id="top"></a>
+
+<header class="topbar">
+  <div class="brand">
+    <button class="icon-btn menu-btn" id="menu-btn" title="目录" aria-label="打开目录">☰</button>
+    <a class="logo" href="/" title="返回首页"><img src="/images/logo_01.png" alt="返回首页"></a>
+    <div class="titles">
+      <h1>数据结构与算法：精炼参考手册</h1>
+      <span class="subtitle">Python 版 · 速查手册 + 深度解析</span>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="语言版本切换">
+      <span class="seg-label">语言</span>
+      <a class="seg-btn" href="%E7%AE%97%E6%B3%95%E5%8F%82%E8%80%83%E4%B9%A6-Rust%E7%89%88.html">Rust</a><a class="seg-btn" href="%E7%AE%97%E6%B3%95%E5%8F%82%E8%80%83%E4%B9%A6-C%2B%2B%E7%89%88.html">C++</a><a class="seg-btn lang-active" href="#top">Python</a>
+    </div>
+    <div class="seg" role="group" aria-label="内容模块切换">
+      <span class="seg-label">模块</span>
+      <button class="seg-btn" data-mode="quick" title="仅显示速查手册">⚡ 速查</button>
+      <button class="seg-btn" data-mode="deep" title="仅显示深度解析">🔍 深度解析</button>
+      <button class="seg-btn" data-mode="all" title="显示全部内容">☰ 全部</button>
+    </div>
+    <button class="icon-btn" id="theme-toggle" title="切换深浅色">☀</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="目录">
+      <div class="toc-group toc-quick"><h3>⚡ 速查手册</h3><a href="#q-ch01"><span class="no">01</span><span>数组与字符串基础操作</span></a><a href="#q-ch02"><span class="no">02</span><span>双指针、滑动窗口与前缀和</span></a><a href="#q-ch03"><span class="no">03</span><span>链表操作与快慢指针</span></a><a href="#q-ch04"><span class="no">04</span><span>栈、队列与哈希表</span></a><a href="#q-ch05"><span class="no">05</span><span>堆与优先队列</span></a><a href="#q-ch06"><span class="no">06</span><span>二叉树遍历与递归思维</span></a><a href="#q-ch07"><span class="no">07</span><span>排序与二分搜索</span></a><a href="#q-ch08"><span class="no">08</span><span>回溯与深度广度优先搜索</span></a><a href="#q-ch09"><span class="no">09</span><span>动态规划模型与状态转移</span></a><a href="#q-ch10"><span class="no">10</span><span>图遍历、最短路径与并查集</span></a></div><div class="toc-group toc-deep"><h3>🔍 深度解析</h3><a href="#d-ch01"><span class="no">01</span><span>数组与字符串基础操作</span></a><a href="#d-ch02"><span class="no">02</span><span>双指针、滑动窗口与前缀和</span></a><a href="#d-ch03"><span class="no">03</span><span>链表操作与快慢指针</span></a><a href="#d-ch04"><span class="no">04</span><span>栈、队列与哈希表</span></a><a href="#d-ch05"><span class="no">05</span><span>堆与优先队列</span></a><a href="#d-ch06"><span class="no">06</span><span>二叉树遍历与递归思维</span></a><a href="#d-ch07"><span class="no">07</span><span>排序与二分搜索</span></a><a href="#d-ch08"><span class="no">08</span><span>回溯与深度广度优先搜索</span></a><a href="#d-ch09"><span class="no">09</span><span>动态规划模型与状态转移</span></a><a href="#d-ch10"><span class="no">10</span><span>图遍历、最短路径与并查集</span></a></div>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <section class="intro-card" id="intro"><h3>📖 如何使用本书</h3><p>本书是一份<strong>精炼的数据结构与算法参考</strong>：覆盖 6 种基础数据结构与高频解法模板，共 10 章。每个主题都给出 Rust / C++ / Python 三种语言的惯用实现，并标注常见陷阱。</p><p>内容分为两个模块 —— <strong>⚡ 速查手册</strong>：每个主题一页，含核心要点、复杂度速查、模板代码与易错点，适合工程师快速查阅；<strong>🔍 深度解析</strong>：讲解原理与设计权衡，并对比三种语言的实现细节，适合系统学习与复习。</p><h4>模块与操作</h4><ul><li><strong>模块按钮</strong>（顶部）：切换「⚡ 速查 / 🔍 深度解析 / ☰ 全部」视图，快速定位到需要的区域；章节卡片右上角还有「深度解析 ↓ / 速查 ↑」互跳链接。</li><li><strong>语言按钮</strong>（顶部）：在当前版本与另外两个语言版本之间跳转（Rust ⇄ C++ ⇄ Python）。</li><li><strong>主题按钮</strong>：点击右上角 ☀ / ☾ 在深色与浅色主题间切换（默认跟随系统）。</li><li><strong>复制按钮</strong>（每个代码块右上角）：一键复制模板代码；左侧目录会随滚动自动高亮。</li><li><strong>全局搜索</strong>：使用浏览器自带的 Ctrl+F 即可全文检索。</li></ul><h4>语言与运行环境</h4><ul><li>C++ 代码基于 C++23，工程写法：每个代码块自包含——块首按需显式包含标准头文件（按字母序），全程使用 <code>std::</code> 限定（不引入全局命名空间导入、不依赖编译器扩展的万能头文件），可直接用于实际项目。</li><li>Rust 代码基于 2024 Edition（Rust 1.85+），仅使用标准库（std::collections 等）。</li><li>Python 代码基于 Python 3.14（最新稳定版），仅使用标准库（collections / heapq / bisect / functools）。</li><li>所有模板代码均已通过最新稳定版工具链逐一验证：g++ 15.2（-std=c++23）、rustc 1.98（--edition 2024）、Python 3.14。</li></ul></section>
+    <section class="part" id="quick-part"><div class="part-head"><span class="kicker">PART A · CHEATSHEET</span><h2>⚡ 速查手册</h2><p>每个主题一页速查：核心要点、复杂度、模板代码与易错点。适合快速查阅与面试前回忆。</p></div><nav class="module-toc" aria-label="速查手册 · 目录"><div class="module-toc-title">📑 速查手册 · 目录<span class="hint">点击章节即可跳转 ↓</span></div><ol class="module-toc-grid"><li><a href="#q-ch01"><span class="no">01</span><span>数组与字符串基础操作</span></a></li><li><a href="#q-ch02"><span class="no">02</span><span>双指针、滑动窗口与前缀和</span></a></li><li><a href="#q-ch03"><span class="no">03</span><span>链表操作与快慢指针</span></a></li><li><a href="#q-ch04"><span class="no">04</span><span>栈、队列与哈希表</span></a></li><li><a href="#q-ch05"><span class="no">05</span><span>堆与优先队列</span></a></li><li><a href="#q-ch06"><span class="no">06</span><span>二叉树遍历与递归思维</span></a></li><li><a href="#q-ch07"><span class="no">07</span><span>排序与二分搜索</span></a></li><li><a href="#q-ch08"><span class="no">08</span><span>回溯与深度广度优先搜索</span></a></li><li><a href="#q-ch09"><span class="no">09</span><span>动态规划模型与状态转移</span></a></li><li><a href="#q-ch10"><span class="no">10</span><span>图遍历、最短路径与并查集</span></a></li></ol></nav><article class="chapter" id="q-ch01" data-ch="ch01"><header class="ch-head"><span class="ch-num">01</span><h2>数组与字符串基础操作</h2><a class="jump" data-jump="deep" href="#d-ch01">深度解析 ↓</a></header><p class="essence">💡 数组是一段连续内存上的随机访问容器，字符串是「字符序列 + 文本语义」的封装；前者的灵魂是 O(1) 按下标寻址，后者的坑多来自各语言的编码与可变性差异。</p><section class="blk"><h3>核心要点</h3><ul><li>数组连续存储，按下标访问是 O(1)</li><li>动态数组尾部追加均摊 O(1)，中间插删 O(n)</li><li>二维网格在 C 系语言中按行主序存储，用方向数组统一邻居遍历（详见 B1）</li><li>字符串可变性：C++/Rust 可变，Python <code>str</code> 不可变</li><li>Rust <code>str</code> 是 UTF-8，索引是字节不是字符</li><li>循环内拼接字符串易退化为 O(n²)，应缓冲后合并（详见 B2）</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>按下标访问 <code>a[i]</code></td><td>O(1)</td><td>O(1)</td><td>连续内存，地址 = base + i×size</td></tr><tr><td>动态数组尾部追加</td><td>均摊 O(1)</td><td>O(1)</td><td>扩容单次 O(n)，均摊后 O(1)</td></tr><tr><td>中间插入 / 删除</td><td>O(n)</td><td>O(1)</td><td>需搬移后续元素</td></tr><tr><td>线性遍历</td><td>O(n)</td><td>O(1)</td><td>逐元素访问</td></tr><tr><td>二维网格全遍历</td><td>O(m·n)</td><td>O(1)</td><td>m 行 n 列</td></tr><tr><td>朴素子串查找</td><td>O(n·m)</td><td>O(1)</td><td>更快的 KMP 为 O(n+m)</td></tr><tr><td>原地反转</td><td>O(n)</td><td>O(1)</td><td>双指针对撞交换</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：方向数组遍历二维网格</span><span class="tpl-desc">用偏移数组统一处理 4/8 邻域，消除重复的分支判断。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python"># 4 向：上 下 左 右；8 向：再含对角线
+DIR4 = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+DIR8 = [(-1, -1), (-1, 0), (-1, 1), (0, -1),
+        (0, 1), (1, -1), (1, 0), (1, 1)]
+
+def neighbors(grid, r, c, diagonal=False):
+    """返回网格中 (r, c) 的所有合法邻居坐标"""
+    if not grid:                            # 空网格守卫，避免 grid[0] 越界
+        return []
+    rows, cols = len(grid), len(grid[0])
+    res = []
+    for dr, dc in (DIR8 if diagonal else DIR4):
+        nr, nc = r + dr, c + dc
+        if 0 &lt;= nr &lt; rows and 0 &lt;= nc &lt; cols:
+            res.append((nr, nc))
+    return res</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：字符串分割、拼接与数值转换</span><span class="tpl-desc">安全的「切分 → 逐段处理 → 合并」范式，避免 O(n²) 拼接。<strong>注意三语言对非法段的容错语义并不一致</strong>——Rust 版用 <code>unwrap_or(0)</code> 静默归零，C++ <code>stoll</code> 抛 <code>std::invalid_argument</code>，Python <code>int()</code> 抛 <code>ValueError</code>；如需统一行为，应显式选择「静默跳过」或「遇错报错」策略。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def parse_ints(s: str) -&gt; list:
+    """把逗号分隔的整数字符串解析为整数列表（非法段抛 ValueError）"""
+    return [int(t) for t in s.split(',') if t.strip()]
+
+def join_ints(v) -&gt; str:
+    """把整数列表合并为逗号分隔字符串（O(n) 拼接）"""
+    return ','.join(str(x) for x in v)</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：原地删除元素（快慢指针雏形）</span><span class="tpl-desc">O(n) 时间、O(1) 额外空间地移除满足条件的元素，并返回新长度。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def remove_element(nums: list, val: int) -&gt; int:
+    """原地移除所有等于 val 的元素，返回新长度"""
+    k = 0
+    for i in range(len(nums)):
+        if nums[i] != val:
+            nums[k] = nums[i]
+            k += 1
+    return k</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：原地反转（数组 / 字符串）</span><span class="tpl-desc">数组用双指针对撞交换做到 O(n) 时间、O(1) 额外空间；字符串因可变性与编码差异，三语言做法不同——<strong>反转不能在字节层面随意进行</strong>（详见 A5）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def reverse_list(nums: list) -&gt; None:
+    """数组原地反转：双指针对撞，O(1) 额外空间"""
+    i, j = 0, len(nums) - 1
+    while i &lt; j:
+        nums[i], nums[j] = nums[j], nums[i]
+        i += 1
+        j -= 1
+
+def reverse_string(s: str) -&gt; str:
+    """str 不可变，无法原地反转，返回新串（等价于切片 s[::-1]）"""
+    return ''.join(reversed(s))</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>越界（off-by-one）</strong>：<code>a[n]</code>、<code>s[len(s)]</code> 是最常见的错误；当上界是长度时循环条件应写 <code>&lt; n</code> 而非 <code>&lt;= n</code>，多语言中越界后果不同（C++ 未定义行为、Rust panic、Python 抛 <code>IndexError</code>）。</li><li><strong>Rust 字符串索引是字节</strong>：<code>s[i]</code> 直接编译不通过；<code>&amp;s[i..j]</code> 是字节切片且端点必须落在 UTF-8 字符边界上，否则运行时 panic；要取「第 i 个字符」应 <code>s.chars().nth(i)</code> 或先 <code>collect::&lt;Vec&lt;char&gt;&gt;()</code>。</li><li><strong>字符串反转不能按字节</strong>：C++ <code>std::string</code> 与 Rust 字节容器按字节反转会把多字节 UTF-8 码点翻面成非法序列（呼应上一条「Rust 字符串索引是字节」）；Rust 的安全写法是 <code>s.chars().rev().collect::&lt;String&gt;()</code>（产生新串、O(n) 分配），Python 用 <code>''.join(reversed(s))</code>，需要真·原地反转时只能对纯 ASCII 的字节数组操作。</li><li><strong>C++ <code>size_t</code> 无符号陷阱</strong>：真正会出问题的是<strong>索引变量保持无符号</strong>的写法 <code>for (size_t i = v.size() - 1; i &gt;= 0; --i)</code>——<code>v</code> 为空时 <code>v.size() - 1</code> 在无符号域下溢为 <code>SIZE_MAX</code>，而 <code>i &gt;= 0</code> 对无符号恒真，循环便越界访问或永不结束。修复：先把上界转为有符号再比较，<code>for (int i = (int)v.size() - 1; i &gt;= 0; --i)</code>；或改用反向迭代器 <code>for (auto it = v.rbegin(); it != v.rend(); ++it)</code>。反过来，若写成 <code>for (int i = v.size() - 1; i &gt;= 0; --i)</code>，<code>v.size() - 1</code> 同样在无符号域下溢，但赋给 <code>int</code> 后的结果依赖实现（常见平台截断为 -1，循环体不执行、并不越界）——因此<strong>不能指望这种「顺手转型」来规避下溢</strong>，应显式转型。</li><li><strong>Python 循环内拼接字符串</strong>：<code>s += t</code> 每次产生新对象，累积是 O(n²)；应 <code>parts.append(t)</code> 后 <code>''.join(parts)</code>。</li><li><strong>二维数组初始化别名</strong>：<code>[[0] * n] * m</code> 得到的是同一行的 m 个引用，改一行会波及所有行；应写 <code>[[0] * n for _ in range(m)]</code>。</li><li><strong>扩容导致失效</strong>：C++ <code>push_back</code> 触发扩容会使全部迭代器/引用失效，Rust 在借用未结束时不能可变修改 <code>Vec</code>，遍历中扩容需特别当心。</li></ul></section></article><article class="chapter" id="q-ch02" data-ch="ch02"><header class="ch-head"><span class="ch-num">02</span><h2>双指针、滑动窗口与前缀和</h2><a class="jump" data-jump="deep" href="#d-ch02">深度解析 ↓</a></header><p class="essence">💡 用两个下标在「有序性」或「单调性」的支撑下协同移动，把暴力枚举的 O(n²) 扫描压成一次线性扫描；而前缀和与差分则把「区间」问题转化为「端点」问题，使区间求和与区间加在预处理后都能 O(1) 完成。</p><section class="blk"><h3>核心要点</h3><ul><li>对撞双指针的前提是<strong>有序</strong>：和偏小移左、偏大移右（推导见 B1）</li><li>快慢指针「同向不同速」，用于去重、找中点、判环</li><li>滑动窗口是双指针特例：两端<strong>同向</strong>移动，窗口始终连续</li><li>不定长窗口收缩用 <code>while</code>，定长窗口每步一进一出（复杂度见 B2）</li><li>前缀和把区间和化为端点差：<code>pre[j+1] - pre[i]</code>（推导见 B1）</li><li>差分与前缀和互为逆运算：区间加转成两个端点标记；全零基线时前缀和得<strong>累计增量</strong>，由原数组构造则得更新后的原数组（见 B1）</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>对撞双指针（有序数组）</td><td>O(n)</td><td>O(1)</td><td>单次扫描；若需先排序则 O(n log n)</td></tr><tr><td>快慢指针（数组 / 链表）</td><td>O(n)</td><td>O(1)</td><td>每步常数操作，无需随机访问</td></tr><tr><td>定长滑动窗口</td><td>O(n)</td><td>O(1)</td><td>每滑一步「进一元素、出一元素」</td></tr><tr><td>不定长滑动窗口</td><td>O(n)</td><td>O(1)~O(k)</td><td>每元素至多进出各一次，摊还线性</td></tr><tr><td>一维前缀和</td><td>O(n) 预处理</td><td>O(n)</td><td>之后单次区间求和 O(1)</td></tr><tr><td>二维前缀和</td><td>O(mn) 预处理</td><td>O(mn)</td><td>容斥递推；查询子矩阵和 O(1)</td></tr><tr><td>差分数组区间加</td><td>O(1) 每次修改</td><td>O(n)</td><td>全部修改后一次 O(n) 前缀和得累计增量（或由原数组构造得更新后数组）</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：对撞双指针（有序数组两数之和）</span><span class="tpl-desc">左右指针从两端向中间逼近，依据当前和与目标的大小决定移动哪一侧。未找到时约定返回「空结果」——Rust / Python 返回 <code>None</code>，C++ 返回空 <code>vector&lt;int&gt;{}</code>。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def two_sum_sorted(nums: list, target: int):
+    """在有序数组 nums 中找两数之和等于 target，返回其下标（0-based）；未找到返回 None。"""
+    l, r = 0, len(nums) - 1
+    while l &lt; r:
+        s = nums[l] + nums[r]
+        if s == target:
+            return (l, r)
+        if s &lt; target:
+            l += 1          # 和太小，左指针右移
+        else:
+            r -= 1          # 和太大，右指针左移
+    return None</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：不定长滑动窗口（求最短满足条件的窗口）</span><span class="tpl-desc">右端扩张、窗口满足条件后持续左端收缩，得到最短的合法窗口。<strong>前提：<code>nums</code> 元素全为正且 <code>target &gt; 0</code></strong>（滑窗单调性前提，负数场景见 B2）；当 <code>target ≤ 0</code> 时，空子数组的和为 0 已满足 <code>&gt;= target</code>，约定直接返回长度 0。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def min_subarray_len(target: int, nums: list) -&gt; int:
+    """求最短的连续子数组，使其元素和 &gt;= target；不存在则返回 0。
+    前提：nums 元素全为正且 target &gt; 0。"""
+    if target &lt;= 0:                 # 空子数组之和为 0，已满足 &gt;= target
+        return 0
+    left = 0
+    total = 0
+    best = float("inf")
+    for right, x in enumerate(nums):
+        total += x                          # 右端扩张，纳入新元素
+        while total &gt;= target:              # 窗口已满足条件，尝试收缩
+            best = min(best, right - left + 1)
+            total -= nums[left]             # 移出左端元素
+            left += 1
+    return 0 if best == float("inf") else best</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：前缀和 + 哈希表（和为 K 的子数组）</span><span class="tpl-desc">用哈希表记录每个前缀和出现的次数，一次遍历统计以当前位置结尾的合法子数组数。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from collections import defaultdict
+
+def subarray_sum(nums: list, k: int) -&gt; int:
+    """统计元素和恰好等于 k 的连续子数组个数。"""
+    cnt = defaultdict(int)
+    cnt[0] = 1                      # 空前缀的和为 0，出现一次
+    pre = ans = 0
+    for x in nums:
+        pre += x                    # 当前前缀和
+        ans += cnt[pre - k]         # 累加此前前缀和 pre - k 的出现次数
+        cnt[pre] += 1
+    return ans</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：差分数组（区间批量加与还原）</span><span class="tpl-desc">每次区间加只改两个端点。差分对象有两种构造方式：<strong>由原数组构造</strong>（<code>from_slice</code>）时，<code>build()</code> 返回「原数组经全部区间加后的结果」；<strong>以全零基线构造</strong>（<code>new</code>）时，<code>build()</code> 返回的是各位置的<strong>累计增量</strong>（即所有区间加作用在全零原数组上的结果，LeetCode 1109 场景即此类，原数组全零时累计增量即最终数组）。注意：<code>build()</code> 本身只做一次前缀和，不会自动叠加调用方的原数组——以零基线构造却忘记叠加原数组，是本章 A5 点名的易错点。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">class Diff:
+    """一维差分数组：支持 O(1) 区间加、O(n) 前缀和还原。"""
+
+    def __init__(self, n: int):
+        self.diff = [0] * (n + 1)   # 长度 n + 1：diff[r + 1] 至多落到下标 n
+        self.n = n
+
+    @classmethod
+    def from_slice(cls, a: list) -&gt; "Diff":
+        """由原数组构造：build() 返回「原数组经全部区间加后的结果」。"""
+        obj = cls(len(a))
+        for i, x in enumerate(a):
+            obj.diff[i] += x        # diff[i] 记 a[i] 的起点
+            obj.diff[i + 1] -= x    # 抵消 a[i]，使前缀和回到 a[i+1]
+        return obj
+
+    def add(self, l: int, r: int, v: int) -&gt; None:
+        """将区间 [l, r]（0-based，闭区间）内每个元素加上 v。"""
+        self.diff[l] += v
+        self.diff[r + 1] -= v       # 在 r + 1 处打上减法标记
+
+    def build(self) -&gt; list:
+        """对差分数组求前缀和：全零基线时为累计增量；由原数组构造时为更新后的原数组。"""
+        a = []
+        cur = 0
+        for i in range(self.n):
+            cur += self.diff[i]
+            a.append(cur)
+        return a</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>无序数组上做对撞双指针</strong>：移动方向依赖「有序」才有单调依据，无序时结果错误。应先排序（或改用哈希表 / 前缀和方案）。（推导见 B1）</li><li><strong>不定长窗口用 <code>if</code> 代替 <code>while</code></strong>：是否循环收缩取决于「一步能否达到/恢复目标」，须按「求最短 / 求最长」分别理解。<strong>求最短</strong>窗口时需尽可能多收缩——用 <code>if</code> 只收缩一次会漏掉更短的合法窗口，导致答案偏大；<strong>求最长</strong>窗口时需收缩到重新合法——用 <code>if</code> 一次收缩未必恢复合法，窗口可能仍不满足条件。（分析见 B2）</li><li><strong>前缀和下标偏移</strong>：区间 <code>[i, j]</code> 的和应写 <code>pre[j+1] - pre[i]</code>（<code>pre[0]=0</code> 表示空前缀）；误写成 <code>pre[j] - pre[i]</code> 会漏掉下标 <code>i</code> 的元素。</li><li><strong>前缀和溢出</strong>：大量元素累加极易超出 32 位整数范围，应使用 <code>long long</code> / <code>i64</code>（Python 整数无此限制）。</li><li><strong>差分「还原」语义与忘记叠加原数组</strong>：差分序列只记录「增量标记」。以全零基线构造时，一次前缀和得到的是各位置的<strong>累计增量</strong>，须叠加到原数组才是「原数组经区间加的结果」（原数组全零时累计增量即最终数组）；只有由原数组构造的差分，其前缀和才直接是更新后的原数组。此外所有修改必须在还原前完成，否则看到的是中间态。</li><li><strong>窗口长度与左指针越界</strong>：窗口长度是 <code>right - left + 1</code>（闭区间），定长窗口要先填满再计答案；收缩时需保证 <code>left &lt;= right</code>，否则会出现负长度。</li></ul></section></article><article class="chapter" id="q-ch03" data-ch="ch03"><header class="ch-head"><span class="ch-num">03</span><h2>链表操作与快慢指针</h2><a class="jump" data-jump="deep" href="#d-ch03">深度解析 ↓</a></header><p class="essence">💡 链表用「节点 + 指针」把离散内存串成逻辑序列：牺牲随机访问换取已知前驱下的 O(1) 增删；而快慢指针则利用两个定速节点的步长差，一趟走完就能求中点、判环并定位环入口。</p><section class="blk"><h3>核心要点</h3><ul><li>节点 = 数据域 + 指针域，靠指针串联、非连续存储（本章以单向链表为核心；双向链表的指针更正顺序见 B3）</li><li>已持有前驱时插 / 删 O(1)，但按下标访问为 O(n)</li><li>虚拟头节点（dummy）统一「删头 / 插头」的边界情形（机制见 B1）</li><li>快慢指针：固定步长差，可求中点、判环、定环入口（推导见 B1）</li><li>反转三指针，口诀：先存后继 → 再改向 → 最后双指针前移</li><li>判环相遇后，head 与相遇点同步单步走，必在环入口相遇（推导见 B1）</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>访问第 k 个元素</td><td>O(k)</td><td>O(1)</td><td>只能从头顺序走，无随机访问</td></tr><tr><td>已知前驱处插入 / 删除</td><td>O(1)</td><td>O(1)</td><td>改指针即可，不搬移元素</td></tr><tr><td>按值查找</td><td>O(n)</td><td>O(1)</td><td>需顺序扫描全部节点</td></tr><tr><td>反转整条链表（迭代）</td><td>O(n)</td><td>O(1)</td><td>三指针原地反转</td></tr><tr><td>Floyd 判环</td><td>O(n)</td><td>O(1)</td><td>快慢指针相遇即存在环</td></tr><tr><td>找环入口</td><td>O(n)</td><td>O(1)</td><td>判环后再同步走一段</td></tr><tr><td>快慢指针求中点</td><td>O(n)</td><td>O(1)</td><td>快指针到终点时慢指针恰在中点</td></tr><tr><td>合并两个有序链表</td><td>O(n+m)</td><td>O(1)</td><td>dummy + 尾指针，原地拼接</td></tr><tr><td>删除倒数第 N 个节点</td><td>O(n)</td><td>O(1)</td><td>dummy 头节点统一边界</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：反转单链表（迭代）</span><span class="tpl-desc">三指针原地反转，是链表题最通用的基础动作。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverse_list(head: "ListNode") -&gt; "ListNode":
+    prev, curr = None, head
+    while curr:
+        nxt = curr.next     # 先存后继
+        curr.next = prev    # 反转指针
+        prev, curr = curr, nxt
+    return prev             # prev 即新头</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：快慢指针判环 + 定位环入口（Floyd）</span><span class="tpl-desc">快指针每次两步、慢指针每次一步；相遇后即可判定有环，再同步走可找到环入口。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def detect_cycle(head: "ListNode") -&gt; "ListNode":
+    slow = fast = head
+    while fast and fast.next:          # 阶段一：判环
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:               # 用身份 is 判同一节点
+            break
+    else:
+        return None                    # 无环
+    slow = head                        # 阶段二：找入口
+    while slow is not fast:
+        slow = slow.next
+        fast = fast.next
+    return slow</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：合并两个有序链表</span><span class="tpl-desc">虚拟头节点 + 尾指针，原地把较小者不断接到结果链尾部。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def merge_two_lists(l1: "ListNode", l2: "ListNode") -&gt; "ListNode":
+    dummy = ListNode(0)     # 虚拟头节点
+    tail = dummy
+    while l1 and l2:
+        if l1.val &lt;= l2.val:
+            tail.next, l1 = l1, l1.next
+        else:
+            tail.next, l2 = l2, l2.next
+        tail = tail.next
+    tail.next = l1 or l2    # 拼接剩余
+    return dummy.next</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：dummy head 删除模式（删除倒数第 N 个节点）</span><span class="tpl-desc">用虚拟头节点消除「删除首节点需特判」的分支；先量长度，再走到待删节点的前驱。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def remove_nth_from_end(head: "ListNode", n: int) -&gt; "ListNode":
+    dummy = ListNode(0, head)       # 虚拟头节点
+    length, p = 0, head
+    while p:
+        length += 1
+        p = p.next
+    prev = dummy
+    for _ in range(length - n):
+        prev = prev.next
+    prev.next = prev.next.next      # 摘除目标节点
+    return dummy.next</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 5：快慢指针求中点</span><span class="tpl-desc">快指针每次两步、慢指针每次一步，快指针走到链尾时慢指针恰在中点。<strong>约定：偶数个节点时返回「右中点」（第二个中间节点）</strong>，三语言实现均与此约定保持一致。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def middle_node(head: "ListNode") -&gt; "ListNode":
+    """返回链表中点节点；偶数长度返回「右中点」（第二个中间节点）。"""
+    slow = fast = head
+    while fast and fast.next:      # 快指针每次两步
+        slow = slow.next           # 慢指针每次一步
+        fast = fast.next.next
+    return slow</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>反转断链</strong>：先改 <code>curr.next</code> 再去取 <code>curr.next</code> 保存后继，会丢失剩余部分。必须<strong>先存 <code>next</code>，再反转指向</strong>，最后双指针前移。</li><li><strong>快指针空指针</strong>：判环循环必须同时校验 <code>fast</code> 与 <code>fast.next</code> 非空，否则 <code>fast.next.next</code> 会解引用空指针。C++/Python 写 <code>while (fast &amp;&amp; fast-&gt;next)</code>／<code>while fast and fast.next</code>。</li><li><strong>用值判「同一节点」</strong>：Floyd 判环与找入口必须比较<strong>节点身份</strong>（指针 / <code>is</code> / <code>Rc::ptr_eq</code>），用值相等会在出现重复值时误判。（详见 B5）</li><li><strong>删头未用 dummy</strong>：删除首节点时若无虚拟头节点，必须特判并更新 <code>head</code>；用 dummy 后所有删除都统一为「改前驱的 next」。（机制见 B1）</li><li><strong>把 vector 的迭代器规则套到 <code>std::list</code></strong>：<code>std::list</code> 插入 / <code>splice</code> <strong>不使</strong>已有迭代器失效，仅被删元素失效——与 <code>std::vector</code> 扩容时「全部失效」相反。（详见 B5）</li><li><strong>Rust 想用 <code>Option&lt;Box&lt;&gt;&gt;</code> 造环</strong>：<code>Option&lt;Box&lt;ListNode&gt;&gt;</code> 无法构成环，双向 / 带环链表需 <code>Rc&lt;RefCell&lt;..&gt;&gt;</code>；而 <code>Rc</code> 双向环会内存泄漏，须用 <code>Weak</code> 破环。（详见 B5）</li></ul></section></article><article class="chapter" id="q-ch04" data-ch="ch04"><header class="ch-head"><span class="ch-num">04</span><h2>栈、队列与哈希表</h2><a class="jump" data-jump="deep" href="#d-ch04">深度解析 ↓</a></header><p class="essence">💡 栈后进先出、队列先进先出，二者都是受限线性表；哈希表用空间换时间，把「按键查找」从线性比较降到期望 O(1)。</p><section class="blk"><h3>核心要点</h3><ul><li>栈（LIFO）：只在栈顶 <code>push</code>/<code>pop</code>，天然解决「最近优先」类问题</li><li>队列（FIFO）：队尾入、队首出，双端队列两端增删均近似 O(1)</li><li>哈希表：键经哈希函数映射到桶，平均 O(1)，最坏 O(n)</li><li>冲突处理两派：链地址法（拉链）与开放寻址（探测）</li><li>负载因子超阈值触发扩容，单次 O(n)、摊还 O(1)</li><li>需要有序或范围查询时，改用平衡树（O(log n)）</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>栈 <code>push</code> / <code>pop</code>（栈顶）</td><td>O(1)</td><td>O(n)</td><td>仅在表尾操作</td></tr><tr><td>队列 <code>enqueue</code> / <code>dequeue</code></td><td>O(1)</td><td>O(n)</td><td>双端队列两端近似 O(1)</td></tr><tr><td>双端队列两端增删</td><td>O(1)</td><td>O(n)</td><td>中间插入仍是 O(n)</td></tr><tr><td>哈希表 插入 / 查找 / 删除</td><td>期望 O(1)，最坏 O(n)</td><td>O(n)</td><td>冲突或哈希退化时变慢</td></tr><tr><td>哈希表扩容（rehash）</td><td>单次 O(n)，摊还 O(1)</td><td>O(n)</td><td>重建桶数组并重插</td></tr><tr><td>有序映射（<code>map</code> / <code>BTreeMap</code>）</td><td>O(log n)</td><td>O(n)</td><td>有序遍历与范围查询</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：括号匹配（栈）</span><span class="tpl-desc">用栈记录待匹配的左括号，遇右括号时栈顶必须对应。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def is_valid(s: str) -&gt; bool:
+    """判断括号字符串是否合法匹配"""
+    pairs = {')': '(', ']': '[', '}': '{'}
+    stack = []
+    for c in s:
+        if c in pairs:                # 是右括号
+            if not stack or stack[-1] != pairs[c]:
+                return False
+            stack.pop()
+        else:
+            stack.append(c)           # 左括号入栈
+    return not stack                  # 栈空才算完全匹配</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：哈希表频次统计</span><span class="tpl-desc">一次遍历统计每个元素的出现次数，是计数类问题的通用底座。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from collections import Counter
+
+def count_freq(nums: list) -&gt; dict:
+    """统计每个元素出现的次数"""
+    # Counter 是 dict 子类，专用于计数；等价于手动 freq[x] += 1
+    return dict(Counter(nums))</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：两数之和（一次遍历）</span><span class="tpl-desc">边遍历边把「值 → 下标」存入哈希表，把 O(n²) 暴力降为 O(n)。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def two_sum(nums: list, target: int) -&gt; list:
+    """返回和为 target 的两个下标（每个元素只用一次）"""
+    seen = {}                         # 值 -&gt; 下标
+    for i, x in enumerate(nums):
+        need = target - x
+        if need in seen:              # 先查
+            return [seen[need], i]
+        seen[x] = i                   # 后插，避免元素配到自己
+    return []</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>C++ <code>unordered_map</code> 最坏 O(n) 与迭代器失效</strong>：哈希冲突严重（或被刻意构造）时全部键挤进同一桶，查找退化为 O(n)；<code>rehash</code> 会使所有迭代器失效（但元素引用/指针仍有效），边遍历边插入要格外小心。需要有序时改用 <code>map</code>/<code>set</code>（O(log n)）。</li><li><strong>Python 可变对象作 key</strong>：<code>d[[1, 2]] = 1</code> 会抛 <code>TypeError: unhashable type: 'list'</code>——<code>list</code>/<code>dict</code>/<code>set</code> 没有稳定的 <code>__hash__</code>。改用 <code>tuple</code> 或 <code>frozenset</code> 作键。</li><li><strong><code>list.pop(0)</code> 是 O(n)</strong>：从表头删除要搬移后面全部元素，用它当队列会退化成 O(n²)。队列一律用 <code>collections.deque</code> 的 <code>popleft()</code>。</li><li><strong>误把哈希表当有序结构</strong>：C++ <code>unordered_map</code> 迭代顺序完全无保证；Python <code>dict</code> 虽保插入顺序（3.7+ 语言保证），但它仍是映射而非有序容器，排序仍须显式 <code>sorted</code>。</li><li><strong>Rust <code>entry</code> API 的所有权细节</strong>：<code>map.entry(k).or_insert(0)</code> 会把键 <code>k</code> 移动进表并返回 <code>&amp;mut V</code>；若默认值需计算，用 <code>or_insert_with(|| ...)</code> 避免无谓构造。</li></ul></section></article><article class="chapter" id="q-ch05" data-ch="ch05"><header class="ch-head"><span class="ch-num">05</span><h2>堆与优先队列</h2><a class="jump" data-jump="deep" href="#d-ch05">深度解析 ↓</a></header><p class="essence">💡 堆是用「完全二叉树 + 数组层序存储」实现的优先队列：堆顶恒为全局最值，插入 / 删除都是 O(log n)，自底向上建堆只要 O(n)。</p><section class="blk"><h3>核心要点</h3><ul><li>完全二叉树无空洞，可用数组层序存储，父子关系由下标算术推出</li><li>0 基数组：父 <code>(i-1)/2</code>，左孩子 <code>2i+1</code>，右孩子 <code>2i+2</code></li><li>堆序性质是弱序：只约束父子，不约束兄弟</li><li>两个基本动作：插入用上浮（sift-up），删除堆顶用下沉（sift-down）</li><li>自底向上建堆 O(n)，优于逐个插入的 O(n log n)</li><li>三语言默认方向不同：Rust/C++ 默认最大堆，Python 默认最小堆</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>取堆顶 peek / top</td><td>O(1)</td><td>O(1)</td><td>根结点即最值</td></tr><tr><td>插入 push</td><td>O(log n)</td><td>O(1)</td><td>追加到末尾后上浮，最多 log n 层</td></tr><tr><td>弹出堆顶 pop</td><td>O(log n)</td><td>O(1)</td><td>末尾元素补根后下沉</td></tr><tr><td>自底向上建堆 build-heap</td><td>O(n)</td><td>O(1)</td><td>Floyd 方法，就地完成</td></tr><tr><td>逐个插入建堆</td><td>O(n log n)</td><td>O(1)</td><td>每个元素上浮 O(log n)</td></tr><tr><td>堆排序</td><td>O(n log n)</td><td>O(1)</td><td>就地、不稳定</td></tr><tr><td>Top-K（维护大小 k 的堆）</td><td>O(n log k)</td><td>O(k)</td><td>遍历一次，堆只留 k 个</td></tr><tr><td>合并 K 个有序链表（k 路归并）</td><td>O(N log k)</td><td>O(k)</td><td>小顶堆维护各链表当前头结点，N 为总节点数、k 为链表数</td></tr><tr><td>双堆求数据流中位数</td><td>插入 O(log n)，查询 O(1)</td><td>O(n)</td><td>两堆各存一半元素</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：手工上浮 + 下沉 + 建堆（理解原理）</span><span class="tpl-desc">在数组上手写大顶堆的上浮、下沉与自底向上建堆——上浮用于插入、下沉用于删除堆顶，看清 O(n) 建堆的原理。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def sift_up(a: list, i: int) -&gt; None:
+    """大顶堆上浮：a[i] 与父结点比较，比父大就交换上移"""
+    while i &gt; 0:
+        p = (i - 1) // 2  # 父结点下标
+        if a[i] &lt;= a[p]:
+            break  # 已满足堆序
+        a[i], a[p] = a[p], a[i]
+        i = p
+
+
+def sift_down(a: list, i: int, n: int) -&gt; None:
+    """大顶堆下沉：a[i] 与较大的孩子交换，直到底部或满足堆序"""
+    while True:
+        l, r, largest = 2 * i + 1, 2 * i + 2, i
+        if l &lt; n and a[l] &gt; a[largest]:
+            largest = l
+        if r &lt; n and a[r] &gt; a[largest]:
+            largest = r
+        if largest == i:
+            break
+        a[i], a[largest] = a[largest], a[i]
+        i = largest
+
+
+def build_heap(a: list) -&gt; None:
+    """自底向上建堆，整体 O(n)"""
+    n = len(a)
+    for i in range(n // 2 - 1, -1, -1):  # n//2-1 是最后一个非叶结点
+        sift_down(a, i, n)</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：标准库 Top-K</span><span class="tpl-desc">求前 K 大就用大小为 K 的最小堆；求前 K 小就用大小为 K 的最大堆（此处演示前 K 大）。三种语言均在返回前排序，统一按升序输出，便于对照。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">import heapq
+
+
+def top_k_largest(nums: list, k: int) -&gt; list:
+    """返回前 k 大的元素：维护大小为 k 的最小堆，O(n log k)"""
+    heap = []
+    for x in nums:
+        heapq.heappush(heap, x)
+        if len(heap) &gt; k:
+            heapq.heappop(heap)  # 弹出最小值
+    return sorted(heap)  # 统一按升序返回（堆序本身不保证有序）</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：双堆求数据流中位数</span><span class="tpl-desc">用一个大顶堆存较小的一半、一个小顶堆存较大的一半，取中位数 O(1)。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">import heapq
+
+
+class MedianFinder:
+    """双堆维护数据流中位数"""
+    def __init__(self):
+        self.left = []   # 大顶堆（取负存储）：较小的一半
+        self.right = []  # 最小堆：较大的一半
+
+    def add_num(self, num: int) -&gt; None:
+        heapq.heappush(self.left, -num)                        # 先放入较小的一半
+        heapq.heappush(self.right, -heapq.heappop(self.left))  # left 最大值交给 right
+        if len(self.right) &gt; len(self.left):                   # 平衡两堆
+            heapq.heappush(self.left, -heapq.heappop(self.right))
+
+    def find_median(self) -&gt; float:
+        if len(self.left) &gt; len(self.right):
+            return -self.left[0]
+        return (-self.left[0] + self.right[0]) / 2.0</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：合并 K 个有序链表</span><span class="tpl-desc">用小顶堆维护 k 条有序链表各自的当前头结点；每次弹出堆顶（当前全局最小）接到结果尾部，并把该链表的下一个结点推入堆中。堆中每个元素存为 <code>(结点值, 所属链表标识)</code>，用标识在平局时定位回原链表。总代价 O(N log k)（N 为总节点数、k 为链表数）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">import heapq
+
+
+def merge_k_lists(lists: list) -&gt; list:
+    """合并 k 条升序序列：小顶堆存 (结点值, 所属链表下标)，O(N log k)"""
+    heap = []
+    pos = [0] * len(lists)
+    for i, lst in enumerate(lists):
+        if lst:
+            heap.append((lst[0], i))  # 各链表头结点入堆
+    heapq.heapify(heap)  # 一次 O(k) 建堆
+    res = []
+    while heap:
+        val, i = heapq.heappop(heap)  # 弹出当前全局最小
+        res.append(val)               # 接到结果尾部
+        pos[i] += 1
+        if pos[i] &lt; len(lists[i]):
+            heapq.heappush(heap, (lists[i][pos[i]], i))  # 推入该链表下一个结点
+    return res</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>三语言默认方向不同</strong>：Rust <code>BinaryHeap</code> 与 C++ <code>priority_queue</code> 默认都是<strong>最大堆</strong>，而 Python <code>heapq</code> 默认是<strong>最小堆</strong>。跨语言迁移时最容易把方向写反——Python 做最大堆要取负存储，或使用 3.14 起新增的 <code>_max</code> 系列函数。</li><li><strong>C++ 比较器语义与出队顺序要分开看</strong>：比较器 <code>comp(a,b)</code> 的语义与 <code>std::sort</code> <strong>一致</strong>——<code>comp(a,b) == true</code> 表示 a 在<strong>弱序中排在 b 之前</strong>；但 <code>priority_queue</code> <strong>先输出弱序中"最大 / 最后"的元素</strong>，于是弱序里"靠前"的元素反而<strong>后出队</strong>。默认 <code>less</code> 得到<strong>大顶堆</strong>（<code>top()</code> 是最大元），要小顶堆得传 <code>greater</code>。切勿把方向写反，否则 <code>top()</code> 取错——注意这正是「语义与 <code>sort</code> 相同、出队方向相反」两件事，不要把二者混为一谈。</li><li><strong>Python <code>heapq</code> 没有 decrease-key / 任意删除</strong>：想「改优先级」或「删中间元素」时，惯用<strong>惰性删除</strong>——入堆时带上版本号或有效标记，出堆时发现过期项就跳过，而不是试图修改堆内已有元素。</li><li><strong>Rust 堆内元素不得改变相对顺序</strong>：元素一旦入堆，就不得再改动其排序（否则是逻辑错误，行为未定义）；需要修改堆顶时用 <code>peek_mut()</code>，改动后会自动 O(log n) 下沉修复。</li><li><strong>别用逐个 push 当建堆</strong>：那样子是 O(n log n)。<code>heapify</code> / <code>make_heap</code> / <code>BinaryHeap::from(vec)</code> 才是 O(n) 的自底向上建堆。</li><li><strong>堆 ≠ 有序</strong>：对堆做迭代 / 遍历得到的顺序是<strong>任意</strong>的，只有反复 <code>pop</code> 才能得到有序序列。</li></ul></section></article><article class="chapter" id="q-ch06" data-ch="ch06"><header class="ch-head"><span class="ch-num">06</span><h2>二叉树遍历与递归思维</h2><a class="jump" data-jump="deep" href="#d-ch06">深度解析 ↓</a></header><p class="essence">💡 二叉树的一切递归解法都可归结为「在正确的位置做正确的事」：前序位置自顶向下传递信息，后序位置自底向上合并子问题；遍历与分解，是同一枚硬币的两面。</p><section class="blk"><h3>核心要点</h3><ul><li>前/中/后序是同一套 DFS 框架里，代码的三个执行时机</li><li>前序＝进入节点；后序＝离开节点；中序＝左子树处理完之后</li><li>后序位置天然适合「合并子问题结果」的分解思维</li><li>层序遍历＝BFS＋队列；要分层必须预先固定本层节点数</li><li>遍历思维用外部变量累积，分解思维用返回值传递</li><li>BST 中序序列严格递增；验证 BST 必须传递上下界</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>前/中/后序遍历（递归）</td><td>O(n)</td><td>O(h)</td><td>h 为树高：平衡树 O(log n)、链状树 O(n)</td></tr><tr><td>前/中序迭代（显式栈）</td><td>O(n)</td><td>O(h)</td><td>手动模拟系统栈，避免爆栈</td></tr><tr><td>后序迭代（双栈 / 反转）</td><td>O(n)</td><td>O(h)</td><td>前序变体，最后整体反转结果</td></tr><tr><td>层序遍历（BFS 队列）</td><td>O(n)</td><td>O(w)</td><td>w 为最大层宽，满二叉树约 n/2</td></tr><tr><td>BST 查找 / 插入 / 删除</td><td>O(h)</td><td>O(1)~O(h)</td><td>最坏退化为链，O(n)</td></tr><tr><td>BST 验证（范围 / 中序）</td><td>O(n)</td><td>O(h)</td><td>范围法显式传 <code>(lo, hi)</code> 上下界（详见 B2）；每节点访问一次</td></tr><tr><td>由前序＋中序重建</td><td>O(n)</td><td>O(n)</td><td>用哈希表 O(1) 定位中序下标</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：三种递归遍历（前 / 中 / 后）</span><span class="tpl-desc">同一个 DFS 框架，代码插入位置不同即为不同遍历。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def preorder(root, out):
+    if root is None:
+        return
+    out.append(root.val)          # 前序位置
+    preorder(root.left, out)
+    preorder(root.right, out)
+
+def inorder(root, out):
+    if root is None:
+        return
+    inorder(root.left, out)
+    out.append(root.val)          # 中序位置
+    inorder(root.right, out)
+
+def postorder(root, out):
+    if root is None:
+        return
+    postorder(root.left, out)
+    postorder(root.right, out)
+    out.append(root.val)          # 后序位置</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：层序遍历（BFS + 队列，按层返回）</span><span class="tpl-desc">必须先记录本层节点数 <code>sz</code>，才能正确分层。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from collections import deque
+
+def level_order(root):
+    res = []
+    if root is None:
+        return res
+    q = deque([root])
+    while q:
+        level = []
+        for _ in range(len(q)):        # 固定本层节点数
+            node = q.popleft()
+            level.append(node.val)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        res.append(level)
+    return res</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：分解思维模板（二叉树最大深度）</span><span class="tpl-desc">先取子问题答案，再在后序位置合并——分解思维的标准形态。此处「深度」对齐 LeetCode 104 的<strong>节点数</strong>口径（空树 0、单节点 1），与术语表按<strong>边数</strong>计的「高度」口径相差 1（见 A2 口径说明）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def max_depth(root):
+    if root is None:            # 空树深度为 0
+        return 0
+    l = max_depth(root.left)    # 先求左右子树
+    r = max_depth(root.right)
+    return 1 + max(l, r)        # 后序位置：合并子问题</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：BST 验证（中序法）</span><span class="tpl-desc">BST 的中序序列必严格递增；维护前驱值 <code>prev</code> 逐一比较。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def is_valid_bst(root):
+    prev = None
+    def inorder(node):
+        nonlocal prev
+        if node is None:
+            return True
+        if not inorder(node.left):
+            return False
+        if prev is not None and node.val &lt;= prev:   # 非严格递增
+            return False
+        prev = node.val
+        return inorder(node.right)
+    return inorder(root)</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 5：迭代中序遍历（显式栈）</span><span class="tpl-desc">手动模拟系统栈，规避深树递归爆栈；对应 A5 的「迭代中序栈写法」易错点。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def inorder_traversal(root):
+    out, stack = [], []
+    cur = root
+    while cur or stack:            # 外层双条件缺一不可
+        while cur:                 # 一路向左压栈
+            stack.append(cur)
+            cur = cur.left
+        cur = stack.pop()          # 弹栈
+        out.append(cur.val)        # 访问（中序位置）
+        cur = cur.right            # 转向右子树
+    return out</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>递归终止条件写错</strong>：入口必须判空（<code>if (!root) return;</code>）。若写成判断子节点而非当前节点，会漏处理叶子或访问空指针崩溃。</li><li><strong>迭代中序遍历的栈写法</strong>：外层条件必须是 <code>while (cur || !stack.empty())</code>，不能只写 <code>while (!stack.empty())</code>（否则根节点未入栈）；内层一路 <code>cur = cur-&gt;left</code> 压栈，弹栈后务必 <code>cur = cur-&gt;right</code>，否则死循环。可对照模板 5。</li><li><strong>BST 验证只比较直接父子节点</strong>：<code>node.left.val &lt; node.val &lt; node.right.val</code> 是经典错误——它只检查了局部父子关系，无法捕捉<strong>祖先约束</strong>。反例（层序 <code>[10,5,15,null,null,6,20]</code>）：</li><li><strong>Python 递归深度</strong>：默认上限约 1000 帧（实际可用约 993），链状树（深度 = n）会抛 <code>RecursionError</code>；可 <code>sys.setrecursionlimit(...)</code>（谨慎）或改用迭代。</li><li><strong>Rust 节点所有权</strong>：访问 <code>Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;</code> 的子节点必须 <code>borrow()</code>；同一节点的两次可变借用会运行时 panic，深递归也有爆栈风险。</li><li><strong>层序遍历未固定本层大小</strong>：内层循环若直接用实时的 <code>q.size()</code> 作条件，会一次遍历多层，分层结果混乱。</li></ul></section></article><article class="chapter" id="q-ch07" data-ch="ch07"><header class="ch-head"><span class="ch-num">07</span><h2>排序与二分搜索</h2><a class="jump" data-jump="deep" href="#d-ch07">深度解析 ↓</a></header><p class="essence">💡 排序把无序序列整理为有序（工程库用「混合策略」在平均性能、最坏保证、稳定性与空间之间取平衡）；二分搜索则在单调序列或单调谓词上每轮排除一半候选区间，以 O(log n) 定位值或边界。</p><section class="blk"><h3>核心要点</h3><ul><li>比较排序下界 O(n log n)；计数/基数等非比较排序另按值域计</li><li>稳定性＝相等元素的相对次序保持不变，是多关键字排序的前提</li><li>快排平均 O(n log n)、最坏 O(n²)，原地但不稳定</li><li>归并排序稳定、恒 O(n log n)，代价是 O(n) 额外空间</li><li>二分前提是单调；闭区间与半开区间写法不可混用</li><li><code>mid = l + (r - l) / 2</code> 防溢出；比较器必须是严格弱序 / 全序</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>算法</th><th>时间（平均 / 最坏）</th><th>空间</th><th>稳定性</th></tr></thead><tbody><tr><td>快速排序</td><td>O(n log n) / O(n²)</td><td>O(log n) 栈</td><td>否</td></tr><tr><td>归并排序</td><td>O(n log n) / O(n log n)</td><td>O(n)</td><td>是</td></tr><tr><td>堆排序</td><td>O(n log n) / O(n log n)</td><td>O(1)</td><td>否</td></tr><tr><td>计数排序</td><td>O(n + k) / O(n + k)</td><td>O(k)</td><td>是</td></tr><tr><td>插入排序</td><td>O(n²) / O(n²)（最好 O(n)）</td><td>O(1)</td><td>是</td></tr><tr><td>C++ <code>std::sort</code>（Introsort）</td><td>O(n log n) / O(n log n)</td><td>O(log n)</td><td>否</td></tr><tr><td>Rust <code>sort</code>（driftsort，稳定）</td><td>O(n log n) / O(n log n)</td><td>O(n)</td><td>是</td></tr><tr><td>Rust <code>sort_unstable</code>（ipnsort）</td><td>O(n log n) / O(n log n)</td><td>O(1)</td><td>否</td></tr><tr><td>Python <code>sorted</code>/<code>list.sort</code>（Timsort）</td><td>O(n log n) / O(n log n)</td><td>O(n)</td><td>是</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：闭区间二分查找</span><span class="tpl-desc">在有序数组中查找目标值的下标，<code>[l, r]</code> 左闭右闭，最通用的入门写法。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def binary_search(a: list, target) -&gt; int:
+    l, r = 0, len(a) - 1
+    while l &lt;= r:
+        mid = l + (r - l) // 2
+        if a[mid] == target:
+            return mid
+        if a[mid] &lt; target:
+            l = mid + 1
+        else:
+            r = mid - 1
+    return -1</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：左边界二分（lower_bound）</span><span class="tpl-desc">返回第一个 ≥ target 的下标（可能等于 n）；谓词 <code>nums[i] &lt; target</code> 左真右假，用半开区间 <code>[l, r)</code> 实现。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from bisect import bisect_left, bisect_right
+
+
+def lower_bound(a: list, target) -&gt; int:
+    # 手写半开区间实现；等价于标准库 bisect_left(a, target)
+    l, r = 0, len(a)
+    while l &lt; r:
+        mid = l + (r - l) // 2
+        if a[mid] &lt; target:
+            l = mid + 1
+        else:
+            r = mid
+    return l
+
+
+def upper_bound(a: list, target) -&gt; int:
+    # 首个 &gt; target 的下标，等价于 bisect_right(a, target)
+    return bisect_right(a, target)
+
+
+def lower_bound_stdlib(a: list, target) -&gt; int:
+    # 标准库一行版，与手写 lower_bound 结果一致
+    return bisect_left(a, target)</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：二分答案（最小可行值）</span><span class="tpl-desc">在答案值域 <code>[lo, hi]</code> 上二分求<strong>最小可行值</strong>——<code>check</code> 须关于答案单调（存在一个分界点，其前不可行、其后可行），<code>check</code> 为单次判定，故总复杂度 = <strong>O(log V × check 的代价)</strong>（V 为答案值域跨度）；典型应用见 B3 的「爱吃香蕉的珂珂」（LeetCode 875）。边界提醒：若区间内不存在可行值，循环将收敛到 <code>hi</code>，故调用方需保证 <code>hi</code> 本身可行。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def min_feasible(lo: int, hi: int, check) -&gt; int:
+    # 求最小可行值：在单调谓词上二分答案
+    # 前提：答案具有单调性（check 在值域上呈「前假后真」）
+    # 总复杂度 = O(log V × check 的代价)，V 为答案值域跨度
+    while lo &lt; hi:
+        mid = lo + (hi - lo) // 2
+        if check(mid):
+            hi = mid      # mid 可行 → 答案 ≤ mid
+        else:
+            lo = mid + 1  # mid 不可行 → 答案 &gt; mid
+    return lo             # 收敛于最小可行值；无可行值时返回 hi（调用方须保证 hi 可行）</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：快速排序 partition（双指针划分）</span><span class="tpl-desc">以区间首元素为基准，双指针 i、j 从两端向中间夹逼，区间内原地重排；返回基准的最终下标。本模板未随机化基准，在「已排序」或「大量重复元素」输入下会退化为 O(n²)，生产环境应改用随机基准或三数取中（另见 B3 三路划分）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def partition(a: list, lo: int, hi: int) -&gt; int:
+    pivot = a[lo]
+    i, j = lo, hi
+    while i &lt; j:
+        while i &lt; j and a[j] &gt;= pivot:  # 右指针找小于基准
+            j -= 1
+        while i &lt; j and a[i] &lt;= pivot:  # 左指针找大于基准
+            i += 1
+        a[i], a[j] = a[j], a[i]
+    a[lo], a[i] = a[i], a[lo]           # 基准归位
+    return i
+
+
+def quick_sort(a: list, lo: int, hi: int) -&gt; None:
+    if lo &gt;= hi:
+        return
+    p = partition(a, lo, hi)
+    quick_sort(a, lo, p - 1)
+    quick_sort(a, p + 1, hi)
+
+
+def quick_sort_array(a: list) -&gt; None:
+    # 顶层入口：排序整个数组
+    quick_sort(a, 0, len(a) - 1)</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 5：归并排序（稳定）</span><span class="tpl-desc">对半切分后递归排序、线性合并；合并时用 <code>&lt;=</code> 取左段优先，保证排序稳定。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def merge_sort(a: list, lo: int, hi: int) -&gt; None:
+    if hi - lo &lt;= 1:
+        return
+    mid = lo + (hi - lo) // 2
+    merge_sort(a, lo, mid)
+    merge_sort(a, mid, hi)
+    tmp = []
+    i, j = lo, mid
+    while i &lt; mid and j &lt; hi:           # 合并两个有序段
+        if a[i] &lt;= a[j]:                # 取等号 → 稳定
+            tmp.append(a[i])
+            i += 1
+        else:
+            tmp.append(a[j])
+            j += 1
+    tmp.extend(a[i:mid])
+    tmp.extend(a[j:hi])
+    a[lo:hi] = tmp
+
+
+def merge_sort_array(a: list) -&gt; None:
+    # 顶层入口：排序整个数组
+    merge_sort(a, 0, len(a))</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 6：计数排序（值域小）</span><span class="tpl-desc">对取值落在 <code>[0, k)</code> 的整数键做<strong>线性时间</strong>排序——统计频次 → 求前缀和 → 逆序回填；时间 O(n + k)、空间 O(k)、<strong>稳定</strong>（逆序回填保证相等键的相对次序不变）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def counting_sort_array(a: list, k: int) -&gt; list:
+    # 计数排序：元素须落在值域 [0, k)
+    # 时间 O(n + k)、空间 O(k)、稳定
+    cnt = [0] * k
+    for x in a:
+        cnt[x] += 1                        # 统计频次
+    for i in range(1, k):
+        cnt[i] += cnt[i - 1]               # 前缀和：cnt[v] = 元素数 ≤ v
+    out = [0] * len(a)
+    for x in reversed(a):
+        cnt[x] -= 1                        # 逆序回填 → 稳定
+        out[cnt[x]] = x
+    return out</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>二分死循环</strong>：<code>while (l &lt;= r)</code> 与 <code>r = mid</code> 混用，或 <code>while (l &lt; r)</code> 与 <code>r = mid - 1</code> 混用，会使区间不收缩而卡死；闭区间配 <code>l &lt;= r</code>，不满足时收缩为 <code>l = mid + 1</code> / <code>r = mid - 1</code>；半开区间配 <code>l &lt; r</code>，用 <code>r = mid</code> 保留候选。</li><li><strong><code>mid</code> 溢出</strong>：<code>(l + r) / 2</code> 在 l、r 接近整型上限时相加溢出为负；统一写 <code>l + (r - l) / 2</code>。</li><li><strong>比较器违反严格弱序</strong>：C++ <code>std::sort</code> 要求 comp 非自反且可传递，写成 <code>&lt;=</code> 会触发未定义行为（结果错乱甚至崩溃）；Rust 比较函数须构成全序，否则顺序未指定甚至 panic。</li><li><strong>忽视稳定性</strong>：用不稳定排序做多关键字排序会打乱相等元素的相对次序；需要稳定时改用归并、C++ <code>stable_sort</code> 或 Python 的 Timsort。</li><li><strong>标准库语义误用</strong>：<code>lower_bound</code>/<code>bisect_left</code> 返回的是「插入位置」而非「是否命中」，需自行判断 <code>i &lt; n &amp;&amp; a[i] == target</code>；Rust <code>binary_search</code> 返回 <code>Result</code>，<code>Err(i)</code> 才是插入点。</li><li><strong>计数排序值域过大</strong>：数组需开到 O(k)，k 很大时空间爆炸；且只适用于能作为下标的整数键。</li></ul></section></article><article class="chapter" id="q-ch08" data-ch="ch08"><header class="ch-head"><span class="ch-num">08</span><h2>回溯与深度广度优先搜索</h2><a class="jump" data-jump="deep" href="#d-ch08">深度解析 ↓</a></header><p class="essence">💡 回溯是"带撤销操作"的决策树深度优先搜索；DFS 用递归/栈一条路走到底，BFS 用队列一层层向外扩散，无权图上的最短步数首选 BFS。</p><section class="blk"><h3>核心要点</h3><ul><li><strong>回溯三要素</strong>：路径 <code>path</code>、选择列表、结束条件，缺一不可</li><li><strong>回溯三步必须对称</strong>：做选择 → 递归 → 撤销选择</li><li><strong>剪枝越早越好</strong>：提前 <code>return</code> 掉不可能的子树，是回溯效率的关键</li><li><strong>DFS 用递归或显式栈</strong>；<strong>BFS 用队列</strong>，实现方式与数据结构强绑定</li><li><strong>BFS 按层推进</strong>，天然给出无权图的最短步数（最少边数）</li><li><strong>同层去重</strong>：候选集合先排序，靠"同层跳过相同前驱"避免重复解</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>操作 / 场景</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>回溯（全排列 / 子集）</td><td>O(n!·n) / O(2ⁿ·n)</td><td>O(n) 递归栈</td><td>由解空间树节点数决定；系数 n 为每节点记录解的拷贝代价</td></tr><tr><td>回溯 + 剪枝</td><td>通常远小于理论上界</td><td>O(n)</td><td>实际复杂度取决于剪枝质量</td></tr><tr><td>网格 DFS（flood fill）</td><td>O(R·C)</td><td>O(R·C) 最坏递归栈</td><td>每个格子最多访问一次</td></tr><tr><td>连通块计数</td><td>O(R·C)</td><td>O(R·C)</td><td>每个未访问起点触发一次 DFS</td></tr><tr><td>图 / 网格 BFS 最短路</td><td>O(V+E) / O(R·C)</td><td>O(V) / O(R·C)</td><td>无权图最短步数</td></tr><tr><td>多源 BFS</td><td>O(V+E)</td><td>O(V)</td><td>所有源点先入队，一次扩散</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：回溯通用框架（全排列）</span><span class="tpl-desc">路径 + 选择列表 + 结束条件，做选择与撤销严格成对；子集 / 组合把 <code>used</code> 换成 <code>start</code>（<code>for i in start..n</code>、递归传 <code>i+1</code>）即可复用同一框架。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python"># 全排列：回溯通用框架（路径 path + 选择列表 + 结束条件）
+def permute(nums: list) -&gt; list:
+    res, path = [], []
+    used = [False] * len(nums)
+
+    def backtrack() -&gt; None:
+        if len(path) == len(nums):   # 结束条件
+            res.append(path[:])      # 记录快照（浅拷贝）
+            return
+        for i in range(len(nums)):
+            if used[i]:
+                continue             # 已选过则剪枝
+            used[i] = True           # 做选择
+            path.append(nums[i])
+            backtrack()              # 进入下一层决策
+            path.pop()               # 撤销选择（恢复现场）
+            used[i] = False
+
+    backtrack()
+    return res</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：网格 DFS（flood fill）</span><span class="tpl-desc">把二维网格当隐式图，原地改写代替 visited，统计连通块个数。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python"># 网格 DFS：flood fill，统计连通块（岛屿）数量
+def num_islands(grid: list) -&gt; int:
+    if not grid or not grid[0]:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+
+    def dfs(r: int, c: int) -&gt; None:
+        # 越界或非陆地则返回（先判边界，再访问 grid）
+        if r &lt; 0 or r &gt;= rows or c &lt; 0 or c &gt;= cols or grid[r][c] != '1':
+            return
+        grid[r][c] = '0'              # 标记为已访问（沉岛）
+        dfs(r + 1, c)                 # 四方向扩展
+        dfs(r - 1, c)
+        dfs(r, c + 1)
+        dfs(r, c - 1)
+
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':     # 新连通块
+                count += 1
+                dfs(r, c)
+    return count</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：BFS 最短步数</span><span class="tpl-desc">队列 + visited，按层推进；入队时立即标记，首次到达即最短（空网格返回 -1）。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from collections import deque
+
+# BFS 最短步数：grid 中 0 可走、1 为障碍，返回最少的移动次数
+def shortest_path(grid: list) -&gt; int:
+    if not grid or not grid[0]:
+        return -1                     # 空网格守卫，避免 grid[0] 越界
+    rows, cols = len(grid), len(grid[0])
+    if grid[0][0] == 1 or grid[rows - 1][cols - 1] == 1:
+        return -1
+    visited = [[False] * cols for _ in range(rows)]
+    q = deque([(0, 0)])
+    visited[0][0] = True          # 入队时立即标记
+    steps = 0
+    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    while q:
+        for _ in range(len(q)):   # 按层推进：当前层共 len(q) 个节点
+            r, c = q.popleft()
+            if r == rows - 1 and c == cols - 1:
+                return steps       # 首次到达即为最短
+            for dr, dc in dirs:
+                nr, nc = r + dr, c + dc
+                if 0 &lt;= nr &lt; rows and 0 &lt;= nc &lt; cols \
+                        and grid[nr][nc] == 0 and not visited[nr][nc]:
+                    visited[nr][nc] = True  # 入队时标记
+                    q.append((nr, nc))
+        steps += 1                 # 一层结束，步数 +1
+    return -1</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>忘记撤销选择</strong>：<code>path</code> / <code>used</code> 未恢复现场时，后续分支会读到被污染的状态，结果错乱或丢解。做选择与撤销选择必须严格成对、顺序对称。</li><li><strong>visited 标记时机（入队 vs 出队）</strong>：BFS 应在<strong>入队时</strong>标记。若留到出队时才标记，同一节点会被多个邻居重复入队，导致队列膨胀、性能急剧下降甚至超时；只有完全不做 visited 判断时才可能真正死循环——这是 BFS 最常见的性能陷阱。</li><li><strong>同层去重条件写错</strong>：候选集合含重复元素时，必须<strong>先排序</strong>，再按场景选用对应的同层去重判定式（两式机制不同，不可混用）：</li><li><strong>子集 / 组合（<code>start</code> 收缩候选集型，无 <code>used</code> 数组）</strong>：跳过同层重复前驱用 <code>i &gt; start &amp;&amp; nums[i] == nums[i-1]</code>；</li><li><strong>排列（<code>used</code> 标记型，如全排列 II）</strong>：用 <code>i &gt; 0 &amp;&amp; nums[i] == nums[i-1] &amp;&amp; !used[i-1]</code>（注意此处是 <code>i &gt; 0</code>，而非子集 / 组合的 <code>i &gt; start</code>）。</li><li><strong>Python 递归深度</strong>：网格 DFS 最坏递归深度可达 R·C，超过默认递归上限（约 1000）会抛 <code>RecursionError</code>；可用 <code>sys.setrecursionlimit</code> 提高上限，但官方警告设得过高可能导致崩溃，超大网格建议改写为迭代栈。</li><li><strong>Rust 深递归栈溢出</strong>：栈空间有限（子线程尤其可用 <code>RUST_MIN_STACK</code> 调整），深递归回溯 / 网格 DFS 可能触发 stack overflow。工程上优先用显式 <code>Vec</code> 栈迭代改写，或控制递归深度。</li><li><strong>网格越界访问</strong>：判断顺序必须先测边界再访问 <code>grid[r][c]</code>，否则越界读取触发 panic / 未定义行为；Rust 中用 <code>usize</code> 做 <code>-1</code> 会下溢，应转 <code>isize</code> 或先判 <code>r &gt; 0</code>。</li></ul></section></article><article class="chapter" id="q-ch09" data-ch="ch09"><header class="ch-head"><span class="ch-num">09</span><h2>动态规划模型与状态转移</h2><a class="jump" data-jump="deep" href="#d-ch09">深度解析 ↓</a></header><p class="essence">💡 把问题拆成有重叠的子问题，用一张表记下每个子问题的答案，让每种状态只计算一次，从而把指数级暴力搜索降为多项式复杂度。</p><section class="blk"><h3>核心要点</h3><ul><li>DP 思维链：先定状态 → 再写转移方程 → 再设初始化 → 最后定遍历顺序</li><li>两大实现范式：自顶向下记忆化、自底向上递推</li><li>可 DP 的前提：最优子结构 + 无后效性</li><li>0-1 背包一维数组须逆序，完全背包一维数组须正序</li><li>空间压缩：用滚动数组把二维表压成一维</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>模型</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>爬楼梯 / 斐波那契</td><td>O(n)</td><td>O(1)（滚动变量）</td><td>只依赖前两个状态</td></tr><tr><td>打家劫舍（选/不选）</td><td>O(n)</td><td>O(1)（滚动变量）</td><td>只依赖前两个状态</td></tr><tr><td>0-1 背包</td><td>O(nW)</td><td>O(W)</td><td>一维数组，内层容量逆序</td></tr><tr><td>完全背包</td><td>O(nW)</td><td>O(W)</td><td>一维数组，内层容量正序</td></tr><tr><td>LIS（朴素 DP）</td><td>O(n²)</td><td>O(n)</td><td>每个元素向前扫描可接续者；可用二分 + 贪心优化至 O(n log n)</td></tr><tr><td>LCS</td><td>O(nm)</td><td>O(nm) / O(min(n,m))</td><td>二维表 / 滚动行</td></tr><tr><td>编辑距离</td><td>O(nm)</td><td>O(nm) / O(min(n,m))</td><td>增、删、改三种操作取最小</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：一维 DP 通用骨架（爬楼梯 / 打家劫舍）</span><span class="tpl-desc">状态只依赖前两项时，用两个滚动变量即可把空间降到 O(1)。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def climb_stairs(n: int) -&gt; int:
+    # 爬楼梯：dp[i] = dp[i-1] + dp[i-2]，滚动变量 O(1) 空间
+    prev2, prev1 = 1, 1  # dp[0], dp[1]
+    for _ in range(2, n + 1):
+        prev2, prev1 = prev1, prev1 + prev2
+    return prev1
+
+def rob(nums: list) -&gt; int:
+    # 打家劫舍：dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+    prev2, prev1 = 0, 0  # dp[i-2], dp[i-1]
+    for x in nums:
+        prev2, prev1 = prev1, max(prev1, prev2 + x)
+    return prev1</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：0-1 背包（一维逆序）</span><span class="tpl-desc">每件物品只能取一次，一维容量数组必须从大到小更新，保证用的是「上一件物品」的状态。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def knapsack_01(weights: list, values: list, cap: int) -&gt; int:
+    # dp[j] 表示容量至多为 j（不超过 j）时的最大价值；内层容量逆序遍历
+    dp = [0] * (cap + 1)
+    for w, v in zip(weights, values):
+        for j in range(cap, w - 1, -1):  # 逆序：保证每件物品只用一次
+            dp[j] = max(dp[j], dp[j - w] + v)
+    return dp[cap]</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：编辑距离（二维）</span><span class="tpl-desc">把「s 前 i 个字符转成 t 前 j 个字符」作为状态，转移对增、删、改三种操作取最小。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def edit_distance(s: str, t: str) -&gt; int:
+    # dp[i][j]：s 前 i 个字符转成 t 前 j 个字符的最少操作数
+    n, m = len(s), len(t)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(n + 1):
+        dp[i][0] = i            # 删除 i 个字符
+    for j in range(m + 1):
+        dp[0][j] = j            # 插入 j 个字符
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i - 1] == t[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]        # 字符相同，无需操作
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j],   # 删除
+                                   dp[i][j - 1],   # 插入
+                                   dp[i - 1][j - 1])  # 替换
+    return dp[n][m]</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：最长公共子序列（LCS）</span><span class="tpl-desc">把「s 前 i 个字符与 t 前 j 个字符的最长公共子序列长度」作为状态：两字符相等时接在斜对角状态之后 <code>+1</code>，不等时取「上」「左」两状态中的较大值。转移仅依赖上一行与当前行的前一列，二维表也可压成滚动行，把空间降到 O(min(n, m))。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def lcs(s: str, t: str) -&gt; int:
+    # dp[i][j]：s 前 i 个字符与 t 前 j 个字符的最长公共子序列长度
+    # 转移：s[i-1]==t[j-1] → dp[i-1][j-1] + 1；否则 max(dp[i-1][j], dp[i][j-1])；可用滚动行压至 O(min(n,m)) 空间
+    n, m = len(s), len(t)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i - 1] == t[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1              # 相等，接在斜对角之后
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])   # 不等，取上下较大者
+    return dp[n][m]</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>0-1 背包内层写成正序</strong>：会让同一件物品被反复选取，结果退化成完全背包；一维写法必须「容量从大到小」，且下界写成 <code>j &gt;= w[i]</code>（写 <code>j &gt;= 0</code> 会因 <code>j - w[i]</code> 越界）。</li><li><strong>完全背包内层写成逆序</strong>：每件物品就只会被选一次，与题意相反；正序遍历才能让 <code>dp[j-w]</code> 取到「本件已选」的新值。</li><li><strong>初始化边界选错</strong>：若要求「恰好装满」，除 <code>dp[0] = 0</code> 外其余初值应设为 <code>-∞</code>（表示不可达）；若只求「不超过容量」的最大价值，则全部初始化为 0。求最小值时用 <code>+∞</code>，且加法前要防溢出。</li><li><strong>无穷大取值不当</strong>：用 <code>INT_MAX</code> 直接参与 <code>+1</code> 会溢出成负数，惯用 <code>INT_MAX / 2</code> 或 <code>1e18</code> 之类的安全值。</li><li><strong>状态定义含糊</strong>：若 <code>dp[i]</code> 的含义（是「以 i 结尾」还是「前 i 个」）没定清，转移方程就容易写错；先写清定义再写方程。</li><li><strong>记忆化状态设计不当（缓存未命中）</strong>：自顶向下时若状态参数带有冗余维度（把与结果无关的量也塞进被缓存的参数），同一子问题会被当作不同状态反复计算，缓存命中率骤降、白白变慢；此外递归层次过深可能触发栈溢出（Python 尤甚），需 <code>sys.setrecursionlimit</code> 或改为自底向上递推。</li></ul></section></article><article class="chapter" id="q-ch10" data-ch="ch10"><header class="ch-head"><span class="ch-num">10</span><h2>图遍历、最短路径与并查集</h2><a class="jump" data-jump="deep" href="#d-ch10">深度解析 ↓</a></header><p class="essence">💡 图遍历从源点出发系统访问所有可达顶点（DFS 一条路走到底、BFS 逐层扩散）；Dijkstra 用「贪心取最近点 + 优先队列」在非负权图上求最短路；并查集用「代表元 + 路径压缩」近 O(1) 地维护动态连通性。</p><section class="blk"><h3>核心要点</h3><ul><li>邻接表是稀疏图默认存储；邻接矩阵适合稠密图与 O(1) 查边</li><li>DFS 用栈/递归，BFS 用队列；都在「发现时」标记 visited</li><li>边权均为 1 时，BFS 天然给出最短路（呼应第 8 章）</li><li>拓扑排序 = Kahn（入度表 + 队列），输出长度 &lt; n 即有环</li><li>Dijkstra 要求边权非负，用优先队列取当前最近点</li><li>并查集维护连通性，路径压缩 + 按大小合并近 O(1)</li></ul></section><section class="blk"><h3>复杂度速查</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>算法 / 操作</th><th>时间</th><th>空间</th><th>说明</th></tr></thead><tbody><tr><td>邻接表存储</td><td>—</td><td>O(n + m)</td><td>遍历某点邻居耗时 O(deg)</td></tr><tr><td>邻接矩阵存储</td><td>—</td><td>O(n²)</td><td>查任意两点是否相邻为 O(1)</td></tr><tr><td>DFS / BFS 遍历</td><td>O(n + m)</td><td>O(n)</td><td>n 点 m 边，每点每边各访问一次</td></tr><tr><td>Kahn 拓扑排序</td><td>O(n + m)</td><td>O(n)</td><td>入度表 + 队列，结果长度 == n 才无环</td></tr><tr><td>Dijkstra（二叉堆）</td><td>O((n + m) log n)</td><td>O(n + m)</td><td>非负权；每次松弛可能入堆</td></tr><tr><td>并查集 find / union</td><td>O(α(n)) 摊还</td><td>O(n)</td><td>α 为反阿克曼函数，实际约等于 O(1)</td></tr></tbody></table></div></section><section class="blk"><h3>模板代码</h3><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 1：邻接表构图 + DFS 遍历</span><span class="tpl-desc">稀疏图的默认存储与最基础的遍历骨架。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">def build_adj(n, edges):
+    """邻接表：adj[u] 存 u 的所有邻居；无向边两个方向都要加。"""
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)  # 有向图删掉这一行
+    return adj
+
+def dfs(adj, start):
+    """迭代式 DFS：入栈即标记 visited，避免同一顶点重复入栈。"""
+    visited = [False] * len(adj)
+    order = []
+    stack = [start]
+    visited[start] = True
+    while stack:
+        u = stack.pop()
+        order.append(u)
+        for v in adj[u]:
+            if not visited[v]:
+                visited[v] = True  # 关键：发现即标记
+                stack.append(v)
+    return order
+
+# 连通分量数 = 对所有未访问点各启动一次 dfs 的次数</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 2：Kahn 拓扑排序（含判环）</span><span class="tpl-desc">有向图上按依赖关系排序；输出序列长度小于 n 即说明存在环。<strong>返回语义三语言对照</strong>：Rust / Python 用 <code>None</code> 表示有环（无合法拓扑序），C++ 用空数组表示有环并在注释中约定「空返回 = 有环，调用方须结合节点数 n 判断」；因 <code>n = 0</code> 时「合法空拓扑序」与「有环返回值」在 C++ 中不可区分，务必按题意（节点数已知）判定。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">from collections import deque
+
+def topo_sort(n, adj):
+    """Kahn 拓扑排序：返回拓扑序；长度 &lt; n 说明图中存在环。
+    adj[u] 存 u 指向的顶点（出边）。"""
+    indeg = [0] * n
+    for u in range(n):
+        for v in adj[u]:
+            indeg[v] += 1  # 统计入度
+    q = deque(v for v in range(n) if indeg[v] == 0)
+    order = []
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in adj[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)  # 入度归零即可入队
+    return order if len(order) == n else None  # None 表示有环</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 3：Dijkstra 最短路（邻接表 + 优先队列）</span><span class="tpl-desc">非负权图上的单源最短路；边权全为 1 时可退化为 BFS。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">import heapq
+
+def dijkstra(n, adj, src):
+    """Dijkstra：返回从 src 出发到各点的最短距离（不可达为 inf）。
+    adj[u] 存 (邻点, 边权)；要求边权非负。"""
+    INF = float('inf')
+    dist = [INF] * n
+    dist[src] = 0
+    pq = [(0, src)]  # heapq 是天然小顶堆
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d &gt; dist[u]:
+            continue  # 过期条目，延迟删除
+        for v, w in adj[u]:
+            nd = d + w
+            if nd &lt; dist[v]:  # 松弛
+                dist[v] = nd
+                heapq.heappush(pq, (nd, v))
+    return dist</code></pre></div></div><div class="tpl"><div class="tpl-head"><span class="tpl-name">模板 4：并查集（路径压缩 + 按大小合并）</span><span class="tpl-desc">维护动态连通性；两个优化合用使单次操作摊还 O(α(n))。</span></div><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button class="copy-btn" type="button">复制</button></div><pre><code class="lang-python">class DSU:
+    """并查集：路径压缩 + 按大小合并，摊还 O(α(n))。"""
+    def __init__(self, n):
+        self.parent = list(range(n))  # parent[i] = i
+        self.size = [1] * n
+
+    def find(self, x):
+        # 迭代式 find：顺路路径减半，返回代表元（根）
+        while self.parent[x] != x:
+            self.parent[x] = self.parent[self.parent[x]]  # 路径减半
+            x = self.parent[x]
+        return x
+
+    def union(self, a, b):
+        # 合并两集合；若本就在同一集合返回 False
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb:
+            return False
+        if self.size[ra] &lt; self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra          # 小树接到大树上
+        self.size[ra] += self.size[rb]
+        return True</code></pre></div></div></section><section class="blk"><h3>易错点</h3><ul class="pitfalls"><li><strong>重边与自环</strong>：邻接表允许同一邻居出现多次，求最短路通常无碍；但拓扑排序里若存在自环 <code>u→u</code>，其入度永远减不到 0，会被正确判为有环——编码前需按题意确认自环是否合法。</li><li><strong>有向 / 无向加边混淆</strong>：无向图必须加 <code>u→v</code> 与 <code>v→u</code> 两条边，漏加一条会漏连通、错算分量数；有向图多加了反向边则拓扑排序与最短路结果都会错。</li><li><strong>Dijkstra 用于负权边</strong>：一旦存在负权，一个「已确定」的顶点可能被后续更短的绕行推翻，贪心前提失效，须改用 Bellman-Ford。</li><li><strong>visited 标记时机</strong>：BFS 与迭代 DFS 应在<strong>入队 / 入栈时</strong>标记，若拖到出队 / 出栈时才标记，同一顶点会被重复压入，复杂度退化甚至结果错乱。</li><li><strong>并查集初始化与合并写法</strong>：初始化须令 <code>parent[i] = i</code>（每元素自成一集合，根即自身）、<code>size[i] = 1</code>；1-indexed 图要开 <code>n + 1</code> 空间，漏设 <code>parent[i] = i</code>（如按默认 0 值初始化）会让 <code>find</code> 在上溯时提前撞上错误的「自环」并返回错误的代表元，或把本不同集合的元素误判为同集合。此外递归 <code>find</code> 简洁但长链可能爆栈，迭代「路径减半」更稳；合并时若忘记按大小 / 秩合并，树会退化成链，<code>find</code> 最坏变 O(n)。</li><li><strong>拓扑排序判环依据</strong>：不能只看「队列空了」，应比较输出顶点数是否等于 n；少于 n 说明剩余顶点都卡在环上。</li></ul></section></article></section><section class="part" id="deep-part"><div class="part-head"><span class="kicker">PART B · DEEP DIVE</span><h2>🔍 深度解析</h2><p>原理解释、复杂度推导、实现权衡与语言细节。适合系统学习与复习。</p></div><nav class="module-toc" aria-label="深度解析 · 目录"><div class="module-toc-title">📑 深度解析 · 目录<span class="hint">点击章节即可跳转 ↓</span></div><ol class="module-toc-grid"><li><a href="#d-ch01"><span class="no">01</span><span>数组与字符串基础操作</span></a></li><li><a href="#d-ch02"><span class="no">02</span><span>双指针、滑动窗口与前缀和</span></a></li><li><a href="#d-ch03"><span class="no">03</span><span>链表操作与快慢指针</span></a></li><li><a href="#d-ch04"><span class="no">04</span><span>栈、队列与哈希表</span></a></li><li><a href="#d-ch05"><span class="no">05</span><span>堆与优先队列</span></a></li><li><a href="#d-ch06"><span class="no">06</span><span>二叉树遍历与递归思维</span></a></li><li><a href="#d-ch07"><span class="no">07</span><span>排序与二分搜索</span></a></li><li><a href="#d-ch08"><span class="no">08</span><span>回溯与深度广度优先搜索</span></a></li><li><a href="#d-ch09"><span class="no">09</span><span>动态规划模型与状态转移</span></a></li><li><a href="#d-ch10"><span class="no">10</span><span>图遍历、最短路径与并查集</span></a></li></ol></nav><article class="chapter" id="d-ch01" data-ch="ch01"><header class="ch-head"><span class="ch-num">01</span><h2>数组与字符串基础操作 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch01">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">数组的最底层模型是一段<strong>连续内存</strong>：元素类型相同、宽度固定，第 i 个元素的地址可由 <code>base + i × sizeof(T)</code> 直接算出。正是这种「地址可计算」的性质，让按下标访问 <code>a[i]</code> 成为 O(1)——代价只是一次乘法与一次偏移，与数组长度无关（<a href="https://www.hello-algo.com/chapter_array_and_linkedlist/array/" target="_blank" rel="noopener">Hello 算法 · 数组</a>）。代价是普通数组长度不可变；动态数组（C++ <code>std::vector</code>、Rust <code>Vec</code>、Python <code>list</code>）在其上封装出<strong>容量（capacity）</strong>与<strong>长度（length）</strong>两个量：容量是已申请的内存能容纳多少元素，长度是当前实际元素个数，当长度超过容量时重新分配、把元素搬迁到更大的内存块（<a href="https://doc.rust-lang.org/std/vec/struct.Vec.html" target="_blank" rel="noopener">Rust std · Vec</a>, <a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" rel="noopener">cppreference · std::vector</a>）。</p><p class="deep-para">多维数组在内存里同样是线性的：C 系语言采用<strong>行主序（row-major）</strong>，<code>a[i][j]</code> 的地址为 <code>base + (i × cols + j) × sizeof(T)</code>，因此顺序按行扫描比按列扫描更缓存友好。需注意这是 C 系语言的约定，Fortran / MATLAB 等采用列主序（column-major），二者不可混同。二维网格（grid）本质上就是一个二维数组，其「邻居」关系并不存储为边，而是用<strong>方向数组</strong>（一组行偏移、列偏移）在运行时算出来——把上下左右或含对角线的偏移放进数组，用一次循环即可枚举全部邻居，这正是 4/8 连通遍历的统一写法（<a href="https://en.wikipedia.org/wiki/Flood_fill" target="_blank" rel="noopener">Wikipedia · Flood fill</a>）。</p><p class="deep-para">字符串则是「字符序列 + 文本语义」的封装，但三语言落地差异极大。C++ <code>std::string</code> 是<strong>可变</strong>且内存连续的字符容器，<code>data()</code>/<code>c_str()</code> 可拿到底层指针，能与 C 风格 <code>char[]</code> 平滑互操作（<a href="https://en.cppreference.com/w/cpp/string/basic_string" target="_blank" rel="noopener">cppreference · std::basic_string</a>）。Rust 有 <code>String</code>（可增长、拥有所有权、保证 UTF-8）与 <code>&amp;str</code>（UTF-8 字符串切片、借用）两种类型，二者都保证内容为合法 UTF-8（<a href="https://doc.rust-lang.org/book/ch08-02-strings.html" target="_blank" rel="noopener">The Rust Book</a>）。Python 的 <code>str</code> 是<strong>不可变</strong>的 Unicode 码点序列，任何看似「修改」的操作都返回新对象（<a href="https://docs.python.org/3/library/stdtypes.html" target="_blank" rel="noopener">Python docs · Built-in Types</a>）。理解这一层的差异，是后面所有字符串技巧的前提。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para">动态数组尾部追加的均摊 O(1) 来自<strong>摊还分析（amortized analysis）</strong>。设增长策略为「容量不足时按倍数 k &gt; 1 扩容」：扩容发生在长度达到 1, k, k², … 时，第 j 次扩容需要拷贝约 k^{j-1} 个元素。n 次追加的总拷贝代价约为 Σ k^{i-1} &lt; n·k/(k−1) = O(n)，平摊到每次追加即 O(1)（<a href="https://doc.rust-lang.org/std/vec/struct.Vec.html" target="_blank" rel="noopener">Rust std · Vec</a>）。Rust 官方文档在 <code>Vec::push</code> 的「Time complexity」小节逐字写明「Takes amortized *O*(1) time」，并紧接着指出「若 push 后长度超过容量，则需 *O*(capacity) 时间来把元素拷贝到更大的分配块」——即最坏单次代价为 O(capacity)（原文逐字为「*O*(*capacity*) time is taken to copy the vector's elements to a larger allocation」）。增长因子的选择是一种权衡：因子越大（如 2×）扩容次数越少，但最坏情况浪费的内存越多；主流 C++ 实现用 1.5×–2×，而 Rust 文档在「Guarantees」一节强调「无论采用何种策略都保证均摊 O(1) push」。若已知规模，用 <code>with_capacity</code> / <code>reserve</code> 预留空间可把扩容次数降到 0。</p><p class="deep-para">字符串可变性则是另一种根本权衡。不可变字符串（Python、Java）可以安全地被共享、缓存哈希、当作字典键，代价是「修改」必然复制——Python 文档明确警告「通过重复拼接来构建序列，其运行时成本呈二次方增长」，并给出线性方案：先收集到列表再 <code>''.join()</code>，或写入 <code>io.StringIO</code>（<a href="https://docs.python.org/3/library/stdtypes.html" target="_blank" rel="noopener">Python docs</a>）。可变字符串（C++/Rust）支持原地修改、内存更省，但把「何时会复制/失效」的责任交给程序员：C++ 需自管容量与迭代器失效，Rust 需在借用规则下小心 <code>String</code> 与 <code>&amp;str</code> 的边界。选择哪一侧，取决于访问模式是「读多写少、需要共享」还是「频繁原地改写」。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>环形缓冲 / 双端队列</strong>：<code>VecDeque</code>、<code>std::deque</code>、<code>collections.deque</code> 在数组之上支持两端 O(1) 增删，弥补普通数组头部操作 O(n) 的短板。</li><li><strong>前缀和 / 差分</strong>：对数组预处理一次 O(n)，即可把区间求和、区间加降为 O(1)，是数组类问题的核心加速器（详见第 2 章）。</li><li><strong>网格即图</strong>：二维网格可视为隐式图——每个格子是节点，邻居由方向数组现算而成，无需存储边，BFS/DFS 可直接套用。</li><li><strong>字符到下标的映射</strong>：把 <code>'a'..'z'</code> 映射到 0..25 用长度 26 的计数数组，是字符串计数类问题最省空间的惯用法。</li><li><strong>字符串匹配的进化</strong>：从朴素 O(n·m) 到 KMP / Z 函数 O(n+m) 再到字符串哈希，是同一问题在时间复杂度上的层层优化。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>LeetCode 27 · 移除元素（原地删除，快慢指针雏形）</li><li>LeetCode 26 · 删除有序数组中的重复项</li><li>LeetCode 344 · 反转字符串（原地双指针对撞）</li><li>LeetCode 151 · 反转字符串中的单词（分割 + 拼接 + 反转）</li><li>LeetCode 200 · 岛屿数量（二维网格 + 方向数组 + DFS/BFS）</li><li>LeetCode 73 · 矩阵置零（二维数组原地标记）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• <code>s[i]</code> 编译不过<br>• <code>&amp;s[i..j]</code> 是字节切片，端点须落在 char 边界否则 panic。要区分拥有所有权的 <code>String</code> 与借用的 <code>&amp;str</code>。<code>Vec</code> 越界索引会 panic，安全取值用 <code>get()</code> 返回 <code>Option</code><br>• <code>String</code> 与 <code>Vec&lt;u8&gt;</code> 之间需显式转换。反转字符串须用 <code>chars().rev()</code>，不能对字节原地反转。</td></tr><tr><td>C++</td><td>• <code>std::string</code>/<code>std::vector</code> 连续且可变<br>• <code>operator[]</code> 不做边界检查，<code>at()</code> 才抛异常。<code>size()</code> 返回无符号 <code>size_t</code>，与 <code>int</code> 混用会隐式转换引发下溢。<code>push_back</code> 触发扩容会让全部迭代器/引用失效。<code>c_str()</code> 返回的指针在字符串被修改后失效。<code>std::string</code> 反转按字节进行，仅对 ASCII 安全。</td></tr><tr><td>Python</td><td>• <code>str</code> 不可变，<code>s[i]</code> 返回长度为 1 的 <code>str</code>（没有独立 char 类型）<br>• 循环内 <code>+=</code> 拼接是 O(n²)，应 <code>''.join()</code>。<code>[[0]*n]*m</code> 只是共享同一行的 m 个引用。切片 <code>a[::-1]</code> 返回新列表而非原地反转，<code>s[::-1]</code> 亦返回新串。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" rel="noopener">cppreference · std::vector</a> <span class="src-note">— C++ 动态数组的连续存储、容量与迭代器失效权威说明</span></li><li><a href="https://en.cppreference.com/w/cpp/string/basic_string" target="_blank" rel="noopener">cppreference · std::basic_string</a> <span class="src-note">— C++ 字符串的连续存储、<code>substr</code>/<code>find</code>/<code>at</code> 语义</span></li><li><a href="https://doc.rust-lang.org/book/ch08-02-strings.html" target="_blank" rel="noopener">The Rust Book · Storing UTF-8 Encoded Text with Strings</a> <span class="src-note">— <code>String</code> vs <code>&amp;str</code>、UTF-8 与「为何不能按下标取字符」</span></li><li><a href="https://doc.rust-lang.org/std/vec/struct.Vec.html" target="_blank" rel="noopener">Rust std · Vec</a> <span class="src-note">— 容量/长度关系、<code>push</code> 均摊 O(1)、<code>with_capacity</code> 与索引安全</span></li><li><a href="https://docs.python.org/3/library/stdtypes.html" target="_blank" rel="noopener">Python docs · Built-in Types (Text Sequence Type — str)</a> <span class="src-note">— <code>str</code> 不可变性、索引返回单字符、循环拼接的二次方代价</span></li><li><a href="https://www.hello-algo.com/chapter_array_and_linkedlist/array/" target="_blank" rel="noopener">Hello 算法 · 数组</a> <span class="src-note">— 中文图解数组中「索引即地址偏移」与随机访问 O(1)</span></li><li><a href="https://oi-wiki.org/" target="_blank" rel="noopener">OI Wiki</a> <span class="src-note">— 免费开放、持续更新的中文算法知识整合站点（数组、前缀和、字符串等专题）</span></li><li><a href="https://en.wikipedia.org/wiki/Flood_fill" target="_blank" rel="noopener">Wikipedia · Flood fill</a> <span class="src-note">— 网格 4/8 连通遍历与洪水填充的经典算法模型</span></li><li><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" rel="noopener">cppreference · std::vector</a> <span class="src-note">— C++ 动态数组：连续存储、容量、迭代器失效对照表。</span></li><li><a href="https://en.cppreference.com/w/cpp/string/basic_string" target="_blank" rel="noopener">cppreference · std::basic_string</a> <span class="src-note">— C++ 字符串：连续存储、<code>operator[]</code>/<code>at</code>、<code>substr</code>/<code>find</code>。</span></li><li><a href="https://doc.rust-lang.org/book/ch08-02-strings.html" target="_blank" rel="noopener">The Rust Book · Storing UTF-8 Encoded Text with Strings</a> <span class="src-note">— Rust 字符串 UTF-8 表示与不可索引原因。</span></li><li><a href="https://doc.rust-lang.org/std/vec/struct.Vec.html" target="_blank" rel="noopener">Rust std · Vec</a> <span class="src-note">— <code>Vec</code> 容量/长度、<code>push</code> 均摊 O(1)、<code>get()</code> 安全取值。</span></li><li><a href="https://docs.python.org/3/library/stdtypes.html" target="_blank" rel="noopener">Python docs · Built-in Types</a> <span class="src-note">— <code>str</code> 不可变、单字符索引、循环拼接 O(n²) 与 <code>join</code> 方案。</span></li><li><a href="https://www.hello-algo.com/chapter_array_and_linkedlist/array/" target="_blank" rel="noopener">Hello 算法 · 数组</a> <span class="src-note">— 中文图解数组原理与随机访问。</span></li><li><a href="https://en.wikipedia.org/wiki/Flood_fill" target="_blank" rel="noopener">Wikipedia · Flood fill</a> <span class="src-note">— 网格 4/8 连通遍历模型。</span></li></ul></section></article><article class="chapter" id="d-ch02" data-ch="ch02"><header class="ch-head"><span class="ch-num">02</span><h2>双指针、滑动窗口与前缀和 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch02">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">双指针之所以能把 O(n²) 降为 O(n)，关键在<strong>单调性</strong>带来的「候选集裁剪」。以有序数组两数之和为例：设当前 <code>nums[l] + nums[r]</code> 偏小，那么对于固定的 <code>r</code>，任何 <code>l' &lt; l</code> 只会得到更小的和，因此 <code>l</code> 右侧之外的下标组合都可一次性排除——每一步都确定性地「砍掉一整行候选」（<a href="https://oi-wiki.org/misc/two-pointer" target="_blank" rel="noopener">OI Wiki · 双指针</a>、<a href="https://usaco.guide/silver/two-pointers" target="_blank" rel="noopener">USACO Guide · Two Pointers</a>）。由于每个指针只单向移动、至多走 n 步，总操作数是线性的。</p><p class="deep-para">滑动窗口是双指针的连续区间特例，它的不变量是「窗口 <code>[left, right]</code> 始终满足（或不满足）某个可增量维护的条件」。之所以内层 <code>while</code> 不破坏线性复杂度，是因为<strong>摊还分析</strong>：<code>left</code> 只会单调右移、永不回退，整个循环中 <code>left</code> 累加的移动次数不超过 n，与 <code>right</code> 的 n 次扩张相加，总工作量仍是 O(n)——嵌套循环不等于 O(n²)（<a href="https://oi-wiki.org/misc/two-pointer" target="_blank" rel="noopener">OI Wiki · 双指针</a>）。前提是窗口信息（和、频次、不同元素数）能 O(1) 增量更新。</p><p class="deep-para">前缀和则走了另一条路：用 O(n) 预处理把「任意区间求和」这一包含 O(n) 个工作量的运算，转化成两个端点的减法。它成立的根本原因是加法的可结合性，使 <code>∑_{k=l}^{r} a_k = S_r - S_{l-1}</code>（<a href="https://oi-wiki.org/basic/prefix-sum/" target="_blank" rel="noopener">OI Wiki · 前缀和 &amp; 差分</a>）。差分是其逆运算：对序列的「区间内每项加 v」等价于在差分序列上只改 <code>D_l += v</code>、<code>D_{r+1} -= v</code> 两处，因为对差分序列求前缀和会把相邻项之差复原，从而得到更新后的序列。需要强调的是，<strong>差分序列本身只承载「增量标记」</strong>：以全零基线构造时，其前缀和是各位置的<strong>累计增量</strong>（对应原数组全零的场景，如 LeetCode 1109），须叠加到原数组才等价于「原数组经区间加的结果」；只有由原数组构造差分（如模板 4 的 <code>from_slice</code>），其前缀和才直接是更新后的原数组。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para">滑动窗口的摊还复杂度可形式化：记第 i 轮扩张使 <code>right</code> 前进 1，收缩使 <code>left</code> 前进若干，全部轮次中 <code>right</code> 总计前进 n，<code>left</code> 总计前进 n，故总步数 ≤ 2n，即 O(n)。这一结论只对「<code>left</code> 单调不回退」的写法成立；若窗口条件不具单调性（例如目标约束无法用增量维护），则退回暴力枚举。因此模板选择的第一判据是：<strong>窗口信息的增删是否为 O(1)</strong>。</p><p class="deep-para">前缀和与滑窗互为替代：当数组含负数时，「和随右端单调不减」的前提被破坏，滑窗失效，此时应改用「前缀和 + 哈希表」统计满足 <code>pre[j+1] - pre[i] = k</code> 的方案（<a href="https://oi-wiki.org/basic/prefix-sum/" target="_blank" rel="noopener">OI Wiki · 前缀和 &amp; 差分</a>）。差分与线段树/树状数组也存在权衡：若修改与查询交错在线进行，一次前缀和还原不够，需要树状数组等支持动态区间加与查询的结构；差分只在「先批量改、后统一查」的离线场景下最优。前缀和的代价是 O(n) 额外空间，在内存敏感或仅需单次查询时不划算。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>三数之和 / 多数之和</strong>：排序后固定一个（或数个）外层元素，对剩余区间用对撞双指针，把 O(n³) 降到 O(n²)。</li><li><strong>「至多 K」技巧</strong>：<code>恰好 K = 至多 K − 至多 (K−1)</code>，把难维护的「恰好」约束拆成两个可单调滑窗的「至多」问题。</li><li><strong>定长窗口 + 计数结构</strong>：固定宽度窗口配合频次表（如异位词、固定长度子串统计），或用切片 <code>windows(k)</code> / 循环直接维护。</li><li><strong>二维前缀和与子矩阵</strong>：由容斥递推 <code>S[i][j] = A[i][j] + S[i-1][j] + S[i][j-1] - S[i-1][j-1]</code>；其「每维只取 0/1」的特例即高维前缀和（又称 SOS DP，子集和 DP），与本章主题关联较弱，此处仅作指认（<a href="https://oi-wiki.org/basic/prefix-sum/" target="_blank" rel="noopener">OI Wiki · 前缀和 &amp; 差分</a>）。</li><li><strong>差分 + 前缀和组合</strong>：区间批量加后用一次前缀和还原，是「差分」最典型的用法；树上前缀和/差分把它推广到树的路径与子树（本章从略）。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>LeetCode 167 · 两数之和 II - 输入有序数组（对撞双指针）</li><li>LeetCode 26 · 删除有序数组中的重复项（快慢指针）</li><li>LeetCode 209 · 长度最小的子数组（不定长滑窗，收缩求最短）</li><li>LeetCode 3 · 无重复字符的最长子串（不定长滑窗 + 频次）</li><li>LeetCode 560 · 和为 K 的子数组（前缀和 + 哈希表）</li><li>LeetCode 1109 · 航班预订统计（差分数组区间加）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 不可变借用可并存，<code>&amp;nums[l]</code> 与 <code>&amp;nums[r]</code> 能同时读取，无需复制<br>• 切片 <code>.windows(k)</code> 天然生成定长窗口<br>• <code>HashMap::entry</code> + <code>or_insert</code> 一次定位即可完成计数（<a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html" target="_blank" rel="noopener">Rust std · HashMap</a>）<br>• <code>usize</code> 做减法会下溢，<code>r = len-1</code> 应先 <code>saturating_sub</code>，窗口收缩时注意 <code>left &lt;= right</code><br>• 无返回值时用 <code>Option</code> / 空集合表达「未找到」。</td></tr><tr><td>C++</td><td>• <code>vector::size()</code> 返回无符号 <code>size_t</code>，与 <code>int</code> 混用会有隐式转换陷阱，建议显式 <code>(int)</code> 转换<br>• 累加量用 <code>long long</code> 防溢出<br>• <code>unordered_map</code> 平均 O(1) 但不保证遍历顺序，需有序时用 <code>map</code><br>• <code>std::partial_sum</code> 可一行生成前缀和（<a href="https://en.cppreference.com/w/cpp/algorithm/partial_sum" target="_blank" rel="noopener">cppreference · std::partial_sum</a>）<br>• 「未找到」常以空 <code>vector</code> / 迭代器 <code>end()</code> 表达，须在调用侧判空。</td></tr><tr><td>Python</td><td>• 整数无溢出，无需担心 <code>long long</code><br>• <code>itertools.accumulate(a, initial=0)</code> 一行得到前缀和（含空前缀）（<a href="https://docs.python.org/3/library/itertools.html#itertools.accumulate" target="_blank" rel="noopener">Python docs · itertools.accumulate</a>）<br>• <code>dict</code> / <code>defaultdict(int)</code> 天然做计数<br>• 注意 <code>str</code> 不可变、切片生成新对象，循环内避免大量字符串拼接<br>• 「未找到」用 <code>None</code> 表达，注意与合法返回值 <code>0</code> / 空列表区分。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://oi-wiki.org/misc/two-pointer" target="_blank" rel="noopener">OI Wiki · 双指针</a> <span class="src-note">— 中文系统讲解对撞 / 同向 / 快慢两类用法与滑窗例题。</span></li><li><a href="https://oi-wiki.org/basic/prefix-sum/" target="_blank" rel="noopener">OI Wiki · 前缀和 &amp; 差分</a> <span class="src-note">— 一维/二维前缀和、差分与树上推广的完整推导。</span></li><li><a href="https://usaco.guide/silver/two-pointers" target="_blank" rel="noopener">USACO Guide · Two Pointers</a> <span class="src-note">— 双指针与滑动窗口的入门讲解与复杂度分析。</span></li><li><a href="https://en.cppreference.com/w/cpp/algorithm/partial_sum" target="_blank" rel="noopener">cppreference · std::partial_sum</a> <span class="src-note">— C++ 标准库前缀和函数语义权威说明。</span></li><li><a href="https://docs.python.org/3/library/itertools.html#itertools.accumulate" target="_blank" rel="noopener">Python docs · itertools.accumulate</a> <span class="src-note">— Python 生成前缀和的标准工具。</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html" target="_blank" rel="noopener">Rust std · HashMap（entry API）</a> <span class="src-note">— <code>entry</code> / <code>or_insert</code> 计数惯用法与示例。</span></li><li><a href="https://doc.rust-lang.org/std/primitive.slice.html#method.windows" target="_blank" rel="noopener">Rust std · slice::windows</a> <span class="src-note">— 生成定长重叠窗口的切片方法。</span></li><li><a href="https://cses.fi/book.pdf" target="_blank" rel="noopener">Competitive Programmer's Handbook（CSES）</a> <span class="src-note">— 第 8 章系统讲解双指针与滑窗技术。</span></li></ul></section></article><article class="chapter" id="d-ch03" data-ch="ch03"><header class="ch-head"><span class="ch-num">03</span><h2>链表操作与快慢指针 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch03">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">链表的本质是<strong>用指针把离散分配的节点串成逻辑序列</strong>：每个节点除了数据域，还持有指向后继（双向链表再加指向前驱）的指针。它牺牲了数组的连续存储与随机访问，换取「已知前驱时以 O(1) 改指针完成增删」这一特性 (<a href="https://oi-wiki.org/ds/linked-list/" target="_blank" rel="noopener">OI Wiki · 链表</a>)。</p><p class="deep-para"><strong>虚拟头节点（dummy）</strong> 是关键不变量：在真实头节点前接一个哨兵节点后，每个真实节点都必有前驱，于是「删除 / 插入首节点」不再需要单独特判，所有位置的处理逻辑统一为「改前驱的 <code>next</code>」。这也是合并、删除倒数第 N 个节点等模板能写得简洁的原因。</p><p class="deep-para"><strong>快慢指针</strong> 的机制是<strong>固定步长差</strong>：fast 每次走两步、slow 每次走一步，相对速度恒为 1。若链表无环，fast 会先抵达 <code>null</code>；若有环，则相当于快指针在有限跑道内追及慢指针，必然相遇。相遇点并不等于环入口。设 head 到环入口距离为 a，入口到相遇点距离为 b，环长为 L = b + c（c 为相遇点沿环回到入口的距离）。相遇时 slow 走了 a+b，fast 走了 a+b+kL（k 为多绕的整圈数），由 fast 速度是 slow 两倍得 2(a+b) = a+b+kL，即 a = kL − b = (k−1)L + c；取 k=1 得 <strong>a = c</strong>——head 到入口的距离等于相遇点到入口的距离。故将 slow 重置到 head、两指针同步单步前进，必在环入口相遇 (<a href="https://cp-algorithms.com/others/tortoise_and_hare.html" target="_blank" rel="noopener">CP-Algorithms · Floyd's algorithm</a>, <a href="https://codemia.io/knowledge-hub/path/proof_of_detecting_the_start_of_cycle_in_linked_list_duplicate" target="_blank" rel="noopener">Proof of detecting the start of cycle in linked list</a>)。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>复杂度推导</strong>：顺序访问 O(n) 源于必须沿指针逐跳；插入 / 删除 O(1) 的<strong>前提是已持有前驱指针</strong>——若需先查找目标，则整体退化为 O(n)。Floyd 判环为 O(n)：相遇发生在 fast 进环后 O(L) 步内（L 为环长，进环后二者相对速度为 1），慢指针在进环前至多走 O(a)，故整体遍历 O(n)；指针只前进不回退，空间仅两个指针，故时空为 O(n)/O(1)。</p><p class="deep-para"><strong>链表 vs 动态数组</strong>：链表单次增删省去搬移，但节点分散在堆上，遍历时指针 chasing 造成大量 cache miss；每节点还要额外存储指针、付出分配器开销。因此工程实践中，<strong>动态数组常常反超链表</strong>——这正是 Rust 官方在其 <code>LinkedList</code> 文档中直接给出的立场：「几乎总是更好用 <code>Vec</code> 或 <code>VecDeque</code>，因为基于数组的容器通常更快、更省内存，并且能更好地利用 CPU 缓存」 (<a href="https://doc.rust-lang.org/std/collections/struct.LinkedList.html" target="_blank" rel="noopener">Rust std · LinkedList</a>, <a href="https://doc.rust-lang.org/std/collections/" target="_blank" rel="noopener">Rust std::collections</a>)。与之呼应，Python 也用「引用计数 + 循环 GC」的对象模型承担链表语义，并惯例性建议用 <code>list</code> / <code>deque</code> 替代手写链表。</p><p class="deep-para"><strong>何时才该用链表</strong>：需要频繁在<strong>任意已知位置</strong> O(1) 插入 / 删除；需要 O(1) 的 <code>splice</code> / <code>merge</code> 拼接；元素很大且不愿搬移；或需要节点地址<strong>长期稳定</strong>的场景（侵入式链表、内核对象、LRU 缓存、侵入式双向环）。反之，随机访问密集、纯遍历、内存受限时应选动态数组。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>结构变体</strong>：循环链表、带头节点链表、静态链表（用数组模拟指针，规避堆分配）；<strong>双向链表</strong>在每个节点上多一个 <code>prev</code> 指针，插入 / 删除须按固定顺序更正指针——<strong>插入先接新节点两侧、再改邻居</strong>（<code>node.prev = p; node.next = p.next;</code> 然后 <code>p.next.prev = node; p.next = node;</code>），<strong>删除先互连前后、再释放</strong>（<code>p.prev.next = p.next; p.next.prev = p.prev;</code> 再释放 <code>p</code>）。顺序颠倒会丢链或留下悬垂指针；另需注意，若 <code>p.next</code> 为空（尾插 / 尾删场景）需特判。</li><li><strong>快慢指针家族</strong>：求中点、判断回文链表、重排链表、删除倒数第 N 个（快指针先走 N 步形成固定间距）。</li><li><strong>反转家族</strong>：区间反转、k 个一组反转、两两交换节点。</li><li><strong>合并家族</strong>：合并 k 个有序链表（配合堆）、链表归并排序；dummy head 在归并中同样用于统一首节点处理。</li><li><strong>Rust 惯用替代</strong>：用 <code>Vec</code> / arena（数组下标模拟指针）绕开 <code>Rc&lt;RefCell&lt;..&gt;&gt;</code> 与借用检查器约束；队列型需求用 <code>VecDeque</code> (<a href="https://doc.rust-lang.org/std/collections/" target="_blank" rel="noopener">Rust std::collections</a>)。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>反转入门：LeetCode 206 · 反转链表</li><li>判环与找环入口：LeetCode 141 · 环形链表、LeetCode 142 · 环形链表 II</li><li>求中点：LeetCode 876 · 链表的中间结点</li><li>合并有序链表：LeetCode 21 · 合并两个有序链表</li><li>dummy 删除：LeetCode 19 · 删除链表的倒数第 N 个结点</li><li>组合技巧：LeetCode 143 · 重排链表（中点 + 反转 + 合并）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 单链表惯用 <code>Option&lt;Box&lt;ListNode&gt;&gt;</code>，所有权清晰、无 GC<br>• 但<strong>无法用 <code>Box</code> 构成环</strong>，带环 / 双向需 <code>Rc&lt;RefCell&lt;..&gt;&gt;</code>，且 <code>Rc</code> 双向环的引用计数永不为 0 会<strong>内存泄漏</strong>，须用 <code>Weak</code> 破环 (<a href="https://doc.rust-lang.org/book/ch15-06-reference-cycles.html" target="_blank" rel="noopener">The Rust Book · Reference Cycles</a>)<br>• 借用检查器禁止同时持有 <code>&amp;mut</code> 与 <code>&amp;</code>，故「一趟快慢删除」难写，惯用两遍 / 递归绕过<br>• 官方建议多数场景用 <code>Vec</code> / <code>VecDeque</code>。</td></tr><tr><td>C++</td><td>• 裸指针手写 <code>struct ListNode</code> 最灵活<br>• <code>std::list</code> 是双向链表，<strong>插入与 <code>splice</code> 不使迭代器失效、仅被删元素失效</strong>，与 <code>std::vector</code> 扩容时「全部失效」相反 (<a href="https://en.cppreference.com/w/cpp/container/list" target="_blank" rel="noopener">cppreference · std::list</a>, <a href="https://en.cppreference.com/w/cpp/container/list/erase" target="_blank" rel="noopener">cppreference · list::erase</a>)<br>• <code>erase</code> 自 C++11 起返回下一个有效迭代器，可用于循环中安全删除。</td></tr><tr><td>Python</td><td>• 用对象引用（<code>self.next</code>）实现，<strong>判「同一节点」应用 <code>is</code> 而非 <code>==</code></strong><br>• 双向环属循环引用，引用计数无法回收，需依赖 <code>gc</code> 模块的循环垃圾回收器 (<a href="https://docs.python.org/3/library/gc.html" target="_blank" rel="noopener">Python docs · gc</a>)<br>• 工程上多用 <code>list</code> / <code>collections.deque</code> 替代手写链表。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://oi-wiki.org/ds/linked-list/" target="_blank" rel="noopener">OI Wiki · 链表</a> <span class="src-note">— 中文链表基础：单 / 双向、循环链表、插入删除与异或链表技巧</span></li><li><a href="https://cp-algorithms.com/others/tortoise_and_hare.html" target="_blank" rel="noopener">CP-Algorithms · Floyd's Linked List Cycle Finding Algorithm</a> <span class="src-note">— 快慢指针判环与环入口的完整推导与证明</span></li><li><a href="https://en.cppreference.com/w/cpp/container/list" target="_blank" rel="noopener">cppreference · std::list</a> <span class="src-note">— C++ 双向链表容器总览与迭代器失效规则</span></li><li><a href="https://en.cppreference.com/w/cpp/container/list/erase" target="_blank" rel="noopener">cppreference · std::list::erase</a> <span class="src-note">— erase 仅使被删元素迭代器失效，并返回后继迭代器</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.LinkedList.html" target="_blank" rel="noopener">Rust std · LinkedList</a> <span class="src-note">— 官方提示「多数场景应优先 <code>Vec</code> / <code>VecDeque</code>」</span></li><li><a href="https://doc.rust-lang.org/std/collections/" target="_blank" rel="noopener">Rust std::collections</a> <span class="src-note">— Rust 标准集合分类与选型指南（<code>Vec</code> / <code>VecDeque</code> / <code>LinkedList</code> 定位）</span></li><li><a href="https://doc.rust-lang.org/book/ch15-06-reference-cycles.html" target="_blank" rel="noopener">The Rust Book · Reference Cycles Can Leak Memory</a> <span class="src-note">— <code>Rc</code> + <code>RefCell</code> 循环引用导致内存泄漏及 <code>Weak</code> 破解</span></li><li><a href="https://rust-unofficial.github.io/too-many-lists/" target="_blank" rel="noopener">Learning Rust With Entirely Too Many Linked Lists</a> <span class="src-note">— 以链表为线索讲透 Rust 所有权、借用与 <code>Rc</code> / <code>RefCell</code> / <code>unsafe</code></span></li><li><a href="https://docs.python.org/3/library/gc.html" target="_blank" rel="noopener">Python docs · gc — Garbage Collector interface</a> <span class="src-note">— 循环引用的垃圾回收机制与调试接口</span></li><li><a href="https://oi-wiki.org/ds/linked-list/" target="_blank" rel="noopener">OI Wiki · 链表</a> <span class="src-note">— 中文链表基础：单向 / 双向 / 循环链表、插入删除流程与异或链表技巧。</span></li><li><a href="https://cp-algorithms.com/others/tortoise_and_hare.html" target="_blank" rel="noopener">CP-Algorithms · Floyd's Linked List Cycle Finding Algorithm</a> <span class="src-note">— 快慢指针判环与环入口的完整推导与证明。</span></li><li><a href="https://en.cppreference.com/w/cpp/container/list" target="_blank" rel="noopener">cppreference · std::list</a> <span class="src-note">— C++ 双向链表容器总览与迭代器失效规则。</span></li><li><a href="https://en.cppreference.com/w/cpp/container/list/erase" target="_blank" rel="noopener">cppreference · std::list::erase</a> <span class="src-note">— <code>erase</code> 仅使被删元素迭代器失效，并返回后继迭代器。</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.LinkedList.html" target="_blank" rel="noopener">Rust std · LinkedList</a> <span class="src-note">— 官方提示「多数场景应优先 <code>Vec</code> / <code>VecDeque</code>」。</span></li><li><a href="https://doc.rust-lang.org/std/collections/" target="_blank" rel="noopener">Rust std::collections</a> <span class="src-note">— Rust 标准集合分类与选型指南（<code>Vec</code> / <code>VecDeque</code> / <code>LinkedList</code> 定位）。</span></li><li><a href="https://doc.rust-lang.org/book/ch15-06-reference-cycles.html" target="_blank" rel="noopener">The Rust Book · Reference Cycles Can Leak Memory</a> <span class="src-note">— <code>Rc</code> + <code>RefCell</code> 循环引用导致内存泄漏及 <code>Weak</code> 破解。</span></li><li><a href="https://rust-unofficial.github.io/too-many-lists/" target="_blank" rel="noopener">Learning Rust With Entirely Too Many Linked Lists</a> <span class="src-note">— 以链表为线索讲透 Rust 所有权、借用与 <code>Rc</code> / <code>RefCell</code> / <code>unsafe</code>。</span></li><li><a href="https://docs.python.org/3/library/gc.html" target="_blank" rel="noopener">Python docs · gc</a> <span class="src-note">— 循环引用的垃圾回收机制与调试接口。</span></li></ul></section></article><article class="chapter" id="d-ch04" data-ch="ch04"><header class="ch-head"><span class="ch-num">04</span><h2>栈、队列与哈希表 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch04">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">栈与队列都是<strong>受限的线性表</strong>：限制访问位置，换来更强的结构不变量。栈只允许在表尾（栈顶）插入与删除，于是「当前容器内最后进来的最先出去」，即 LIFO（后进先出）(<a href="https://oi-wiki.org/ds/stack/" target="_blank" rel="noopener">OI Wiki · 栈</a>)；队列一端入、另一端出，元素按到达顺序被处理，即 FIFO（先进先出）。这种「最近优先」与「最早优先」的语义分野，决定了它们各自的主场：栈适合「最近未处理完」的问题（括号匹配、递归改写为迭代、表达式求值中的运算符栈、单调栈），队列适合「按到达顺序公平推进」的任务（BFS 逐层扩展、缓冲区与调度）。双端队列（deque）是二者的超集，两端都能 O(1) 增删，常以<strong>分段连续缓冲</strong>实现，从而避开单块内存整体扩容的开销 (<a href="https://en.cppreference.com/w/cpp/container/deque" target="_blank" rel="noopener">cppreference · std::deque</a>)。</p><p class="deep-para">哈希表的核心是「把任意键压成一个整数，再映射到桶（bucket）数组的下标」，让「按键查找」脱离线性比较 (<a href="https://oi-wiki.org/ds/hash/" target="_blank" rel="noopener">OI Wiki · 哈希表</a>)。流程分三步：<strong>①哈希函数</strong>把键转成散列值（如 <code>key % M</code>、对字符串用多项式滚动哈希）；<strong>②取模</strong>映射到桶下标；<strong>③冲突处理</strong>，即不同键落到同一桶时的应对。主流策略有两类：</p><p class="deep-para">- <strong>链地址法（拉链法 / separate chaining）</strong>：每个桶挂一条链表（或树）存所有落在此处的键值对，查找时先定位桶再在链内比对。删除简单、对高负载因子较鲁棒。 - <strong>开放寻址法（open addressing）</strong>：冲突时按探测序列（线性探测、二次探测、双重哈希）在数组里另找空位；缓存友好、无指针开销，但删除通常需要<strong>墓碑标记</strong>，且负载因子偏高时性能陡降。</p><p class="deep-para">哈希表维护<strong>负载因子</strong> <code>α = 元素数 / 桶数</code>，一旦超过阈值（如 0.75）就<strong>扩容（rehash）</strong>：申请更大的桶数组，把全部元素重新插入。这一「用空间换时间 + 定期重建」的设计，是「单次可能很慢、均摊很快」的典型来源。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>为什么期望 O(1)？</strong> 在「简单均匀哈希」假设下——哈希函数把每个键近似等概率、独立地撒进 <code>m</code> 个桶——<code>n</code> 个元素时每个桶的期望长度 <code>λ = n/m</code>。查找需先 O(1) 定位桶，再在桶内做约 <code>λ</code> 次比较，总代价 ≈ O(1 + λ)。只要令桶数与元素数成正比，使负载因子有上界（如 <code>m ≥ 4n/3</code>，则 <code>λ ≤ 3/4</code>），<code>λ</code> 就是常数，于是<strong>期望</strong>查找为 O(1)。关键在「期望」二字：这是平均意义下的结论，而非最坏保证。若所有键恰好落入同一桶（哈希退化或遭刻意构造），桶内退化成一条长链，查找即为 O(n)——这正是 C++ <code>unordered_map</code> 文档标注「平均常数、最坏线性」的原因 (<a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" rel="noopener">cppreference · std::unordered_map</a>)。</p><p class="deep-para"><strong>为什么扩容是摊还 O(1)？</strong> 设从容量 <code>c₀</code> 起步、每次翻倍。一次插入本身 O(1)，但触发扩容时要重建并重插当前全部元素，单次代价 O(当前元素数)。把连续 <code>n</code> 次插入触发的扩容代价累加：<code>c₀ + 2c₀ + 4c₀ + … &lt; 2·c_final = O(n)</code>，是几何级数——总量与元素数同阶，均摊到每一次插入仍是 O(1)。所以「偶尔一次 O(n)、长期看来 O(1)」并不矛盾。</p><p class="deep-para"><strong>如何权衡？</strong> 其一，<strong>哈希表 vs 平衡树</strong>：哈希表平均更快，但迭代顺序不可控、不支持有序遍历与范围查询、最坏退化到 O(n)；平衡树（<code>map</code>/<code>set</code>、Rust <code>BTreeMap</code>）稳定 O(log n) 且天然有序。要做「按序输出」「找前驱后继」就必须用树。其二，<strong>链地址法 vs 开放寻址</strong>：前者在高负载因子下更稳、删除方便，后者缓存局部性好、无额外指针，但删除复杂、对负载因子更敏感。选型本质是「时间—空间」与「确定性—期望」两组权衡的取舍。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>单调栈</strong>：保持栈内元素单调，用于「下一个更大/更小元素」、柱状图最大矩形等区间决策问题。</li><li><strong>单调队列</strong>：用双端队列维护滑动窗口最值，与第 2 章滑动窗口配套。</li><li><strong>前缀和 + 哈希表</strong>：把「子数组和等于 K」转成「前缀和查表」，是哈希表与第 2 章前缀和的组合技。</li><li><strong>频次统计 → Top-K</strong>：先哈希计数，再交给堆或桶排序取前 K（与第 5 章堆衔接）。</li><li><strong>LRU 缓存</strong>：哈希表 + 双向链表，<code>get</code>/<code>put</code> 均为 O(1)，体现「哈希定位 + 链表维护顺序」的组合。</li><li><strong>有序替代</strong>：需要有序时用 <code>BTreeMap</code>/<code>std::map</code>/<code>sortedcontainers</code>。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>LeetCode 20 · 有效的括号（栈：模板 1 的直接应用）</li><li>LeetCode 1 · 两数之和（哈希：模板 3，一次遍历）</li><li>LeetCode 49 · 字母异位词分组（哈希：以排序串或计数元组作键）</li><li>LeetCode 347 · 前 K 个高频元素（频次统计 + 堆/桶）</li><li>LeetCode 155 · 最小栈（辅助栈维护当前最小值）</li><li>LeetCode 232 / 225 · 用栈实现队列 / 用队列实现栈（理解两类语义差异）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 栈直接用 <code>Vec</code>（<code>push</code>/<code>pop</code>）<br>• 队列用 <code>VecDeque</code><br>• <code>HashMap</code> 默认使用抗哈希洪泛的随机哈希器，故迭代顺序每次运行可能不同<br>• 计数惯用 <code>map.entry(k).or_insert(0)</code>，注意键会被移动<br>• 无有序哈希表，有序需求改用 <code>BTreeMap</code>。</td></tr><tr><td>C++</td><td>• <code>stack</code>/<code>queue</code> 是<strong>容器适配器</strong>（默认底层 <code>deque</code>），并非独立容器<br>• <code>unordered_map</code> 平均 O(1)、最坏 O(n)，迭代顺序无保证，<code>rehash</code> 使迭代器失效<br>• 有序需求用 <code>map</code>/<code>set</code>（红黑树，O(log n)）<br>• <code>deque</code> 两端 O(1) 但中间插入 O(n)。</td></tr><tr><td>Python</td><td>• <code>dict</code>/<code>set</code> 内建哈希<br>• <code>dict</code> 自 3.7 起保证<strong>插入顺序</strong>（语言规范级），但语义上仍是映射<br>• 可变对象（<code>list</code>/<code>dict</code>/<code>set</code>）不可作键，否则抛 <code>TypeError</code><br>• 队列用 <code>collections.deque</code>，切勿用 <code>list.pop(0)</code><br>• <code>Counter</code>/<code>defaultdict</code> 可简化计数。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" rel="noopener">cppreference · std::unordered_map</a> <span class="src-note">— C++ 无序关联容器：平均/最坏复杂度与迭代器失效规则。</span></li><li><a href="https://en.cppreference.com/w/cpp/container/deque" target="_blank" rel="noopener">cppreference · std::deque</a> <span class="src-note">— 双端队列两端 O(1) 的语义与迭代器失效说明。</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html" target="_blank" rel="noopener">Rust std · HashMap</a> <span class="src-note">— Rust 哈希映射与 <code>entry</code> API 权威用法。</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.VecDeque.html" target="_blank" rel="noopener">Rust std · VecDeque</a> <span class="src-note">— 基于可增长环形缓冲的双端队列。</span></li><li><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" rel="noopener">Python docs · collections.deque</a> <span class="src-note">— 双端队列两端增删近似 O(1) 的官方说明。</span></li><li><a href="https://docs.python.org/3/library/stdtypes.html#typesmapping" target="_blank" rel="noopener">Python docs · 内置类型（dict/set）</a> <span class="src-note">— 映射语义、可哈希性与保序行为。</span></li><li><a href="https://oi-wiki.org/ds/hash/" target="_blank" rel="noopener">OI Wiki · 哈希表</a> <span class="src-note">— 哈希函数、拉链法与闭散列（开放寻址）原理及代码。</span></li><li><a href="https://oi-wiki.org/ds/stack/" target="_blank" rel="noopener">OI Wiki · 栈</a> <span class="src-note">— LIFO 语义澄清与数组模拟栈实现。</span></li><li><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" rel="noopener">cppreference · std::unordered_map</a> <span class="src-note">— C++ 无序关联容器复杂度与迭代器失效。</span></li><li><a href="https://en.cppreference.com/w/cpp/container/deque" target="_blank" rel="noopener">cppreference · std::deque</a> <span class="src-note">— 双端队列两端 O(1)。</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html" target="_blank" rel="noopener">Rust std · HashMap</a> <span class="src-note">— Rust 哈希映射与 entry API。</span></li><li><a href="https://docs.python.org/3/library/stdtypes.html#typesmapping" target="_blank" rel="noopener">Python docs · 内置类型 dict/set</a> <span class="src-note">— 映射语义与保序。</span></li><li><a href="https://oi-wiki.org/ds/hash/" target="_blank" rel="noopener">OI Wiki · 哈希表</a> <span class="src-note">— 哈希函数与冲突处理原理。</span></li><li><a href="https://oi-wiki.org/ds/stack/" target="_blank" rel="noopener">OI Wiki · 栈</a> <span class="src-note">— LIFO 语义与数组模拟。</span></li></ul></section></article><article class="chapter" id="d-ch05" data-ch="ch05"><header class="ch-head"><span class="ch-num">05</span><h2>堆与优先队列 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch05">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">二叉堆本质是「完全二叉树 + 堆序性质」的组合。<strong>完全二叉树</strong>指除最后一层外每层都填满、且最后一层结点靠左连续排列的二叉树。正因为「连续、无空洞」，它可以被紧凑地存进一个数组：按从上到下、从左到右的层序编号，结点之间无需任何指针，父子关系可直接由下标算术推出。以 0 基数组为例，下标 <code>i</code> 的左孩子是 <code>2i+1</code>、右孩子是 <code>2i+2</code>、父结点是 <code>⌊(i-1)/2⌋</code>（<a href="https://en.wikipedia.org/wiki/Binary_heap" target="_blank" rel="noopener">Wikipedia · Binary heap</a>）。若改用 1 基（不少教材与 OI Wiki 的写法），则是左孩子 <code>2i</code>、右孩子 <code>2i+1</code>、父结点 <code>⌊i/2⌋</code>，算术更简洁；Python 的 <code>heapq</code> 采用 0 基，并明确按 <code>heap[k] &lt;= heap[2k+1]</code>、<code>heap[k] &lt;= heap[2k+2]</code> 维护最小堆（<a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python · heapq</a>）。</p><p class="deep-para"><strong>堆序性质是弱序</strong>：大顶堆要求每个父结点 ≥ 两个孩子，小顶堆反之；但兄弟之间、跨层结点之间没有任何约束。因此堆只保证一件事——根结点是全局最值，其余元素仅满足「局部父子有序」。完全二叉树的高度为 <code>⌊log₂ n⌋</code>，这正是所有 O(log n) 操作的来源。</p><p class="deep-para">维护堆序靠两个基本动作（<a href="https://oi-wiki.org/ds/binary-heap/" target="_blank" rel="noopener">OI Wiki · 二叉堆</a>）：<strong>上浮</strong>（sift-up / percolate-up）用于插入——把新元素放到数组末尾，再不断与父结点比较、交换直到不再违反堆序；<strong>下沉</strong>（sift-down / percolate-down）用于删除堆顶——把末尾元素补到根，再不断与两个孩子中「更优」的那个交换直到到底。二者每轮都让元素上移 / 下移一层，故最多 O(log n) 轮。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>为什么建堆能是 O(n)，而不是逐个插入的 O(n log n)？</strong> 关键在于「自底向上 + 下沉」的代价分布。把 n 个元素先按任意顺序放进完全二叉树，随后从最后一个非叶结点起，逐层向前对每个结点做一次下沉（<a href="https://en.wikipedia.org/wiki/Binary_heap" target="_blank" rel="noopener">Wikipedia · Binary heap</a>）。观察一个事实：<strong>高度为 h 的结点最多下沉 h 层，而高度为 h 的结点约有 <code>⌈n / 2^(h+1)⌉</code> 个</strong>——接近一半的结点是叶子（h=0，无需下沉），往上每加一层结点数就减半。于是总代价为</p><p class="deep-para"><code>Σ_{h=0}^{⌊log₂ n⌋} ⌈n / 2^(h+1)⌉ · h = n · Σ_h h / 2^(h+1) = O(n)</code>，</p><p class="deep-para">因为级数 <code>Σ h / 2^h</code> 收敛到常数 2（<a href="https://www.cs.washington.edu/education/courses/332/26wi/summaries/heaps.html" target="_blank" rel="noopener">UW CSE 332 · Priority Queues and Heaps</a>）。换句话说，「下沉」的总工作量由<strong>接近底层的海量浅结点</strong>主导，而<strong>接近顶层的少数深结点</strong>贡献的是几何衰减的小量，整体线性。相反，逐个插入走的是「上浮」，元素越靠底层越深、代价越大，累加得 Θ(n log n)。</p><p class="deep-para"><strong>权衡：堆 vs 排序数组。</strong> 堆支持 O(1) 取最值、O(log n) 插入与删除，但<strong>不支持</strong>高效地查找任意元素或做范围查询（只能 O(n) 扫描）。排序数组支持 O(1) 取一端最值、O(log n) 二分查找任意值，但插入要 O(n) 搬移。判据是：若算法只是反复「取当前最值」且候选集动态变化（Top-K、优先队列、Dijkstra、任务调度），用堆；若需要频繁查找 / 范围查询 / 有序遍历，则用平衡 BST（如 Rust <code>BTreeMap</code>、C++ <code>std::map</code>，全操作 O(log n)）。</p><p class="deep-para"><strong>堆排序（简述）</strong>：先 O(n) 建大顶堆，再反复把堆顶（当前最大）与末尾元素交换、堆规模减一并对新堆顶下沉，最终得到升序序列；整体 O(n log n)、就地、但不稳定。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>d 叉堆（d-ary heap）</strong>：每个结点有 d 个孩子，树更浅，常配合需要 decrease-key 的场景以摊薄下沉代价。</li><li><strong>索引堆 / 带位置映射的堆</strong>：额外维护「元素 → 堆内下标」映射，从而支持 decrease-key（Dijkstra 常用），代价是更高的实现复杂度。</li><li><strong>对顶堆（双堆技巧）</strong>：一个大顶堆 + 一个小顶堆，用于「动态第 k 大 / 数据流中位数」，插入 O(log n)、查询 O(1)（<a href="https://oi-wiki.org/ds/binary-heap/" target="_blank" rel="noopener">OI Wiki · 二叉堆</a>）。</li><li><strong>k 路归并（多路合并）</strong>：用一个小顶堆维护 k 条有序序列各自的当前最小元素，反复「弹出堆顶 → 续接到结果尾部 → 推入该序列的下一个元素」，即可把 k 路合并为一路，代价 O(N log k)（见模板 4）。</li><li><strong>元组打破平局</strong>：元素存为 <code>(priority, seq, item)</code>，用单调序号在优先级相同时比较，既保证稳定顺序，又避免不可比对象直接比较而报错（<a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python · heapq</a>）。</li><li><strong>其他堆族</strong>：左偏树、斐波那契堆等提供更好的摊还合并 / 插入复杂度，但工程中因常数与实现成本常被普通二叉堆取代。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>LeetCode 215 · 数组中的第 K 个最大元素（堆或快速选择）</li><li>LeetCode 347 · 前 K 个高频元素（哈希计数 + 堆）</li><li>LeetCode 23 · 合并 K 个升序链表（小顶堆做 k 路归并，见模板 4）</li><li>LeetCode 295 · 数据流的中位数（对顶堆）</li><li>LeetCode 703 · 数据流中的第 K 大元素（维持大小为 k 的堆）</li><li>LeetCode 1046 · 最后一块石头的重量（堆模拟）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 默认 <strong>最大堆</strong>（<a href="https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html" target="_blank" rel="noopener">Rust std · BinaryHeap</a>）<br>• 最小堆用 <code>BinaryHeap&lt;Reverse&lt;T&gt;&gt;</code> 或自定义 <code>Ord</code>。<code>BinaryHeap::new()</code> 得到空的最大堆，<strong>没有 <code>vec![...]</code> 等价宏</strong>——要堆化已知集合用 <code>BinaryHeap::from(vec)</code> / <code>.collect()</code>（O(n)），而非逐个 <code>push</code>（O(n log n)）。<code>push</code> 的最坏代价是 O(log n)，但官方文档指出其<strong>期望</strong>代价为 O(1)，只有靠近升序的插入才会摊还退化到 O(log n)。堆内元素被改序属逻辑错误<br>• 改堆顶用 <code>peek_mut()</code>（改后 O(log n) 下沉）。迭代顺序任意，要升序用 <code>into_sorted_vec()</code>。</td></tr><tr><td>C++</td><td>• <code>priority_queue&lt;T&gt;</code> 默认 <strong>大顶堆</strong>（比较器 <code>less</code>）<br>• 小顶堆需 <code>priority_queue&lt;T, vector&lt;T&gt;, greater&lt;T&gt;&gt;</code>（<a href="https://en.cppreference.com/w/cpp/container/priority_queue" target="_blank" rel="noopener">cppreference · priority_queue</a>）。比较器 <code>comp(a,b)</code> 的语义与 <code>std::sort</code> <strong>一致</strong>（为真表示 a 在弱序中排在 b <strong>之前</strong>），但 <code>priority_queue</code> <strong>先弹出弱序中"最大 / 最后"的元素</strong>，故小顶堆需传 <code>greater</code>——把「比较器语义」与「出队顺序」分开看，切勿写反导致 <code>top()</code> 取错。适配器不提供迭代器，无法遍历或删除中间元素。就地建堆用 <code>std::make_heap</code>（最多 3N 次比较，O(N)），堆排序用 <code>sort_heap</code>（<a href="https://en.cppreference.com/w/cpp/algorithm/make_heap" target="_blank" rel="noopener">cppreference · make_heap</a>）。</td></tr><tr><td>Python</td><td>• <code>heapq</code> 只提供 <strong>最小堆</strong><br>• 最大堆取负存储，或 3.14 起使用 <code>heapify_max</code> / <code>heappush_max</code> / <code>heappop_max</code> 等 <code>_max</code> 函数（<a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python · heapq</a>）。<strong>无 decrease-key / 任意删除</strong>，用惰性删除。堆元素可为元组，按字典序比较，是「优先级 + 计数」防比较失败的常见技巧。<code>nlargest</code> / <code>nsmallest</code> 在 n 较小或 k 较小时更高效。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://en.cppreference.com/w/cpp/container/priority_queue" target="_blank" rel="noopener">cppreference · std::priority_queue</a> <span class="src-note">— C++ 优先队列适配器的默认比较器与语义权威说明</span></li><li><a href="https://en.cppreference.com/w/cpp/algorithm/make_heap" target="_blank" rel="noopener">cppreference · std::make_heap</a> <span class="src-note">— 就地 O(N) 建堆，配合 push_heap / pop_heap / sort_heap</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html" target="_blank" rel="noopener">Rust std · BinaryHeap</a> <span class="src-note">— 默认最大堆、<code>Reverse</code> 转最小堆、<code>peek_mut</code> 与复杂度</span></li><li><a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python docs · heapq</a> <span class="src-note">— 最小堆 API，及 3.14 起新增的 <code>_max</code> 最大堆函数</span></li><li><a href="https://en.wikipedia.org/wiki/Binary_heap" target="_blank" rel="noopener">Wikipedia · Binary heap</a> <span class="src-note">— 数组表示的下标公式与 Floyd 建堆（O(n)）说明</span></li><li><a href="https://www.cs.washington.edu/education/courses/332/26wi/summaries/heaps.html" target="_blank" rel="noopener">UW CSE 332 · Priority Queues and Heaps</a> <span class="src-note">— 自底向上建堆 O(n) 的求和推导</span></li><li><a href="https://oi-wiki.org/ds/binary-heap/" target="_blank" rel="noopener">OI Wiki · 二叉堆</a> <span class="src-note">— 中文系统讲解（上浮 / 下沉 / 建堆）与对顶堆技巧</span></li></ul></section></article><article class="chapter" id="d-ch06" data-ch="ch06"><header class="ch-head"><span class="ch-num">06</span><h2>二叉树遍历与递归思维 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch06">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para"><strong>为什么同一份框架能产生三种遍历？</strong> 递归遍历的骨架是固定的：</p><p class="deep-para">节点被访问的<strong>顺序其实固定不变</strong>（总是先左子树、后右子树，即一条绕树外沿移动的指针）。前/中/后序的差别，只在于你把业务代码插在了哪个位置——也就是在哪个「时间点」处理当前节点 (<a href="https://labuladong.online/algo/data-structure-basic/binary-tree-traverse-basic/" target="_blank" rel="noopener">labuladong · 二叉树的递归/层序遍历</a>)。</p><p class="deep-para">- <strong>前序位置</strong>（刚进入节点）：此刻对子树一无所知，只能拿到父节点通过<strong>函数参数</strong>传下来的信息，天然对应「自顶向下」的状态传递。 - <strong>中序位置</strong>（左子树处理完、右子树未开始）：对 BST 而言，此刻序列天然有序，这是「中序有序性」的来源 (<a href="https://oi-wiki.org/ds/bst/" target="_blank" rel="noopener">OI Wiki · 二叉搜索树 &amp; 平衡树</a>, <a href="https://www.hello-algo.com/chapter_tree/binary_tree_traversal/" target="_blank" rel="noopener">Hello 算法 · 二叉树遍历</a>)。 - <strong>后序位置</strong>（即将离开节点）：左右子树都已处理完，可以通过<strong>函数返回值</strong>拿到完整的子问题结果，天然对应「自底向上」的合并 (<a href="https://labuladong.online/algo/essential-technique/binary-tree-summary/" target="_blank" rel="noopener">labuladong · 二叉树算法思想（纲领篇）</a>)。</p><p class="deep-para"><strong>与「做选择 / 撤销选择」的对应</strong>：回溯算法本质就是在遍历一棵决策树。进入节点（前序）时把当前选择压入路径，离开节点（后序）时把它弹出——于是 <code>backtrack { path.push(选择); backtrack(...); path.pop(); }</code> 中的 push/pop，正是前序位置与后序位置的操作。<strong>与「子问题合并」的对应</strong>：分治与动态规划把问题拆成左右两个子问题，先递归取回答案（发生在后序位置之前），再在后序位置把两个答案合并成原问题答案。最大深度、节点计数、判断平衡、树直径都遵循这个模式。经典排序也印证了这一点：快速排序是「先分区、再递归两半」，可视作前序遍历；归并排序是「先递归两半、再合并」，可视作后序遍历 (<a href="https://labuladong.online/algo/essential-technique/binary-tree-summary/" target="_blank" rel="noopener">labuladong · 二叉树算法思想（纲领篇）</a>)。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>复杂度推导</strong>：每个节点恰好被访问一次，故时间恒为 O(n)。空间是递归调用栈的深度，等于树高 h：平衡树为 O(log n)，退化为链时 O(n)。迭代法把系统栈换成显式容器，空间同为 O(h)，但能规避语言栈溢出（Python 的 <code>RecursionError</code>、C++/Rust 的栈溢出），代价是代码更繁琐 (<a href="https://en.wikipedia.org/wiki/Tree_traversal" target="_blank" rel="noopener">Wikipedia · Tree traversal</a>)。层序遍历的空间由<strong>最大层宽 w</strong> 决定，满二叉树约 n/2，故最坏 O(n)。</p><p class="deep-para"><strong>遍历思维 vs 分解思维的取舍</strong>：遍历思维写 <code>void traverse(...)</code> 配合外部变量累积答案，对应回溯/DFS 框架；分解思维写一个有返回值的 <code>solve(root)</code>，用子问题的答案推导原问题，对应分治/动态规划。二者不是题型分类，而是同一道题的两条实现路径 (<a href="https://labuladong.online/algo/essential-technique/binary-tree-summary/" target="_blank" rel="noopener">labuladong · 二叉树算法思想（纲领篇）</a>)。取舍判据是「当前节点需要的信息来自哪里」：若来自父节点（如自顶向下的路径、边界约束），前序 + 遍历思维更自然；若来自子节点（如子树高度、子树和），后序 + 分解思维更自然。工程上，分解思维没有共享可变状态，更不容易出错，是需要子树信息时的首选。</p><p class="deep-para"><strong>BST 验证的两种权衡</strong>：范围传递法显式携带 <code>(lo, hi)</code> 上下界，走到左子树收紧上界、走到右子树收紧下界，逻辑直观、失败点可定位 (<a href="https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/" target="_blank" rel="noopener">GeeksforGeeks · Tree Traversals</a>)；中序法依赖「严格递增」性质，代码更短，但 <code>prev</code> 状态在跳跃式写法中容易维护错误。两者都是 O(n) 时间、O(h) 空间；若需 O(1) 额外空间，还可用 Morris 遍历临时改写树指针。值得强调：两种方法之所以可靠，正是因为它们都捕捉了<strong>祖先约束</strong>（范围法显式传递上下界，中序法用全序把祖先约束摊平成相邻比较），而只比较直接父子关系的 naive 写法必然漏判（反例见 A5 第 3 条）。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>迭代实现</strong>：前序用单栈（先压右、再压左）；中序用「一路向左压栈、弹栈后转右」（见模板 5）；后序用双栈（前序变体后反转）或单栈加 <code>lastVisited</code> 指针。</li><li><strong>由遍历序列重建树</strong>：前序 + 中序、中序 + 后序可唯一确定一棵二叉树——前序/后序提供根，中序划分左右子树；前序 + 后序<strong>不唯一</strong>。配合哈希表定位中序下标，可做到 O(n)。</li><li><strong>层序变体</strong>：分层返回、自底向上、锯齿形（Zigzag）、右视图（每层最右节点），均基于同一 BFS 骨架。</li><li><strong>Morris 遍历</strong>：借叶子空指针临时搭「桥」，中序做到 O(1) 额外空间，代价是遍历期间临时修改树结构。</li><li><strong>推广到 N 叉树</strong>：前序、后序、层序都能推广，但「中序」对多叉树没有统一定义。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>三种基础遍历：LeetCode 144 · 二叉树的前序遍历、LeetCode 94 · 二叉树的中序遍历、LeetCode 145 · 二叉树的后序遍历</li><li>层序遍历：LeetCode 102 · 二叉树的层序遍历</li><li>分解思维入门：LeetCode 104 · 二叉树的最大深度、LeetCode 226 · 翻转二叉树</li><li>BST 性质：LeetCode 98 · 验证二叉搜索树、LeetCode 230 · 二叉搜索树中第 K 小的元素</li><li>综合提升：LeetCode 543 · 二叉树的直径、LeetCode 101 · 对称二叉树</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 节点用 <code>Option&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;</code><br>• 访问子节点须 <code>borrow()</code>/<code>borrow_mut()</code>，同一节点两次可变借用会 panic<br>• 无尾调用优化，深树递归有爆栈风险，可用数组下标模拟堆式树规避 (<a href="https://doc.rust-lang.org/std/rc/struct.Rc.html" target="_blank" rel="noopener">Rust · std::rc::Rc</a>, <a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html" target="_blank" rel="noopener">Rust · std::cell::RefCell</a>)</td></tr><tr><td>C++</td><td>• 指针树需 <code>struct TreeNode</code> 与手动内存管理<br>• 迭代遍历用 <code>std::stack</code> / <code>std::queue</code> 适配器 (<a href="https://en.cppreference.com/w/cpp/container/stack" target="_blank" rel="noopener">cppreference · std::stack</a>, <a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" rel="noopener">cppreference · std::queue</a>)<br>• 递归 lambda 需 <code>std::function</code>，有额外调用开销</td></tr><tr><td>Python</td><td>• 默认递归上限约 1000 帧，链状树抛 <code>RecursionError</code>，可 <code>sys.setrecursionlimit</code>（谨慎）或改迭代 (<a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" rel="noopener">Python · sys.setrecursionlimit</a>)<br>• 中序法维护 <code>prev</code> 需 <code>nonlocal</code><br>• 无尾递归优化</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://en.wikipedia.org/wiki/Tree_traversal" target="_blank" rel="noopener">Wikipedia · Tree traversal</a> <span class="src-note">— 前/中/后序与层序遍历的递归、迭代实现及伪代码</span></li><li><a href="https://oi-wiki.org/ds/bst/" target="_blank" rel="noopener">OI Wiki · 二叉搜索树 &amp; 平衡树</a> <span class="src-note">— BST 定义、中序有序性、增删查与平衡树旋转</span></li><li><a href="https://www.hello-algo.com/chapter_tree/binary_tree_traversal/" target="_blank" rel="noopener">Hello 算法 · 二叉树遍历</a> <span class="src-note">— 层序（BFS）与三种 DFS 遍历的多语言实现与复杂度</span></li><li><a href="https://labuladong.online/algo/data-structure-basic/binary-tree-traverse-basic/" target="_blank" rel="noopener">labuladong · 二叉树的递归/层序遍历</a> <span class="src-note">— 前中后序位置与层序三种写法的可视化讲解</span></li><li><a href="https://labuladong.online/algo/essential-technique/binary-tree-summary/" target="_blank" rel="noopener">labuladong · 二叉树算法思想（纲领篇）</a> <span class="src-note">— 遍历思维 vs 分解思维、快排/归并的树视角</span></li><li><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" rel="noopener">cppreference · std::queue</a> <span class="src-note">— C++ 队列适配器语义（层序遍历用）</span></li><li><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" rel="noopener">Python 官方文档 · sys.setrecursionlimit</a> <span class="src-note">— 递归深度上限与 RecursionError</span></li><li><a href="https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/" target="_blank" rel="noopener">GeeksforGeeks · Tree Traversals</a> <span class="src-note">— 各遍历的图示与 BST 范围/中序验证对比</span></li></ul></section></article><article class="chapter" id="d-ch07" data-ch="ch07"><header class="ch-head"><span class="ch-num">07</span><h2>排序与二分搜索 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch07">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">快速排序的核心是 <strong>partition（划分）的不变量</strong>。以区间首元素为基准 pivot，用双指针 i、j 从两端向中间夹逼：j 停在第一个「小于 pivot」的元素，i 停在第一个「大于 pivot」的元素，交换二者使小的靠左、大的靠右。循环不变量是：任意时刻 <code>[lo, i)</code> 内的元素均 ≤ pivot，<code>(j, hi]</code> 内的元素均 ≥ pivot；当 i 与 j 相遇，把基准换到相遇处，此时「左段 ≤ pivot ≤ 右段」且基准落到最终位置。因为每轮至少固定一个基准、两个子区间都严格变小，递归必然终止；平均每次把区间大致对半划分，递归深度为 O(log n)，总代价 O(n log n)。归并排序则是标准分治：把序列对半切、递归排好两半，再线性合并；合并时用 <code>&lt;=</code> 让左段元素优先出列，从而保证相等元素的相对次序不变（稳定）。</p><p class="deep-para">二分搜索可以用 <strong>「谓词区间排除」的统一视角</strong> 理解：把「找某个元素」抽象为「找第一个使谓词 P 为真的位置」。只要 P 在序列上呈「前假后真」的单调形态，就能二分——每轮取中点 mid 判定 P(mid)，据其真假丢弃一半候选区间。查找具体值、查找左/右边界，乃至「二分答案」，都只是 P 的不同定义而已。折半之所以是对数：区间长度从 n 收缩到约 n/2，k 轮后长度 ≤ n/2^k，令其小于 1 得 k ≈ log₂n；这要求每次判定为 O(1)（或已知代价），否则总代价要乘以判定开销。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>为什么工程库都用混合策略？</strong> 纯快排在「已排序」「大量重复元素」等输入上会退化为 O(n²)，而真实数据往往带有这些模式。C++ <code>std::sort</code> 采用内省排序（Introsort）：以快排为主，当递归深度超过阈值时切换为堆排序以保证 O(n log n) 最坏，小区间改用插入排序减少常数 (<a href="https://en.cppreference.com/w/cpp/algorithm/sort" target="_blank" rel="noopener">cppreference · std::sort</a>)。Rust 的 <code>sort</code> 当前基于 driftsort（融合快排的平均快与归并的最坏保证及部分有序检测，稳定），<code>sort_unstable</code> 则基于模式击败（pattern-defeating）的自适应快排变形（Rust 1.81 起实现为 ipnsort），后者不稳定但通常更快 (<a href="https://doc.rust-lang.org/std/primitive.slice.html" target="_blank" rel="noopener">Rust std · slice</a>；<a href="https://blog.rust-lang.org/2024/09/05/Rust-1.81.0.html" target="_blank" rel="noopener">Rust 1.81.0 发布公告</a>)。Python 使用 Timsort（归并＋插入），对部分有序数据接近线性且稳定 (<a href="https://docs.python.org/3/howto/sorting.html" target="_blank" rel="noopener">Python · Sorting HOWTO</a>)。这组事实说明：不存在单一最优算法，工程库的做法是在「平均性能、最坏保证、稳定性、额外空间」之间取舍——需要稳定就用归并系，需要原地就用堆排或快排系。</p><p class="deep-para"><strong>二分答案何时优于直接求解？</strong> 当「判定某候选解是否可行」能在 O(n)（或 O(n log n)）内完成、且可行性关于答案单调时，可以放弃直接构造最优解，改为在答案值域 <code>[lo, hi]</code> 上二分枚举：做 O(log V) 次判定，总代价为「判定代价 × log V」（对应模板 3）。它把「求最值」转化为「判可行」，常比设计直接算法简单得多（典型如「爱吃香蕉的珂珂」）。代价与限制：必须存在可快速验证的单调谓词；若谓词不单调或单次判定过慢，则不如直接求解。相比哈希查找 O(1)，二分虽慢但省内存，且天然支持「最近邻 / 边界」类查询。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>计数排序</strong>：值域小（<code>[0, k)</code>）时用数组统计频次、再对频次做前缀和以确定各元素位置，达到 O(n + k) 且稳定（实现见模板 6）；仅适用于可作下标的整数键，且 k 不能过大，当 k = O(n) 时即为线性。</li><li><strong>二分答案 / 最小化最大值</strong>：把优化问题转成可行性判定，在答案值域上二分（如「爱吃香蕉的珂珂」、「分割数组的最大值」，模板见模板 3）。</li><li><strong>lower_bound / upper_bound / equal_range</strong>：用一对边界得到「值域区间」，常配合计数与去重使用。</li><li><strong>旋转有序数组查找</strong>：先判断 <code>[l, mid]</code> 与 <code>[mid, r]</code> 哪半边有序，再据目标是否落在有序半边决定收缩方向。</li><li><strong>三路划分（荷兰国旗问题）</strong>：把序列分成 <code>&lt;</code>、<code>=</code>、<code>&gt;</code> 三段，在大量重复元素时避免退化，是工程快排处理等值键的关键技巧。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>标准二分查找：LeetCode 704 · 二分查找</li><li>查找左右边界：LeetCode 34 · 在排序数组中查找元素的第一个和最后一个位置</li><li>旋转有序数组：LeetCode 33 · 搜索旋转排序数组</li><li>二分答案：LeetCode 875 · 爱吃香蕉的珂珂</li><li>手写排序：LeetCode 912 · 排序数组</li><li>归并应用：LeetCode 88 · 合并两个有序数组</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• <code>sort</code> 稳定、<code>sort_unstable</code> 不稳定但通常更快，且不额外分配<br>• <code>usize</code> 做减法易下溢，边界计算建议用 <code>i64</code> 或先判空<br>• 标准库二分用 <code>slice::binary_search</code>（返回 <code>Result</code>）与 <code>partition_point</code>（返回首个谓词为假的下标）。</td></tr><tr><td>C++</td><td>• <code>std::sort</code> 为内省排序，要求随机访问迭代器且比较器满足严格弱序，否则未定义行为<br>• 二分用 <code>std::lower_bound</code>/<code>upper_bound</code>，返回的是迭代器，配 <code>distance</code> 得下标<br>• <code>std::stable_sort</code> 提供稳定排序但可能额外分配。</td></tr><tr><td>Python</td><td>• <code>sorted</code> 返回新列表、<code>list.sort</code> 原地排序、均稳定<br>• 优先用 <code>key=</code>（每元素只调用一次），避免 <code>functools.cmp_to_key</code>（较慢）<br>• 二分用 <code>bisect_left</code>/<code>bisect_right</code>，<code>bisect.insort</code> 的查找为 O(log n) 但插入为 O(n)。</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://en.cppreference.com/w/cpp/algorithm/sort" target="_blank" rel="noopener">cppreference · std::sort</a> <span class="src-note">— C++ 排序接口、复杂度与「相等元素不保证保序」的权威说明。</span></li><li><a href="https://en.cppreference.com/w/cpp/algorithm/lower_bound" target="_blank" rel="noopener">cppreference · std::lower_bound</a> <span class="src-note">— lower_bound 语义、分区前提与 log₂N 复杂度。</span></li><li><a href="https://en.cppreference.com/w/cpp/algorithm/upper_bound" target="_blank" rel="noopener">cppreference · std::upper_bound</a> <span class="src-note">— upper_bound 语义与返回「首个大于 value」的位置。</span></li><li><a href="https://doc.rust-lang.org/std/primitive.slice.html" target="_blank" rel="noopener">Rust std · primitive slice</a> <span class="src-note">— <code>sort</code>/<code>sort_unstable</code>/<code>binary_search</code>/<code>partition_point</code> 的官方文档与实现说明。</span></li><li><a href="https://blog.rust-lang.org/2024/09/05/Rust-1.81.0.html" target="_blank" rel="noopener">Rust 1.81.0 发布公告</a> <span class="src-note">— 稳定排序换为 driftsort、不稳定排序换为 ipnsort 的官方发布说明。</span></li><li><a href="https://docs.python.org/3/howto/sorting.html" target="_blank" rel="noopener">Python · Sorting HOWTO</a> <span class="src-note">— Timsort 稳定性、<code>key=</code> 与多关键字排序的官方指南。</span></li><li><a href="https://docs.python.org/3/library/bisect.html" target="_blank" rel="noopener">Python · bisect</a> <span class="src-note">— <code>bisect_left</code>/<code>bisect_right</code>/<code>insort</code> 语义与查找技巧。</span></li><li><a href="https://github.com/python/cpython/blob/main/Objects/listsort.txt" target="_blank" rel="noopener">CPython · listsort.txt（Timsort 原始设计说明）</a> <span class="src-note">— Tim Peters 对 Timsort 自适应合并与稳定性设计的一手说明（设计文档）。</span></li><li><a href="https://en.wikipedia.org/wiki/Quicksort" target="_blank" rel="noopener">Wikipedia · Quicksort</a> <span class="src-note">— Lomuto 与 Hoare 划分方案、基准选择与退化分析。</span></li><li><a href="https://en.wikipedia.org/wiki/Merge_sort" target="_blank" rel="noopener">Wikipedia · Merge sort</a> <span class="src-note">— 归并排序的分治结构、稳定性与 O(n) 空间特性。</span></li></ul></section></article><article class="chapter" id="d-ch08" data-ch="ch08"><header class="ch-head"><span class="ch-num">08</span><h2>回溯与深度广度优先搜索 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch08">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para"><strong>回溯 = 决策树 DFS + 状态恢复。</strong> 任何回溯问题都能建模成一棵<strong>解空间树（决策树）</strong>：根节点是初始状态，每条边代表"做一个选择"，从根到某节点的路径代表一个部分解，叶子节点是一个完整解 (<a href="https://www.hello-algo.com/chapter_backtracking/backtracking_algorithm/" target="_blank" rel="noopener">Hello 算法 · 回溯算法</a>)。回溯算法沿这棵树做<strong>深度优先遍历</strong>：在当前节点枚举所有合法选择，选中一个就"往下走"一层，到达结束条件时记录解；若某条分支走不通或已枚举完，就"退回来"撤销刚才的选择，换下一个分支 (<a href="https://oi-wiki.org/search/backtracking/" target="_blank" rel="noopener">OI Wiki · 回溯法</a>)。</p><p class="deep-para">这就决定了回溯的骨架是固定的三步：<strong>做选择 → 递归进入下一层 → 撤销选择</strong>。之所以强调"撤销"，是因为 <code>path</code>、<code>used</code> 等状态在整棵树上被共享复用——只有把状态恢复成进入本层之前的样子，兄弟分支才不会互相污染。这也解释了为什么回溯本质上就是"DFS + 显式的状态回滚"。</p><p class="deep-para"><strong>BFS 与最短路的等价性。</strong> BFS 从源点出发，按"到源点的距离"由近及远逐层扩展：先访问距离为 0 的源点，再访问距离为 1 的全部邻居，再访问距离为 2……由于队列先进先出，节点出队顺序的距离<strong>单调不减</strong>，因此<strong>每个节点第一次被访问时，所走的路径必定是边数最少的路径</strong> (<a href="https://cp-algorithms.com/graph/breadth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · BFS</a>)。这正是"无权图最短步数用 BFS"的理论依据 (<a href="https://oi-wiki.org/graph/bfs/" target="_blank" rel="noopener">OI Wiki · BFS</a>)。类比"火焰扩散"：每一轮火圈向外扩张一格，被点燃的节点距源点的距离恰好等于轮次。DFS 则不具备该性质——它沿一条路走到底再回溯，找到的路径不保证最短 (<a href="https://oi-wiki.org/graph/dfs/" target="_blank" rel="noopener">OI Wiki · DFS</a>)；其递归框架、遍历顺序与 O(n+m) 复杂度另可参考 (<a href="https://cp-algorithms.com/graph/depth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Depth First Search</a>)。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>DFS 与 BFS 的空间与适用性。</strong> 两者时间复杂度同为 O(V+E)（网格为 O(R·C)），差异主要在<strong>空间利用形态</strong>与<strong>能否求最短路</strong>：</p><p class="deep-para">- <strong>DFS</strong> 的空间由<strong>递归深度</strong>决定，最坏 O(V)（空间复杂度含栈空间）。它适合回答"是否存在路径""有几个连通块""枚举所有解""判环 / 拓扑排序"这类问题。递归实现简洁，但深度大时受栈空间限制，且<strong>不保证最短</strong>。 - <strong>BFS</strong> 的空间由<strong>最宽一层的宽度</strong>决定，也是 O(V)。它的队列通常同时持有大量待扩展节点，常数比 DFS 的递归栈更大，但在<strong>无权图最短步数 / 层次遍历</strong>上是唯一正确的选择。多源 BFS（所有源点先入队，一次扩散）在"腐烂的橘子"类扩散问题中尤为高效。</p><p class="deep-para">选型经验：<strong>求最短路 / 最短步数 → BFS；求存在性、连通性、枚举所有方案、拓扑关系 → DFS（回溯）</strong>；图很宽而目标不远时，可用<strong>双向 BFS</strong> 从两端同时搜索，把搜索宽度从 O(b^d) 降到约 O(b^(d/2))。</p><p class="deep-para"><strong>剪枝对复杂度的实际影响。</strong> 回溯的理论复杂度由解空间树规模决定：全排列是 O(n!)，子集是 O(2ⁿ)，含重复元素的组合进一步膨胀。<strong>剪枝</strong>（提前 <code>return</code> 掉注定失败的分支）<strong>不改变最坏情况上界</strong>，但能大幅砍掉实际访问的节点数：例如 N 皇后通过"列 / 两条对角线"冲突检测，把每层候选从 N 个收缩到远少于 N 个，实际搜索量相比暴力枚举呈数量级下降 (<a href="https://www.hello-algo.com/chapter_backtracking/backtracking_algorithm/" target="_blank" rel="noopener">Hello 算法 · 回溯算法</a>)。工程原则是：<strong>越早剪越好</strong>——把约束检查放在"做选择之前"，而不是等进入下一层再发现非法。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>多源 BFS</strong>：把所有源点一次性入队再开始扩散，用于"多个起点同时传播"问题（如腐烂的橘子），复杂度不变仍为 O(V+E) (<a href="https://oi-wiki.org/graph/bfs/" target="_blank" rel="noopener">OI Wiki · BFS</a>)。</li><li><strong>0-1 BFS</strong>：边权只有 0 / 1 时，用<strong>双端队列</strong>替代普通队列——0 权边扩展到的点放队首、1 权边放队尾，在 O(V+E) 内求出最短路，是普通 BFS 与 Dijkstra 之间的桥梁 (<a href="https://cp-algorithms.com/graph/breadth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · BFS 应用</a>)。</li><li><strong>优先队列 BFS（= 堆优化 Dijkstra）</strong>：把队列换成优先队列，每次取代价最小的节点扩展，即退化为 Dijkstra 算法 (<a href="https://oi-wiki.org/graph/bfs/" target="_blank" rel="noopener">OI Wiki · BFS</a>)。</li><li><strong>迭代加深 DFS（IDDFS）</strong>：限制深度做多轮 DFS，兼顾 BFS 的"层序最优"与 DFS 的"省空间"。</li><li><strong>回溯 + 记忆化</strong>：把 <code>visited</code> 升级为"状态 → 结论"的 <code>memo</code>，同一状态不重复搜索，是回溯通往动态规划的桥梁（本章各语言回溯模板的 <code>used</code> 与 DP 的状态数组是同源思想）。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>全排列：LeetCode 46 · 全排列（回溯三要素的入门模板）</li><li>子集：LeetCode 78 · 子集（"选或不选"与同层去重）</li><li>组合：LeetCode 77 · 组合（按 &lt;code&gt;start&lt;/code&gt; 收缩候选集）</li><li>网格连通块：LeetCode 200 · 岛屿数量（网格 DFS / BFS flood fill）</li><li>最短步数：LeetCode 111 · 二叉树的最小深度（BFS 层序，遇叶即返回）</li><li>多源 BFS：LeetCode 994 · 腐烂的橘子（所有源点先入队）</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 递归回溯常在借用检查器下同时借用多个 <code>&amp;mut</code>，须用<strong>辅助 <code>fn</code> 显式传参</strong>（如本章模板）或用索引代替引用<br>• <code>VecDeque</code> 是 BFS 的惯用队列<br>• <code>usize</code> 做 <code>-1</code> 会下溢，网格坐标宜转 <code>isize</code><br>• 深递归易 stack overflow，必要时改迭代</td></tr><tr><td>C++</td><td>• 回溯参数用 <code>const&amp;</code> / 引用避免深拷贝<br>• <code>vector&lt;bool&gt;</code> 是<strong>位压缩特化</strong>，<code>[]</code> 返回代理引用，不能取地址、跨线程不安全，需要真 <code>bool</code> 时改用 <code>vector&lt;char&gt;</code><br>• 大图递归 DFS 可能爆栈，可用显式 <code>stack</code><br>• <code>std::queue</code> 默认基于 <code>std::deque</code>，不支持 <code>begin()/end()</code>，无法用范围 for 遍历 (<a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" rel="noopener">cppreference · std::queue</a>)</td></tr><tr><td>Python</td><td>• 默认递归深度约 1000，深递归须 <code>sys.setrecursionlimit</code>，但官方警告设得过高可能崩溃 (<a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" rel="noopener">Python docs · sys</a>)<br>• 记录快照用切片 <code>path[:]</code><br>• BFS 队列用 <code>collections.deque</code> 的 <code>popleft()</code>（O(1)），切勿用 <code>list.pop(0)</code>（O(n)）(<a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" rel="noopener">Python docs · deque</a>)</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://oi-wiki.org/graph/dfs/" target="_blank" rel="noopener">OI Wiki · DFS（图论）</a> <span class="src-note">— DFS 递归 / 栈实现、O(n+m) 复杂度与 DFS 树</span></li><li><a href="https://oi-wiki.org/graph/bfs/" target="_blank" rel="noopener">OI Wiki · BFS（图论）</a> <span class="src-note">— BFS 队列实现、最短路性质、0-1 BFS 与优先队列 BFS</span></li><li><a href="https://oi-wiki.org/search/backtracking/" target="_blank" rel="noopener">OI Wiki · 回溯法</a> <span class="src-note">— 回溯思想、解空间树与剪枝</span></li><li><a href="https://cp-algorithms.com/graph/breadth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Breadth First Search</a> <span class="src-note">— BFS 求无权图最短路及其应用</span></li><li><a href="https://cp-algorithms.com/graph/depth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Depth First Search</a> <span class="src-note">— DFS 原理、O(n+m) 与回溯/边分类</span></li><li><a href="https://www.hello-algo.com/chapter_backtracking/backtracking_algorithm/" target="_blank" rel="noopener">Hello 算法 · 回溯算法</a> <span class="src-note">— 决策树、剪枝与通用框架的多语言讲解</span></li><li><a href="https://www.hello-algo.com/chapter_graph/graph_traversal/" target="_blank" rel="noopener">Hello 算法 · 图的遍历</a> <span class="src-note">— BFS（队列）与 DFS（递归）复杂度分析</span></li><li><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" rel="noopener">cppreference · std::queue</a> <span class="src-note">— C++ 队列适配器：默认基于 std::deque、无迭代器</span></li><li><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" rel="noopener">Python docs · collections.deque</a> <span class="src-note">— 双端队列两端 O(1) 操作，官方以 BFS 为例</span></li><li><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" rel="noopener">Python docs · sys.setrecursionlimit</a> <span class="src-note">— Python 递归深度上限的官方说明</span></li><li><a href="https://oi-wiki.org/graph/dfs/" target="_blank" rel="noopener">OI Wiki · DFS（图论）</a> <span class="src-note">— DFS 递归/栈实现，复杂度 O(n+m)，空间含栈 O(n)，DFS 树</span></li><li><a href="https://oi-wiki.org/graph/bfs/" target="_blank" rel="noopener">OI Wiki · BFS（图论）</a> <span class="src-note">— BFS 队列实现与最短路性质，0-1 BFS / 优先队列 BFS</span></li><li><a href="https://oi-wiki.org/search/backtracking/" target="_blank" rel="noopener">OI Wiki · 回溯法</a> <span class="src-note">— 回溯本质"走不通就回头"、空间树、边界剪枝</span></li><li><a href="https://cp-algorithms.com/graph/breadth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Breadth First Search</a> <span class="src-note">— BFS 在无权图求最短路，O(n+m)</span></li><li><a href="https://cp-algorithms.com/graph/depth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Depth First Search</a> <span class="src-note">— DFS 递归原理、O(n+m)、回溯与边分类</span></li><li><a href="https://www.hello-algo.com/chapter_backtracking/backtracking_algorithm/" target="_blank" rel="noopener">Hello 算法 · 回溯算法</a> <span class="src-note">— 解空间树、剪枝、通用框架、指数/阶乘复杂度</span></li><li><a href="https://www.hello-algo.com/chapter_graph/graph_traversal/" target="_blank" rel="noopener">Hello 算法 · 图的遍历</a> <span class="src-note">— BFS 队列 / DFS 递归，复杂度 O(V+E)</span></li><li><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" rel="noopener">cppreference · std::queue</a> <span class="src-note">— 容器适配器，默认基于 std::deque，无迭代器</span></li><li><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" rel="noopener">Python docs · collections.deque</a> <span class="src-note">— 双端队列 O(1) 两端操作，官方以 BFS 为例</span></li><li><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" rel="noopener">Python docs · sys.setrecursionlimit</a> <span class="src-note">— 递归深度上限与过高崩溃警告</span></li></ul></section></article><article class="chapter" id="d-ch09" data-ch="ch09"><header class="ch-head"><span class="ch-num">09</span><h2>动态规划模型与状态转移 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch09">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para">动态规划（Dynamic Programming, DP）的核心思想是<strong>避免重复计算</strong>：把一个大问题拆解成若干<strong>重叠子问题</strong>，用一个查找表记下每个子问题的答案，之后再遇到同一子问题就直接查表返回 (<a href="https://cp-algorithms.com/dynamic_programming/intro-to-dp.html" target="_blank" rel="noopener">CP-Algorithms · Introduction to Dynamic Programming</a>)。</p><p class="deep-para">它成立要满足两个条件。其一是<strong>最优子结构</strong>：整体最优解可由子问题的最优解组合而成——例如最短编辑距离的最优方案，去掉最后一步操作后仍是对更短前缀的最优方案 (<a href="https://web.stanford.edu/class/archive/cs/cs161/cs161.1138/handouts/140%20Guide%20to%20Dynamic%20Programming.pdf" target="_blank" rel="noopener">Stanford CS161 · Guide to Dynamic Programming</a>)。其二是<strong>无后效性</strong>：一旦某个状态确定，未来的决策只依赖当前状态的值，而与到达该状态的路径无关。直觉上，只要子问题的答案「够用」，就不必记住它是怎么算出来的——这正是「用空间换时间」的落脚点。</p><p class="deep-para">从暴力搜索到状态表的推导体现在斐波那契数列上：朴素递归 <code>f(n) = f(n-1) + f(n-2)</code> 会反复求解相同的子问题，运行时间约为 O(2ⁿ)；而子问题其实只有 O(n) 个，于是把每个算过的 <code>f(k)</code> 存进数组，复杂度立刻降到 O(n)——以 <code>f(29)</code> 为例，函数调用次数从上百万次降到 57 次 (<a href="https://cp-algorithms.com/dynamic_programming/intro-to-dp.html" target="_blank" rel="noopener">CP-Algorithms · Introduction to Dynamic Programming</a>)。这就是 DP 的思维链：<strong>定义状态 → 写出状态转移方程 → 确定边界初始化 → 决定遍历顺序</strong>。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para">DP 有两条实现路线，取舍取决于问题形态 (<a href="https://cp-algorithms.com/dynamic_programming/intro-to-dp.html" target="_blank" rel="noopener">CP-Algorithms · Introduction to Dynamic Programming</a>)：<strong>自顶向下（记忆化递归）</strong>从所求状态出发递归分解，天然贴合递推式的书写直觉，只会访问真正需要的状态，但依赖递归栈、且每个子问题带有函数调用开销；<strong>自底向上（递推）</strong>先把最小子问题填好，再按顺序把表填满，没有递归开销、便于空间压缩与滚动优化，但可能会算出用不到的状态。工程上，若状态空间稀疏或难以确定填表顺序，记忆化更省事（Python 可用 <code>functools.lru_cache</code> 一行实现，见 <a href="https://docs.python.org/3/library/functools.html" target="_blank" rel="noopener">Python 文档 · functools</a>）；若追求极致性能与空间，则递推更优。</p><p class="deep-para"><strong>空间压缩的推导</strong>：以 0-1 背包为例，二维状态 <code>f[i][j]</code> 的转移 <code>f[i][j] = max(f[i-1][j], f[i-1][j-w_i] + v_i)</code> 只依赖上一行 <code>i-1</code>。既然历史行用完即弃，就可以只保留一维数组 <code>f[j]</code>。但这样一来 <code>f[j-w_i]</code> 究竟是「上一行」还是「本行」的值必须先想清楚：要让 <code>f[j-w_i]</code> 仍对应 <code>f[i-1][j-w_i]</code>，容量 j 就必须从大到小枚举，使 <code>f[j-w_i]</code> 在被覆盖前先被使用 (<a href="https://cp-algorithms.com/dynamic_programming/knapsack.html" target="_blank" rel="noopener">CP-Algorithms · Knapsack Problem</a>, <a href="https://oi-wiki.org/dp/knapsack/" target="_blank" rel="noopener">OI Wiki · 背包 DP</a>)。反过来，若把容量改成从小到大枚举，<code>f[j-w_i]</code> 就会取到本行已被更新的值，等价于「允许第 i 件物品再取一次」——这恰好就是<strong>完全背包</strong>。两种背包仅一维数组的遍历方向之差，原因正在于此。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>完全背包</strong>：与 0-1 背包共用转移式，仅一维容量改为正序遍历 (<a href="https://oi-wiki.org/dp/knapsack/" target="_blank" rel="noopener">OI Wiki · 背包 DP</a>)。</li><li><strong>多重背包</strong>：每种物品有数量上限，可拆成 0-1 背包求解；用二进制拆分把 <code>k</code> 件压缩成 O(log k) 组，复杂度由 O(W·Σkᵢ) 降至 O(W·Σlog kᵢ) (<a href="https://cp-algorithms.com/dynamic_programming/knapsack.html" target="_blank" rel="noopener">CP-Algorithms · Knapsack Problem</a>)。</li><li><strong>分组 / 混合背包</strong>：物品按组互斥（每组最多选一）或同时存在多种取法，只需在每组内套用 0-1 逻辑、组间顺序枚举即可。</li><li><strong>LIS（最长递增子序列）</strong>：状态定义 <code>dp[i] = 以第 i 个元素结尾的最长递增子序列长度</code>，转移为 <code>dp[i] = max(dp[j]) + 1</code>（对所有满足 <code>j &lt; i</code> 且 <code>a[j] &lt; a[i]</code> 的 j），答案为 <code>max(dp[i])</code>，朴素实现 O(n²)。可进一步借助二分与贪心维护「长度为 l 的递增子序列的最小结尾值」数组，把时间优化到 O(n log n) (<a href="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" target="_blank" rel="noopener">CP-Algorithms · Longest Increasing Subsequence</a>)。</li><li><strong>空间维度的扩展</strong>：滚动数组 / 滚动行把二维压一维；区间 DP、树形 DP、状压 DP 则是改变「状态维度」而非改变转移本质。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>入门递推：LeetCode 70 · 爬楼梯</li><li>选/不选模型：LeetCode 198 · 打家劫舍</li><li>0-1 背包：LeetCode 416 · 分割等和子集</li><li>完全背包：LeetCode 322 · 零钱兑换</li><li>最长递增子序列：LeetCode 300 · 最长递增子序列</li><li>最长公共子序列：LeetCode 1143 · 最长公共子序列</li><li>二维字符串 DP：LeetCode 72 · 编辑距离</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• 下标用 <code>usize</code>，<strong>无法表示负数</strong>，容量逆序要写 <code>(w..=cap).rev()</code> 而非 <code>for j in 0..w</code><br>• 初始化惯用 `vec![0i64<br>• cap+1]<code> / </code>vec![vec![0<br>• m+1]<br>• n+1]`（注意外层是行、内层是列）<br>• 累加和易溢出，按需选 <code>i64</code>/<code>i128</code> 而非 <code>i32</code></td></tr><tr><td>C++</td><td>• 二维表初始化写作 <code>vector&lt;vector&lt;int&gt;&gt; dp(n+1, vector&lt;int&gt;(m+1, 0))</code><br>• 三值取最小要 <code>#include &lt;algorithm&gt;</code> 并用初始化列表 <code>min({a,b,c})</code><br>• <code>int</code> 求和可能溢出，必要时用 <code>long long</code><br>• <code>size()</code> 返回无符号数，与 <code>int</code> 混用需留意</td></tr><tr><td>Python</td><td>• 惯用 <code>dp = [0] * (cap + 1)</code><br>• 记忆化递归用 <code>functools.lru_cache(maxsize=None)</code>（注意被缓存的参数必须可哈希）<br>• <code>dp</code> 用 <code>-inf</code> 表示不可达时需 <code>float('-inf')</code><br>• 深递归要 <code>sys.setrecursionlimit</code>，否则报 <code>RecursionError</code></td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://cp-algorithms.com/dynamic_programming/intro-to-dp.html" target="_blank" rel="noopener">CP-Algorithms · Introduction to Dynamic Programming</a> <span class="src-note">— 从递归到记忆化、再到自底向上的入门推导与经典问题清单</span></li><li><a href="https://cp-algorithms.com/dynamic_programming/knapsack.html" target="_blank" rel="noopener">CP-Algorithms · Knapsack Problem</a> <span class="src-note">— 0-1 / 完全 / 多重背包的转移式与一维遍历顺序说明</span></li><li><a href="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" target="_blank" rel="noopener">CP-Algorithms · Longest Increasing Subsequence</a> <span class="src-note">— LIS 的 O(n²) 与 O(n log n) 两种解法</span></li><li><a href="https://oi-wiki.org/dp/knapsack/" target="_blank" rel="noopener">OI Wiki · 背包 DP</a> <span class="src-note">— 中文系统讲解背包模型、初始化与循环方向</span></li><li><a href="https://www.hello-algo.com/chapter_dynamic_programming/" target="_blank" rel="noopener">Hello 算法 · 第 14 章 动态规划</a> <span class="src-note">— 图解 DP 解题思路、0-1 背包、完全背包与编辑距离</span></li><li><a href="https://web.stanford.edu/class/archive/cs/cs161/cs161.1138/handouts/140%20Guide%20to%20Dynamic%20Programming.pdf" target="_blank" rel="noopener">Stanford CS161 · Guide to Dynamic Programming</a> <span class="src-note">— 以 LIS 为例的「从暴力到最优子结构」教学讲义</span></li><li><a href="https://docs.python.org/3/library/functools.html" target="_blank" rel="noopener">Python 文档 · functools</a> <span class="src-note">— <code>lru_cache</code> / <code>cache</code> 记忆化装饰器的官方说明</span></li><li><a href="https://en.wikipedia.org/wiki/Edit_distance" target="_blank" rel="noopener">Wikipedia · Edit distance</a> <span class="src-note">— 编辑距离定义、Wagner–Fischer 算法与复杂度</span></li></ul></section></article><article class="chapter" id="d-ch10" data-ch="ch10"><header class="ch-head"><span class="ch-num">10</span><h2>图遍历、最短路径与并查集 · 深度解析</h2><a class="jump" data-jump="quick" href="#q-ch10">速查 ↑</a></header><section class="blk"><h3>原理与机制</h3><p class="deep-para"><strong>图的存储</strong>决定遍历效率。邻接表为每个顶点维护邻居列表，空间 O(n + m)，遍历某点所有邻居耗时 O(deg(u))，是稀疏图（m ≪ n²）的默认选择。邻接矩阵用 n×n 二维数组存边，「u、v 是否相邻」查询为 O(1)，但空间 O(n²)，适合稠密图或需频繁查边的场景。边集数组把每条边存成 (u, v, w) 三元组，便于「按边遍历」，是 Kruskal 之类算法的天然输入。</p><p class="deep-para"><strong>DFS 与 BFS</strong> 是两种系统遍历手段。DFS 用栈（或递归）沿一条路径深入到底再回溯，天然适配连通分量、判环、拓扑排序；BFS 用队列逐层扩散，第一次到达某点的层数即最短路步数（边权为 1 时）。两者的核心不变量都是 <code>visited</code>：顶点一旦被首次发现即标记，保证每点至多入栈 / 入队一次，总复杂度 O(n + m)。<strong>标记时机至关重要</strong>——应在入栈 / 入队时标记。</p><p class="deep-para"><strong>Kahn 拓扑排序</strong>维护「入度表 + 队列」：所有入度为 0 的顶点先入队，每取出一个顶点就把它的所有出边终点入度减 1，减到 0 者入队。由于只有无环有向图（DAG）才能排空全部顶点，输出序列长度小于 n 即证明存在环 (<a href="https://oi-wiki.org/graph/topo/" target="_blank" rel="noopener">OI Wiki · 拓扑排序</a>)。</p><p class="deep-para"><strong>Dijkstra 的贪心正确性直觉</strong>：算法维护「已确定集合」与「暂定距离」。每轮从优先队列取出暂定距离最小的未确定顶点 u，其距离即可<strong>定死</strong>为最终最短路。直觉在于：所有边权非负，任何从源点先绕道其他未确定点、再回到 u 的路径，长度只会 ≥ u 当前的暂定距离，故不存在更优解 (<a href="https://cp-algorithms.com/graph/dijkstra.html" target="_blank" rel="noopener">CP-Algorithms · Dijkstra</a>)。</p><p class="deep-para"><strong>并查集的「代表元」模型</strong>：每个集合表示为一棵有根树，根节点即该集合的代表元（identifier）。<code>find(x)</code> 沿 parent 指针上溯到根，两元素同根即同集合；<code>union(a, b)</code> 只需让一棵树的根指向另一棵树的根。整个结构仅用一个 parent 数组即可表达，这是它极简又高效的关键 (<a href="https://oi-wiki.org/ds/dsu/" target="_blank" rel="noopener">OI Wiki · 并查集</a>)。</p></section><section class="blk"><h3>推导与权衡</h3><p class="deep-para"><strong>为什么 α(n) 近似常数？</strong> 单用路径压缩、或单用按大小合并，摊还复杂度都只能到 O(log n)；两者结合后，可证明单次操作摊还代价为 O(α(n))，α 是反阿克曼函数——它增长极慢：当 n &lt; 10⁶⁰⁰ 时 α(n) 都不超过 4，故工程上可放心当作近似 O(1) (<a href="https://cp-algorithms.com/data_structures/disjoint_set_union.html" target="_blank" rel="noopener">CP-Algorithms · DSU</a>)。注意这是<strong>摊还</strong>结论：单次操作最坏仍可能 O(log n)，只是长序列平均下来极低。</p><p class="deep-para"><strong>Dijkstra 与 BFS 的关系。</strong> 当所有边权都等于 1 时，Dijkstra 每次取出的都是当前层或下一层的点，其行为退化为「先进先出」的 BFS，复杂度从 O((n + m) log n) 降到 O(n + m)（呼应第 8 章的 BFS）。进一步地，若边权只取 0 或 1，可用双端队列（0 权入队首、1 权入队尾）实现 0-1 BFS，同样 O(n + m)。</p><p class="deep-para"><strong>实现权衡。</strong> 稠密图用邻接矩阵 + 线性扫描求最小值，Dijkstra 为 O(n²)，比堆版更省常数；稀疏图则用邻接表 + 二叉堆，O(m log n)。理论上 Fibonacci 堆能把上界降到 O(m + n log n)，但它实现复杂、隐藏常数大，实践中二叉堆更常用 (<a href="https://cp-algorithms.com/graph/dijkstra_sparse.html" target="_blank" rel="noopener">CP-Algorithms · 稀疏图 Dijkstra</a>)。存储选择同理：邻接表省空间、遍历邻居快，邻接矩阵查边快但吃 O(n²) 空间——按图的稠密程度二选一。</p></section><section class="blk"><h3>变体与扩展</h3><ul><li><strong>0-1 BFS / 双端队列 BFS</strong>：边权仅为 0 或 1 时，用双端队列把 0 权放队首、1 权放队尾，O(n + m) 求最短路。</li><li><strong>Bellman-Ford / SPFA</strong>：允许负权边并能检测负环，代价是 O(n·m)，比 Dijkstra 慢。</li><li><strong>多源 BFS</strong>：把多个源点一次性全部入队，即可求「到最近源点的距离」，常用于网格最短距离问题。</li><li><strong>双向 BFS / 双向 Dijkstra</strong>：从起点与终点同时扩展，显著缩小搜索空间。</li><li><strong>Kruskal 最小生成树</strong>：按边权排序，用并查集判断两端是否已连通来决定是否加入，是并查集的经典应用。</li><li><strong>带权 / 种类并查集</strong>：在 parent 之外维护「到根的关系量」，用于处理带约束的连通性问题。</li></ul></section><section class="blk"><h3>经典练习</h3><ul class="ex"><li>LeetCode 200 · 岛屿数量——DFS / BFS 洪泛统计连通分量</li><li>LeetCode 207 · 课程表——Kahn 拓扑排序判环</li><li>LeetCode 210 · 课程表 II——输出任意合法的拓扑序</li><li>LeetCode 547 · 省份数量——并查集或 DFS 数连通分量，可与 200 对照</li><li>LeetCode 743 · 网络延迟时间——Dijkstra 求单源最短路</li><li>LeetCode 133 · 克隆图——在图遍历过程中同步复制节点</li></ul></section><section class="blk"><h3>三语言对比与陷阱</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>语言</th><th>关键差异与陷阱</th></tr></thead><tbody><tr><td>Rust</td><td>• <code>BinaryHeap</code> 默认最大堆，求最短路须用 <code>BinaryHeap&lt;Reverse&lt;(dist, node)&gt;&gt;</code><br>• 标准库无 <code>decrease-key</code>，靠「过期条目 + `if d &gt; dist[u] { continue<br>• }`」做延迟删除<br>• <code>usize</code> 相减易下溢，距离用 <code>u64</code> / <code>i64</code> 更稳</td></tr><tr><td>C++</td><td>• <code>priority_queue</code> 默认大顶堆，小顶堆写 <code>greater&lt;&gt;</code><br>• 同样只有 lazy deletion，故也会重复入堆<br>• <code>pair</code> 默认先比 first（距离）再比 second，天然契合 Dijkstra<br>• 权重用 <code>long long</code> 防溢出</td></tr><tr><td>Python</td><td>• <code>heapq</code> 是天然最小堆，无需取负<br>• 同样用 <code>if d &gt; dist[i]: continue</code> 跳过过期项<br>• 元组按字典序比较，<code>(dist, node)</code> 即可直接用<br>• 权重为浮点时注意 <code>float('inf')</code> 与精度问题</td></tr></tbody></table></div></section><section class="blk"><h3>延伸阅读</h3><ul class="src-list"><li><a href="https://oi-wiki.org/ds/dsu/" target="_blank" rel="noopener">OI Wiki · 并查集</a> <span class="src-note">— 中文系统讲解并查集原理、路径压缩、按大小合并与复杂度分析</span></li><li><a href="https://oi-wiki.org/graph/topo/" target="_blank" rel="noopener">OI Wiki · 拓扑排序</a> <span class="src-note">— Kahn 算法的入度法流程与判环说明</span></li><li><a href="https://cp-algorithms.com/graph/dijkstra.html" target="_blank" rel="noopener">CP-Algorithms · Dijkstra's algorithm</a> <span class="src-note">— Dijkstra 的贪心正确性证明与实现</span></li><li><a href="https://cp-algorithms.com/graph/dijkstra_sparse.html" target="_blank" rel="noopener">CP-Algorithms · Dijkstra on sparse graphs</a> <span class="src-note">— 优先队列版 Dijkstra 与 O(m log n) 复杂度推导</span></li><li><a href="https://cp-algorithms.com/data_structures/disjoint_set_union.html" target="_blank" rel="noopener">CP-Algorithms · Disjoint Set Union</a> <span class="src-note">— DSU 摊还复杂度与反阿克曼函数 O(α(n)) 的权威说明</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html" target="_blank" rel="noopener">Rust std · std::collections::BinaryHeap</a> <span class="src-note">— Rust 二叉堆默认最大堆，官方以 Dijkstra 为例演示 <code>Reverse</code></span></li><li><a href="https://doc.rust-lang.org/std/cmp/struct.Reverse.html" target="_blank" rel="noopener">Rust std · std::cmp::Reverse</a> <span class="src-note">— 用 Reverse 包装实现逆序比较（最大堆转最小堆）</span></li><li><a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python 官方文档 · heapq</a> <span class="src-note">— Python 最小堆实现及基于堆的最短路用法</span></li><li><a href="https://oi-wiki.org/ds/dsu/" target="_blank" rel="noopener">OI Wiki · 并查集</a> <span class="src-note">— 并查集原理、路径压缩、按大小合并与复杂度；含带权并查集与例题</span></li><li><a href="https://oi-wiki.org/graph/topo/" target="_blank" rel="noopener">OI Wiki · 拓扑排序</a> <span class="src-note">— Kahn 算法（入度 + 队列）流程、判环与复杂度 O(n+m)</span></li><li><a href="https://oi-wiki.org/graph/" target="_blank" rel="noopener">OI Wiki · 图论</a> <span class="src-note">— 图论专题索引，含 BFS/DFS/最短路径/连通性等章节</span></li><li><a href="https://cp-algorithms.com/graph/dijkstra.html" target="_blank" rel="noopener">CP-Algorithms · Dijkstra's algorithm</a> <span class="src-note">— Dijkstra 复杂性与贪心正确性证明</span></li><li><a href="https://cp-algorithms.com/graph/dijkstra_sparse.html" target="_blank" rel="noopener">CP-Algorithms · Dijkstra on sparse graphs</a> <span class="src-note">— 稀疏图堆优化 Dijkstra（set / priority_queue 两种实现）</span></li><li><a href="https://cp-algorithms.com/data_structures/disjoint_set_union.html" target="_blank" rel="noopener">CP-Algorithms · Disjoint Set Union</a> <span class="src-note">— DSU 摊还 O(α(n)) 与 α(n) ≤ 4 (n &lt; 10⁶⁰⁰)</span></li><li><a href="https://cp-algorithms.com/graph/breadth-first-search.html" target="_blank" rel="noopener">CP-Algorithms · Breadth First Search</a> <span class="src-note">— BFS 求无权图最短路与连通分量</span></li><li><a href="https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html" target="_blank" rel="noopener">Rust std · std::collections::BinaryHeap</a> <span class="src-note">— Rust 二叉堆 API 与 Dijkstra 示例</span></li><li><a href="https://doc.rust-lang.org/std/cmp/struct.Reverse.html" target="_blank" rel="noopener">Rust std · std::cmp::Reverse</a> <span class="src-note">— 逆序比较包装器，最小堆惯用法</span></li><li><a href="https://docs.python.org/3/library/heapq.html" target="_blank" rel="noopener">Python 官方文档 · heapq</a> <span class="src-note">— Python 最小堆模块与最短路用法</span></li></ul></section></article></section>
+  </main>
+</div>
+
+<footer>
+  <hr class="rule">
+  <p>本书由 AI 深度研究团队整理生成，内容基于公开权威资料（OI Wiki、CP-Algorithms、cppreference、Rust / Python 官方文档等），仅供学习与参考。重要场景请自行核验细节。</p>
+  <p>本参考书由 AI 深度研究团队基于公开权威资料整理生成（2026-09）。代码模板已在 Python 环境下验证。如用于重要场景，请自行核验细节。</p>
+  <p>如权利人认为内容侵权，请联系 lyh2401@zohomail.com，我们将及时删除。</p>
+</footer>
+
+<button id="to-top" title="回到顶部" aria-label="回到顶部">↑</button>
+
+<script>
+/* ============================================================
+   数据结构与算法参考书 · 交互脚本
+   - 深色/浅色主题切换（跟随系统 + 手动记忆）
+   - 速查 / 深度解析 模块切换与跳转
+   - 代码高亮（Rust / C++ / Python）与一键复制
+   - 目录高亮（滚动监听）、移动端抽屉
+   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ---------------- 主题 ---------------- */
+  var STORE_KEY = 'dsa-book-theme';
+  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  function resolveTheme(pref) {
+    if (pref === 'light' || pref === 'dark') return pref;
+    return mql.matches ? 'dark' : 'light';
+  }
+  function applyTheme(pref) {
+    var actual = resolveTheme(pref);
+    document.documentElement.setAttribute('data-theme', actual);
+    var btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.textContent = actual === 'dark' ? '☀' : '☾';
+      btn.title = (pref === 'auto' ? '跟随系统 · ' : '') + (actual === 'dark' ? '当前：深色（点击切换）' : '当前：浅色（点击切换）');
+    }
+  }
+  var themePref = storeGet(STORE_KEY) || 'auto';
+  applyTheme(themePref);
+  mql.addEventListener && mql.addEventListener('change', function () { if (themePref === 'auto') applyTheme('auto'); });
+
+  function init() {
+    applyTheme(themePref);
+
+    var themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      themePref = resolveTheme(themePref) === 'dark' ? 'light' : 'dark';
+      storeSet(STORE_KEY, themePref);
+      applyTheme(themePref);
+    });
+
+    /* ---------------- 模块切换（速查 / 深度 / 全部） ---------------- */
+    var mode = storeGet('dsa-book-mode') || 'quick';
+    function setMode(m) {
+      mode = m;
+      document.documentElement.setAttribute('data-mode', m);
+      var btns = document.querySelectorAll('[data-mode]');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === m);
+      }
+      storeSet('dsa-book-mode', m);
+    }
+    var modeBtns = document.querySelectorAll('button[data-mode]');
+    for (var i = 0; i < modeBtns.length; i++) {
+      (function (b) {
+        b.addEventListener('click', function () {
+          var target = b.getAttribute('data-mode');
+          setMode(target);
+          var anchor = target === 'deep' ? '#deep-part' : (target === 'quick' ? '#quick-part' : '#top');
+          scrollToSel(anchor);
+        });
+      })(modeBtns[i]);
+    }
+
+    /* ---------------- 章节间跳转（速查 ⇄ 深度） ---------------- */
+    function scrollToSel(sel) {
+      var el = document.querySelector(sel);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    var jumps = document.querySelectorAll('a[data-jump]');
+    for (var j = 0; j < jumps.length; j++) {
+      (function (a) {
+        a.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          var want = a.getAttribute('data-jump'); // 'quick' | 'deep'
+          if (mode !== 'all' && mode !== want) setMode(want);
+          var href = a.getAttribute('href');
+          // 等待模式切换完成后再滚动
+          setTimeout(function () { scrollToSel(href); }, 30);
+        });
+      })(jumps[j]);
+    }
+
+    /* ---------------- TOC 点击（同样处理模式） ---------------- */
+    var tocLinks = document.querySelectorAll('.toc-group a[href^="#"]');
+    for (var t = 0; t < tocLinks.length; t++) {
+      (function (a) {
+        a.addEventListener('click', function (ev) {
+          var href = a.getAttribute('href');
+          var isDeep = href.indexOf('#d-') === 0;
+          var isQuick = href.indexOf('#q-') === 0;
+          if ((isDeep && mode === 'quick') || (isQuick && mode === 'deep')) {
+            setMode('all'); // 或切到对应模块；选择显示全部以便双向浏览
+          }
+          setTimeout(function () {
+            scrollToSel(href);
+            document.body.classList.remove('nav-open');
+          }, 30);
+          ev.preventDefault();
+        });
+      })(tocLinks[t]);
+    }
+
+    /* ---------------- 移动端目录抽屉 ---------------- */
+    var menuBtn = document.getElementById('menu-btn');
+    if (menuBtn) menuBtn.addEventListener('click', function () { document.body.classList.toggle('nav-open'); });
+
+    /* ---------------- 代码高亮 ---------------- */
+    var blocks = document.querySelectorAll('pre > code[class^="lang-"]');
+    for (var b = 0; b < blocks.length; b++) {
+      var el = blocks[b];
+      var lang = (el.className.match(/lang-(\w+)/) || [])[1] || 'text';
+      try { el.innerHTML = highlight(el.textContent, lang); } catch (e) { /* 保持原文 */ }
+    }
+
+    /* ---------------- 复制按钮 ---------------- */
+    var copyBtns = document.querySelectorAll('.copy-btn');
+    for (var c = 0; c < copyBtns.length; c++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          var block = btn.closest('.code-block');
+          var codeEl = block ? block.querySelector('pre code') : null;
+          if (!codeEl) return;
+          var text = codeEl.textContent;
+          function done(ok) {
+            btn.textContent = ok ? '已复制 ✓' : '复制失败';
+            btn.classList.toggle('ok', ok);
+            setTimeout(function () { btn.textContent = '复制'; btn.classList.remove('ok'); }, 1500);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(legacyCopy(text)); });
+          } else { done(legacyCopy(text)); }
+        });
+      })(copyBtns[c]);
+    }
+    function legacyCopy(text) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) { return false; }
+    }
+
+    /* ---------------- 回顶按钮 ---------------- */
+    var toTop = document.getElementById('to-top');
+    if (toTop) {
+      toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      window.addEventListener('scroll', function () {
+        toTop.classList.toggle('show', window.scrollY > 600);
+      }, { passive: true });
+    }
+
+    /* ---------------- 目录滚动高亮 ---------------- */
+    var articles = document.querySelectorAll('article.chapter[id]');
+    var linkMap = {};
+    var allToc = document.querySelectorAll('.toc-group a[href^="#"]');
+    for (var k = 0; k < allToc.length; k++) linkMap[allToc[k].getAttribute('href').slice(1)] = allToc[k];
+    var ticking = false;
+    function spy() {
+      ticking = false;
+      var current = null;
+      for (var m = 0; m < articles.length; m++) {
+        var el = articles[m];
+        if (el.offsetParent === null) continue; // 跳过当前模式隐藏的章节
+        var r = el.getBoundingClientRect();
+        if (r.top <= 120) current = el; else break;
+      }
+      if (!current) { // 页面顶部时选第一个可见的
+        for (var n = 0; n < articles.length; n++) {
+          if (articles[n].offsetParent !== null) { current = articles[n]; break; }
+        }
+      }
+      for (var id in linkMap) linkMap[id].classList.remove('active');
+      if (current && linkMap[current.id]) linkMap[current.id].classList.add('active');
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(spy); }
+    }, { passive: true });
+    spy();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  /* ============================================================
+     极简语法高亮器（Rust / C++ / Python）
+     ============================================================ */
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  var RUST = [
+    ['c', /\/\/\/?[^\n]*/y],
+    ['c', /\/\*[\s\S]*?\*\//y],
+    ['m', /#!?\[[^\]\n]*\]/y],
+    ['s', /"(?:\\.|[^"\\])*"/y],
+    ['s', /b?"(?:\\.|[^"\\])*"/y],
+    ['n', /\b\d[\d_]*(?:\.\d+)?(?:[iuf](?:8|16|32|64|128|size))?\b/y],
+    ['m', /\b[a-z_][a-zA-Z0-9_]*!/y],
+    ['k', /\b(fn|let|mut|pub|use|mod|crate|super|self|Self|struct|enum|impl|trait|for|while|loop|if|else|match|return|break|continue|ref|move|as|where|dyn|async|await|in|const|static|unsafe|extern|type|yield)\b/y],
+    ['t', /\b(true|false|Some|None|Ok|Err|Option|Result|Vec|VecDeque|String|str|HashMap|HashSet|BTreeMap|BTreeSet|BinaryHeap|Box|Rc|RefCell|Cell|Reverse|Cow|usize|isize|u8|u16|u32|u64|u128|i8|i16|i32|i64|i128|f32|f64|char|bool)\b/y],
+    ['f', /\b[a-z_][a-zA-Z0-9_]*(?=\s*\()/y]
+  ];
+  var CPP = [
+    ['c', /\/\/[^\n]*/y],
+    ['c', /\/\*[\s\S]*?\*\//y],
+    ['m', /#[a-z]+/y],
+    ['s', /"(?:\\.|[^"\\])*"/y],
+    ['s', /'(?:\\.|[^'\\])'/y],
+    ['n', /\b\d[\d']*(?:\.\d+)?(?:[fFuUlL]+)?\b/y],
+    ['k', /\b(if|else|for|while|do|switch|case|default|break|continue|return|goto|struct|class|public|private|protected|template|typename|namespace|using|const|constexpr|static|inline|virtual|override|new|delete|this|nullptr|true|false|auto|void|int|long|short|char|bool|float|double|unsigned|signed|size_t|operator)\b/y],
+    ['t', /\b(vector|map|set|unordered_map|unordered_set|queue|stack|deque|priority_queue|string|list|array|pair|tuple|function|greater|less|sort|reverse|begin|end|push_back|pop_back|emplace_back|size|empty|find|count|insert|erase|first|second|max|min|abs|swap|fill|accumulate|lower_bound|upper_bound|memset|cin|cout|endl)\b/y],
+    ['f', /\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\()/y]
+  ];
+  var PY = [
+    ['c', /#[^\n]*/y],
+    ['s', /[rbf]{0,2}"""[\s\S]*?"""/y],
+    ['s', /[rbf]{0,2}'''[\s\S]*?'''/y],
+    ['s', /[rbf]{0,2}"(?:\\.|[^"\\])*"/y],
+    ['s', /[rbf]{0,2}'(?:\\.|[^'\\])*'/y],
+    ['n', /\b\d[\d_]*(?:\.\d+)?\b/y],
+    ['k', /\b(def|class|if|elif|else|for|while|return|break|continue|pass|import|from|as|in|not|and|or|is|None|True|False|lambda|yield|with|try|except|finally|raise|global|nonlocal|assert|del|match|case|self|cls|await|async)\b/y],
+    ['t', /\b(print|len|range|list|dict|set|tuple|frozenset|sorted|reversed|enumerate|zip|map|filter|sum|min|max|abs|any|all|int|str|float|bool|isinstance|type|input|open|deque|defaultdict|Counter|heappush|heappop|heapify|heapreplace|bisect_left|bisect_right|insort|lru_cache)\b/y],
+    ['f', /\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\()/y]
+  ];
+
+  function highlight(code, lang) {
+    var pats = lang === 'rust' ? RUST : (lang === 'cpp' ? CPP : (lang === 'python' ? PY : null));
+    if (!pats) return esc(code);
+    var out = '';
+    var i = 0, n = code.length, plainStart = 0;
+    while (i < n) {
+      var hit = null;
+      for (var p = 0; p < pats.length; p++) {
+        var re = pats[p][1];
+        re.lastIndex = i;
+        var m = re.exec(code);
+        if (m && m.index === i && m[0].length > 0) { hit = { cls: pats[p][0], text: m[0] }; break; }
+      }
+      if (hit) {
+        if (plainStart < i) out += esc(code.slice(plainStart, i));
+        out += '<span class="tok-' + hit.cls + '">' + esc(hit.text) + '</span>';
+        i += hit.text.length;
+        plainStart = i;
+      } else {
+        i += 1; // 普通字符，稍后统一输出
+      }
+    }
+    if (plainStart < n) out += esc(code.slice(plainStart, n));
+    return out;
+  }
+})();
+
+</script>
+</body>
+</html>
+
+  </div>
+</article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      &copy; 2026 卢昱宏
+    </div>
+  </footer>
+
+  <!-- 引入客户端 i18n + 暗黑模式切换逻辑 JS -->
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>
