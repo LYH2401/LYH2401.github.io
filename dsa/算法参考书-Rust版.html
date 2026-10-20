@@ -424,6 +424,63 @@ html[data-mode="deep"] .toc-quick { display: none; }
   .module-toc-title .hint { display: none; }
 }
 
+
+/* ---------- 全设备自适应增强 ---------- */
+img, video, canvas, svg { max-width: 100%; height: auto; }
+.chapter, .intro-card, footer, .blk, .part-head, .essence, .tpl, .module-toc {
+  overflow-wrap: break-word;
+}
+.blk a, .src-note, .tbl-wrap, .pitfalls li, .ex li, .src-list li { overflow-wrap: anywhere; }
+.code-block, .tbl-wrap, .chapter, main.content { max-width: 100%; }
+.code-block pre { max-width: 100%; }
+.topbar { flex-wrap: wrap; gap: 8px 12px; }
+.controls { max-width: 100%; }
+.sidebar { top: var(--topbar-h, 59px); height: calc(100vh - var(--topbar-h, 59px)); }
+#to-top { right: 16px; bottom: 16px; }
+
+@media (max-width: 640px) {
+  table.tbl { min-width: 0; font-size: 12.5px; }
+  table.tbl th, table.tbl td { padding: 6px 8px; }
+  table.tbl thead th { white-space: normal; }
+  .seg-btn { padding: 6px 9px; font-size: 12px; }
+  .controls { gap: 8px; }
+  .part-head h2 { font-size: 22px; }
+  .essence { font-size: 13.5px; padding: 10px 12px; }
+  .chapter { padding: 16px 14px 18px; border-radius: 12px; }
+  .intro-card { padding: 16px; }
+  .module-toc { padding: 12px 12px 10px; }
+  main.content { padding: 16px 12px 72px; }
+  footer { padding: 12px 14px 60px; }
+  .ch-head { gap: 8px; }
+  .jump { padding: 3px 10px; }
+}
+
+@media (max-width: 420px) {
+  .topbar { padding: 6px 8px; }
+  .brand { gap: 8px; }
+  .brand .logo { width: 32px; height: 32px; flex-basis: 32px; border-radius: 8px; }
+  .brand h1 { font-size: 13px; }
+  .menu-btn, .icon-btn { width: 30px; height: 30px; }
+  .seg { padding: 2px; }
+  .seg-btn { padding: 5px 7px; font-size: 11.5px; }
+  .ch-head h2 { font-size: 16px; }
+  .essence { font-size: 13px; }
+  .blk ul { padding-left: 18px; }
+  .chapter { padding: 14px 11px 16px; }
+  table.tbl { font-size: 12px; }
+  table.tbl th, table.tbl td { padding: 5px 6px; }
+  .code-block pre { padding: 10px; font-size: 11.8px; }
+  #to-top { right: 10px; bottom: 10px; width: 38px; height: 38px; }
+}
+
+/* ---------- 手机顶栏布局修正 ---------- */
+@media (max-width: 640px) {
+  .topbar { flex-wrap: wrap; row-gap: 6px; }
+  .brand { flex: 1 1 100%; min-width: 0; }
+  .controls { width: 100%; max-width: 100%; min-width: 0; justify-content: flex-start; gap: 6px; }
+  .seg-btn { padding: 5px 7px; font-size: 11.5px; }
+  .seg { padding: 2px; }
+}
 </style>
 <link rel="icon" type="image/png" href="/favicon.png">
 </head>
@@ -1619,6 +1676,19 @@ impl Dsu {
   }
 })();
 
+</script>
+
+<script>
+(function () {
+  var topbar = document.querySelector('.topbar');
+  function syncTopbarHeight() {
+    var h = topbar ? Math.round(topbar.getBoundingClientRect().height) : 59;
+    document.documentElement.style.setProperty('--topbar-h', h + 'px');
+  }
+  syncTopbarHeight();
+  window.addEventListener('resize', syncTopbarHeight);
+  window.addEventListener('orientationchange', syncTopbarHeight);
+})();
 </script>
 </body>
 </html>
