@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="renderer" content="webkit">
+<noscript><style>html[data-mode="quick"] #deep-part, html[data-mode="deep"] #quick-part, html[data-mode="quick"] .toc-deep, html[data-mode="deep"] .toc-quick { display: block !important; }</style></noscript>
 <title>数据结构与算法：精炼参考手册 · C 版</title>
 <meta name="description" content="数据结构与算法精炼参考书：基础数据结构与常用解法模板，速查手册 + 深度解析双模块，C 语言版。">
 <style>
@@ -109,6 +112,7 @@ p { margin: .6em 0; }
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 10px 20px;
   background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
   backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--border);
 }
@@ -480,6 +484,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   .controls { width: 100%; max-width: 100%; min-width: 0; justify-content: flex-start; gap: 6px; }
   .seg-btn { padding: 5px 7px; font-size: 11.5px; }
   .seg { padding: 2px; }
+}
+
+/* ---------- 兼容性回退：不支持 color-mix / backdrop-filter 的旧浏览器 ---------- */
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+  .topbar { background: var(--bg-soft); }
+  .ch-num { border-color: var(--accent); }
+  .jump:hover { border-color: var(--accent); }
+  .module-toc-grid a:hover { border-color: var(--accent); }
 }
 </style>
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -2259,7 +2271,7 @@ int countSets(const int *parent, int n) {
 
 <footer>
   <hr class="rule">
-  <p>本书由 AI 深度研究团队整理生成，内容基于公开权威资料（OI Wiki、Hello 算法、cppreference C 标准库、ISO/IEC 9899（C23）、POSIX / man7 手册、SEI CERT C、GNU C 库手册、C FAQ 等），仅供学习与参考。重要场景请自行核验细节。</p>
+  <p>本书由 AI 深度研究团队整理生成，内容基于公开权威资料（OI Wiki、Hello 算法、cppreference、Rust / Python 官方文档等），仅供学习与参考。重要场景请自行核验细节。</p>
   <p>本参考书由 AI 深度研究团队基于公开权威资料整理生成（2026-11）。代码模板已在 C 环境下逐一编译验证（gcc 15.2，-std=c2x，-Wall -Wextra）。如用于重要场景，请自行核验细节。</p>
   <p>如权利人认为内容侵权，请联系 lyh2401@zohomail.com，我们将及时删除。</p>
 </footer>
@@ -2279,7 +2291,7 @@ int countSets(const int *parent, int n) {
 
   /* ---------------- 主题 ---------------- */
   var STORE_KEY = 'dsa-book-theme';
-  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+  var mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : { matches: false, addEventListener: null, addListener: null };
 
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -2299,7 +2311,8 @@ int countSets(const int *parent, int n) {
   }
   var themePref = storeGet(STORE_KEY) || 'auto';
   applyTheme(themePref);
-  mql.addEventListener && mql.addEventListener('change', function () { if (themePref === 'auto') applyTheme('auto'); });
+  if (mql.addEventListener) mql.addEventListener('change', function () { if (themePref === 'auto') applyTheme('auto'); });
+  else if (mql.addListener) mql.addListener(function () { if (themePref === 'auto') applyTheme('auto'); });
 
   function init() {
     applyTheme(themePref);
@@ -2318,7 +2331,8 @@ int countSets(const int *parent, int n) {
       document.documentElement.setAttribute('data-mode', m);
       var btns = document.querySelectorAll('[data-mode]');
       for (var i = 0; i < btns.length; i++) {
-        btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === m);
+        if (btns[i].getAttribute('data-mode') === m) btns[i].classList.add('active');
+        else btns[i].classList.remove('active');
       }
       storeSet('dsa-book-mode', m);
     }
@@ -2390,13 +2404,13 @@ int countSets(const int *parent, int n) {
     for (var c = 0; c < copyBtns.length; c++) {
       (function (btn) {
         btn.addEventListener('click', function () {
-          var block = btn.closest('.code-block');
+          var block = closestEl(btn, '.code-block');
           var codeEl = block ? block.querySelector('pre code') : null;
           if (!codeEl) return;
           var text = codeEl.textContent;
           function done(ok) {
             btn.textContent = ok ? '已复制 ✓' : '复制失败';
-            btn.classList.toggle('ok', ok);
+            if (ok) btn.classList.add('ok'); else btn.classList.remove('ok');
             setTimeout(function () { btn.textContent = '复制'; btn.classList.remove('ok'); }, 1500);
           }
           if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2404,6 +2418,13 @@ int countSets(const int *parent, int n) {
           } else { done(legacyCopy(text)); }
         });
       })(copyBtns[c]);
+    }
+    function closestEl(el, sel) {
+      while (el && el.nodeType === 1) {
+        if (el.matches ? el.matches(sel) : (el.msMatchesSelector && el.msMatchesSelector(sel))) return el;
+        el = el.parentNode;
+      }
+      return null;
     }
     function legacyCopy(text) {
       try {
@@ -2421,7 +2442,7 @@ int countSets(const int *parent, int n) {
     if (toTop) {
       toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
       window.addEventListener('scroll', function () {
-        toTop.classList.toggle('show', window.scrollY > 600);
+        if (window.scrollY > 600) toTop.classList.add('show'); else toTop.classList.remove('show');
       }, { passive: true });
     }
 
@@ -2449,7 +2470,7 @@ int countSets(const int *parent, int n) {
       if (current && linkMap[current.id]) linkMap[current.id].classList.add('active');
     }
     window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(spy); }
+      if (!ticking) { ticking = true; var raf = window.requestAnimationFrame || function (cb) { setTimeout(cb, 16); }; raf(spy); }
     }, { passive: true });
     spy();
   }
